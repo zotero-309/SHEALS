@@ -397,6 +397,7 @@ ul, ol {
 	display: flex;
     align-items: center;
     cursor: pointer;
+	background-color: #ffffff;
     margin-left: auto; /* Push the filter button to the right */
     border: 1.5px solid #e5e5e5; /* Grey border color */
     border-radius: 25px; /* Rounded corners */
@@ -419,70 +420,10 @@ display: none;
 display: none;
 }
 
-/*---------------------
-Modal
------------------------*/
-.modal-container {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.modal-background {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-}
-
-.modal-content {
-background-color: #fff;
-padding: 20px;
-max-width: 600px;
-width: 100%;
-max-height: 80%;
-overflow-y: auto;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-z-index: 1000; /* Ensure it's above other elements */
-}
-
-.modal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid #e0e0e0;
-}
-/*---------------------
-  About US
------------------------*/
-
-.about-text {
-	text-align: center;
-	padding: 0 35px;
-}
-.about-text p {
-	color: #595960;
-	font-weight: 500;
-}
-.about-text p.f-para {
-	margin-bottom: 10px;
-}
-.about-text p.s-para {
-	margin-bottom: 35px;
-}
-.about-text .about-btn {
-	color: #19191a;
-}
-.about-pic img {
-	min-width: 100%;
-}
+.rooms-section {
+	padding-top: 0;
+	padding-bottom: 80px;
+    }
 /*---------------------
   Footer Section
 -----------------------*/
@@ -609,7 +550,7 @@ border-bottom: 1px solid #e0e0e0;
 -----------------------*/
 
 .breadcrumb-section {
-	padding-top: 150px; /* spacing for breadcrumb section to be below header section */
+	padding-top: 80px; /* spacing for breadcrumb section to be below header section */
 	padding-bottom: 30px;
 }
 .breadcrumb-text {
@@ -696,70 +637,12 @@ border-bottom: 1px solid #e0e0e0;
 /*---------------------
   Room Section
 -----------------------*/
-.rooms-section {
-	padding-top: 0;
-	padding-bottom: 80px;
-}
-.room-box {
-	text-decoration: none;
-	border-radius: 15px;
-	overflow: hidden;
-	display: block;
-}
-.room-item {
-	margin-bottom: 30px;
-	position: relative;
-}
-.room-item img {
-	min-width: 100%;
-	border-top-right-radius: 15px;
-	border-top-left-radius: 15px;
-}
-.room-item .ri-text {
-	border: 1px solid #ebebeb;
-	border-top: none;
-	border-bottom-right-radius: 15px;
-	border-bottom-left-radius: 15px;
-	padding: 24px;
-}
-.room-item .ri-text h4 {
-	color: #19191a;
-	margin-bottom: 10px;
-}
-.room-item .ri-text h3 {
-	color: #E97D2F;
-	font-weight: 700;
-	margin-bottom: 10px;
-}
-.room-item .ri-text h3 span {
-	font-family: "Cabin", sans-serif;
-	font-size: 14px;
-	font-weight: 400;
-	color: #19191a;
-}
-.room-item .ri-text table tbody tr td {
-	font-size: 16px;
-	color: #707079;
-	line-height: 20px;
-}
-.room-item .ri-text table tbody tr td.r-o1 {
-	width: 80px;
-}
-.room-item .ri-text table tbody tr td.r-o2 {
-	max-width: 190px;
-	width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis; /* add an ellipsis (...) if the text overflows */
-    white-space: nowrap; /* prevents the text from wrapping to the next line */
-}
-.heart-icon {
-    position: absolute;
-        top: 15px; /* Adjust the position as needed */
-        right: 15px; /* Adjust the position as needed */
-        font-size: 25px; /* Increased font size for better visibility */
-        color: white;
-        z-index: 1; /* Ensure the heart is above the image */
-}
+
+
+
+
+
+
 .room-pagination {
 	text-align: center;
 	padding-top: 20px;
