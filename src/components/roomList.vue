@@ -1,11 +1,11 @@
 <template>
-    <div v-for="room in rooms" :key="room.id" class="col-lg-4 col-md-6">
-      <RoomItem :room="room" />
-    </div>
+  <div v-for="room in rooms" :key="room.id" class="col-lg-4 col-md-6">
+    <RoomItem :room="room" />
+  </div>
 </template>
 
 <script>
-import RoomItem from './roomItem.vue'; // Correct import name
+import RoomItem from './roomItem.vue'; // 
 import { rooms } from './roomData';
 
 export default {
@@ -15,8 +15,18 @@ export default {
     };
   },
   components: {
-    RoomItem, //
+    RoomItem, 
   },
 };
 </script>
-../store/roomData
+
+<style scoped>
+
+a {
+  text-decoration: none;
+}
+
+
+</style>
+
+
