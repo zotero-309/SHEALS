@@ -1,7 +1,7 @@
 <template>
-   <button @click="openModal" class="filter-button"> 
-      <i class="fa fa-sliders custom-size-icon"></i>
-      <span>Filter</span>
+  <button @click="openModal" class="filter-button">
+    <i class="fa fa-sliders custom-size-icon"></i>
+    <span>Filter</span>
   </button>
   <div v-if="showModal" class="modal-container">
     <div class="modal-background" @click="closeModal"></div>
@@ -17,67 +17,99 @@
       </div>
     </div>
   </div>
-  </template>
+</template>
   
-  <script>
-  export default {
-    data() {
-      return {
-        showModal: false,
-      };
+<script>
+export default {
+  data() {
+    return {
+      showModal: false,
+    };
+  },
+  methods: {
+    openModal() {
+      this.showModal = true;
     },
-    methods: {
-      openModal() {
-        this.showModal = true;
-      },
-      closeModal() {
-        this.showModal = false;
-      },
+    closeModal() {
+      this.showModal = false;
     },
-  };
-  </script>
+  },
+};
+</script>
   
-  <style scoped>
-  /* Add your component-specific styles here */
-    /*---------------------
+<style scoped>
+/*---------------------
+    Filter Button
+    -----------------------*/
+.menu-item .nav-menu .filter-button {
+	font-size: 16px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	background-color: #ffffff;
+	margin-left: auto;
+	/* Push the filter button to the right */
+	border: 1.5px solid #e5e5e5;
+	/* Grey border color */
+	border-radius: 25px;
+	/* Rounded corners */
+	height: 50px;
+	/* Set a maximum height for the content */
+	padding: 15px;
+	/* Adjust padding as needed */
+	margin-top: 10px;
+
+}
+
+.menu-item .nav-menu .filter-button i {
+	color: #393939;
+	margin-right: 5px;
+	/* Adjust spacing between icon and text */
+	padding: 0px;
+}
+
+/*---------------------
     Modal
     -----------------------*/
-    .modal-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    }
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .modal-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    }
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent black background */
+}
 
-    .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000; /* Ensure it's above other elements */
-    }
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  /* Ensure it's above other elements */
+}
 
-    .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e0e0e0;
-    }
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
 </style>
   
