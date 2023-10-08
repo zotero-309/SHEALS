@@ -434,36 +434,8 @@
 <script>
 
 export default {
-	emits: ['filter-applied'],
-	data() {
-		return {
-			isMenuOpen: false,
-			showModal: false,
-			selectedCategories: [],
-			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
-				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
-				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
-				'Snacks & Confectionery', 'Vegetables']
-		};
-	},
-	methods: {
-		toggleMenu() {
-			this.isMenuOpen = !this.isMenuOpen;
-		},
-		openModal() {
-			this.showModal = true;
-		},
-		closeModal() {
-			this.showModal = false;
-		},
-		applyFilter() {
-			console.log('Applying filter with categories:', this.selectedCategories);
-			this.$emit('filter-applied', this.selectedCategories);
-			this.closeModal();
-		},
-		resetFilter() {
-			this.selectedCategories = []; // Reset selectedCategories to an empty array
-		},
+	components: {
+		FilterModal,
 	},
 };
 </script>
@@ -564,6 +536,7 @@ export default {
 }
 
 .cart i {
+.cart i {
 	font-size: large;
 	margin-right: 5px;
 }
@@ -578,14 +551,14 @@ export default {
 }
 
 .notification:hover {
+.notification:hover {
 	background: rgb(229, 229, 229);
 }
 
-.notification i {
+ .notification i {
 	font-size: large;
 	margin-right: 5px;
 }
-
 .notification .badge {
 	position: absolute;
 	top: 5px;

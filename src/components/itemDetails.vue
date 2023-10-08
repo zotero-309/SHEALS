@@ -131,23 +131,19 @@
         </div>
       </div>
     </div>
-  </section>
-</template>
-
-<script>
-export default {
-  props: ['id', 'name', 'price', 'store', 'location'],
-  data() {
-    return {
-      room: null,
-    };
-  },
-};
-</script>
-
-<style scoped>
-.customColour {
-  color: #E97D2F
-}
-</style>
- 
+  </template>
+  
+  <script>
+  export default {
+    props: {
+      id: String,
+      queryId: String,
+    },
+    mounted() {
+      // Fetch and display content based on the id and queryId
+      // Example: You might make an API call to get details for the item
+      console.log("Fetching details for item ID:", this.id)
+    },
+  };
+  </script>
+  
