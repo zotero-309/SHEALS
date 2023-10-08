@@ -1,4 +1,79 @@
 <template>
+	<!-- Offcanvas Menu Overlay -->
+	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
+	<!-- Canvas Open Button -->
+	<div class="canvas-open" @click="toggleMenu">
+		<i class="icon_menu"></i>
+	</div>
+	<!-- Offcanvas Menu Wrapper -->
+	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+	<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+		<!-- Canvas Close Button -->
+		<div class="canvas-close" @click="toggleMenu">
+			<i class="icon_close"></i>
+		</div>
+		<!-- Search Icon -->
+		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+				<input type="search" placeholder="Search" aria-describedby="button-addon1"
+					class="form-control border-0 bg-light">
+				<div class="input-group-append">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</form>
+		<!-- Header Configure Area -->
+		<div class="header-configure-area">
+			<a href="#" class="cart">
+				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
+			</a>
+			<!-- Notifications -->
+			<a href="#" class="notification">
+				<span><i class="fa fa-bell-o"></i>Notifications</span>
+				<span class="badge">3</span>
+			</a>
+			<!-- Profile Option -->
+			<div class="profile-option">
+				<span>
+					<i class="fa fa-user-o"></i>
+					Profile
+				</span>
+				<!-- Profile Dropdown -->
+				<div class="profile-dropdown">
+					<ul>
+						<li><a href="#">Login</a></li>
+						<li><a href="#">Register</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- FilterModal -->
+			<FilterModal />
+		</div>
+		<!-- <nav class="mainmenu mobile-menu">
+			<ul>
+				<li><a href="./bestDeals.html">Best Deals</a></li>
+				<li><a href="./bySupermarkets.html">By Supermarkets</a></li>
+				<li><a href="./byCommunity.html">By Community</a></li>
+			</ul>
+		</nav> -->
+		<div id="mobile-menu-wrap"></div>
+	</div>
+	<!-- Offcanvas Menu Section End -->
+
+
+
+	<!-- Header Section Begins -->
 	<header class="header-section header-normal fixed-top">
 		<!-- Top Navigation -->
 		<div class="top-nav">
@@ -124,11 +199,27 @@ export default {
 	components: {
 		FilterModal,
 	},
+	data() {
+		return {
+			isMenuOpen: false,
+		};
+	},
+	methods: {
+		toggleMenu() {
+			this.isMenuOpen = !this.isMenuOpen;
+
+		}
+
+	}
 };
 </script>
   
 <style scoped>
 /* Add your component-specific styles here */
+
+
+
+/* Header Section Styling */
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
@@ -188,7 +279,7 @@ export default {
 	text-align: right;
 }
 
-.top-nav .tn-right .cart {
+.cart {
 	padding: 20px 16px;
 	position: relative;
 	display: inline-block;
@@ -197,16 +288,15 @@ export default {
 	color: #393939;
 }
 
-.top-nav .tn-right .cart:hover {
+.cart:hover {
 	background: rgb(229, 229, 229);
 }
-
-.top-nav .tn-right .cart i {
+.cart i {
 	font-size: large;
 	margin-right: 5px;
 }
 
-.top-nav .tn-right .notification {
+.notification {
 	padding: 20px 25px 20px 16px;
 	position: relative;
 	display: inline-block;
@@ -215,16 +305,15 @@ export default {
 	color: #393939;
 }
 
-.top-nav .tn-right .notification:hover {
+.notification:hover {
 	background: rgb(229, 229, 229);
 }
 
-.top-nav .tn-right .notification i {
+ .notification i {
 	font-size: large;
 	margin-right: 5px;
 }
-
-.top-nav .tn-right .notification .badge {
+.notification .badge {
 	position: absolute;
 	top: 5px;
 	border-radius: 50%;
@@ -232,7 +321,7 @@ export default {
 	color: white;
 }
 
-.top-nav .tn-right .profile-option {
+.profile-option {
 	padding: 20px 16px;
 	display: inline-block;
 	cursor: pointer;
@@ -240,22 +329,22 @@ export default {
 	color: #393939;
 }
 
-.top-nav .tn-right .profile-option:hover {
+.profile-option:hover {
 	background: rgb(229, 229, 229)
 }
 
-.top-nav .tn-right .profile-option i {
+.profile-option i {
 	font-size: large;
 	margin-right: 1px;
 }
 
-.top-nav .tn-right .profile-option:hover .profile-dropdown {
+.profile-option:hover .profile-dropdown {
 	top: 40px;
 	opacity: 1;
 	visibility: visible;
 }
 
-.top-nav .tn-right .profile-option .profile-dropdown {
+.profile-option .profile-dropdown {
 	position: absolute;
 	left: 0;
 	top: 60px;
@@ -274,15 +363,16 @@ export default {
 }
 
 
-.top-nav .tn-right .profile-option .profile-dropdown ul{
+.profile-option .profile-dropdown ul {
 	padding-left: 7px;
 }
-.top-nav .tn-right .profile-option .profile-dropdown ul li {
+
+.profile-option .profile-dropdown ul li {
 	list-style: none;
 	text-align: left;
 }
 
-.top-nav .tn-right .profile-option .profile-dropdown ul li a {
+.profile-option .profile-dropdown ul li a {
 	font-size: 14px;
 	text-transform: uppercase;
 	font-weight: 500;
@@ -294,7 +384,7 @@ export default {
 }
 
 /* orange font colour when hover */
-.top-nav .tn-right .profile-option .profile-dropdown ul li a:hover {
+.profile-option .profile-dropdown ul li a:hover {
 	color: #E97D2F;
 }
 
@@ -406,5 +496,118 @@ export default {
 }
 
 /* End of Menu Section: nav menu (left) */
+
+
+/* Off Menu Canvas Styles */
+
+@media only screen and (min-width: 1200px) {
+	.container {
+		max-width: 1170px;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.top-nav {
+		display: none;
+	}
+
+	.menu-item .nav-menu {
+		display: none;
+	}
+
+	.offcanvas-menu-overlay {
+		position: fixed;
+		left: 0;
+		top: 0;
+		background: rgba(0, 0, 0, 0.7);
+		z-index: 98;
+		height: 100%;
+		width: 100%;
+		visibility: hidden;
+		-webkit-transition: 0.3s;
+		-o-transition: 0.3s;
+		transition: 0.3s;
+	}
+
+	.offcanvas-menu-overlay.active {
+		visibility: visible;
+	}
+
+	.canvas-open {
+		position: absolute;
+		right: 40px;
+		top: 25px;
+		font-size: 22px;
+		width: 30px;
+		height: 30px;
+		color: #19191a;
+		border: 1px solid #19191a;
+		border-radius: 2px;
+		line-height: 33px;
+		text-align: center;
+		z-index: 100;
+		display: block;
+		cursor: pointer;
+	}
+
+	.offcanvas-menu-wrapper {
+		position: fixed;
+		left: -300px;
+		top: 0;
+		width: 300px;
+		z-index: 999;
+		background: #ffffff;
+		text-align: center;
+		overflow-y: auto;
+		height: 100%;
+		opacity: 0;
+		visibility: hidden;
+		-webkit-transition: all 0.5s;
+		-o-transition: all 0.5s;
+		transition: all 0.5s;
+		padding: 80px 30px 30px 30px;
+		display: block;
+	}
+
+	.offcanvas-menu-wrapper .canvas-close {
+		height: 30px;
+		width: 30px;
+		border: 1px solid #19191a;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 30px;
+		cursor: pointer;
+		position: absolute;
+		right: 30px;
+		top: 30px;
+		padding-right: 1px;
+	}
+	.offcanvas-menu-wrapper .header-configure-area {
+		margin-bottom: 30px;
+		text-align: left;
+	}
+
+
+	.offcanvas-menu-wrapper .mainmenu {
+		display: none;
+	}
+
+	.offcanvas-menu-wrapper.show-offcanvas-menu-wrapper {
+		left: 0;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.footer-section .copyright-option ul {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+
+	.footer-section .copyright-option .co-text {
+		text-align: center;
+	}
+}
+
+
 </style>
   

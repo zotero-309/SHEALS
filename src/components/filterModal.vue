@@ -41,7 +41,7 @@ export default {
 /*---------------------
     Filter Button
     -----------------------*/
-.menu-item .nav-menu .filter-button {
+.filter-button {
 	font-size: 16px;
 	font-weight: 500;
 	display: flex;
@@ -62,7 +62,7 @@ export default {
 
 }
 
-.menu-item .nav-menu .filter-button i {
+.filter-button i {
 	color: #393939;
 	margin-right: 5px;
 	/* Adjust spacing between icon and text */
