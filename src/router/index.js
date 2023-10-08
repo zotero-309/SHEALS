@@ -12,9 +12,6 @@ const AboutView = () =>
 const ItemDetailsView = () =>
   import("../views/ItemDetailsView.vue");
 
-
-
-
   const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes: [
@@ -33,13 +30,11 @@ const ItemDetailsView = () =>
         component: AboutView,
       },
       {
-        path: "/item/:id", // Assuming you have a route parameter for the item ID
+        path: "/item/:id/:name/:price/:store/:location", // Assuming you have a route parameter for the item ID
         name: "item-detail",
-        component: ItemDetailsView,
-        props: true,
-    
-      },
-    ],
+        component: ItemDetailsView, // Adjust the path accordingly
+        },
+      ]
   });
 
 

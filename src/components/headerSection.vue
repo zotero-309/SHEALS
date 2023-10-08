@@ -9,9 +9,11 @@
 						<ul class="tn-left">
 							<!-- Logo -->
 							<li class="col-lg-2">
-								<a href="./bestDeals.html">
-									<img src="img/logo.png" alt="Logo">
-								</a>
+								<!-- <a href="../about"> -->
+								<router-link to="/about">
+									<img src="/img/logo.png" alt="Logo">
+								</router-link>
+								<!-- </a> -->
 							</li>
 							<!-- Search Form -->
 							<li>
