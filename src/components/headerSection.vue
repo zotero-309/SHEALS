@@ -79,6 +79,81 @@
 	<!-- Offcanvas Menu Section End -->
 
 	<!-- Header Section Begins -->
+	<!-- Offcanvas Menu Overlay -->
+	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
+	<!-- Canvas Open Button -->
+	<div class="canvas-open" @click="toggleMenu">
+		<i class="icon_menu"></i>
+	</div>
+	<!-- Offcanvas Menu Wrapper -->
+	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+	<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+		<!-- Canvas Close Button -->
+		<div class="canvas-close" @click="toggleMenu">
+			<i class="icon_close"></i>
+		</div>
+		<!-- Search Icon -->
+		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+				<input type="search" placeholder="Search" aria-describedby="button-addon1"
+					class="form-control border-0 bg-light">
+				<div class="input-group-append">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</form>
+		<!-- Header Configure Area -->
+		<div class="header-configure-area">
+			<a href="#" class="cart">
+				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
+			</a>
+			<!-- Notifications -->
+			<a href="#" class="notification">
+				<span><i class="fa fa-bell-o"></i>Notifications</span>
+				<span class="badge">3</span>
+			</a>
+			<!-- Profile Option -->
+			<div class="profile-option">
+				<span>
+					<i class="fa fa-user-o"></i>
+					Profile
+				</span>
+				<!-- Profile Dropdown -->
+				<div class="profile-dropdown">
+					<ul>
+						<li><a href="#">Login</a></li>
+						<li><a href="#">Register</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- FilterModal -->
+			<FilterModal />
+		</div>
+		<!-- <nav class="mainmenu mobile-menu">
+			<ul>
+				<li><a href="./bestDeals.html">Best Deals</a></li>
+				<li><a href="./bySupermarkets.html">By Supermarkets</a></li>
+				<li><a href="./byCommunity.html">By Community</a></li>
+			</ul>
+		</nav> -->
+		<div id="mobile-menu-wrap"></div>
+	</div>
+	<!-- Offcanvas Menu Section End -->
+
+
+
+	<!-- Header Section Begins -->
 	<header class="header-section header-normal fixed-top">
 		<!-- Top Navigation -->
 		<div class="top-nav">
@@ -250,36 +325,8 @@
 <script>
 
 export default {
-	emits: ['filter-applied'],
-	data() {
-		return {
-			isMenuOpen: false,
-			showModal: false,
-			selectedCategories: [],
-			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
-				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
-				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
-				'Snacks & Confectionery', 'Vegetables']
-		};
-	},
-	methods: {
-		toggleMenu() {
-			this.isMenuOpen = !this.isMenuOpen;
-		},
-		openModal() {
-			this.showModal = true;
-		},
-		closeModal() {
-			this.showModal = false;
-		},
-		applyFilter() {
-			console.log('Applying filter with categories:', this.selectedCategories);
-			this.$emit('filter-applied', this.selectedCategories);
-			this.closeModal();
-		},
-		resetFilter() {
-			this.selectedCategories = []; // Reset selectedCategories to an empty array
-		},
+	components: {
+		FilterModal,
 	},
 };
 </script>
@@ -290,6 +337,10 @@ export default {
 .header-section {
 	font-family: "Cabin", sans-serif;
 }
+
+
+
+/* Header Section Styling */
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
@@ -365,7 +416,6 @@ export default {
 .cart:hover {
 	background: rgb(229, 229, 229);
 }
-
 .cart i {
 	font-size: large;
 	margin-right: 5px;
@@ -384,11 +434,10 @@ export default {
 	background: rgb(229, 229, 229);
 }
 
-.notification i {
+ .notification i {
 	font-size: large;
 	margin-right: 5px;
 }
-
 .notification .badge {
 	position: absolute;
 	top: 5px;
@@ -458,6 +507,7 @@ export default {
 }
 
 /* orange font colour when hover */
+.profile-option .profile-dropdown ul li a:hover {
 .profile-option .profile-dropdown ul li a:hover {
 	color: #E97D2F;
 }

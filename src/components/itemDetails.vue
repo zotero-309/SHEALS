@@ -5,14 +5,13 @@
     <div class="container px-4 px-lg-5 my-5">
       <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0"
-            src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+            src="https://dummyimage.com/550x550/dee2e6/6c757d.jpg" alt="..." /></div>
         <div class="col-md-6">
-          <h1 class="display-6 fw-bold"> {{ $route.params.name }} </h1>
-          <h3 class="fs-1 mb-4 fw-bold customColour"> ${{ $route.params.price }}</h3>
+          <h1 class="fs-1 fw-bold"> {{ $route.params.name }} </h1>
+          <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ $route.params.price }}</h3>
           <p class="fs-6 mb-4">
-            [Product Description which has not been added yet lol]
-            [Product Description which has not been added yet lol]
-            [Product Description which has not been added yet lol]
+            [A product description, perferably in one short paragraph so that there's no need for extra formatting /
+            expand dropdown etc]
           </p>
           <div class="fs-6 mb-3">
             <i class="fa fa-building-o"></i>
@@ -148,7 +147,7 @@ export default {
 
 <style scoped>
 .customColour {
-    color: #E97D2F
+  color: #E97D2F
 }
 </style>
  
