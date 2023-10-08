@@ -1,36 +1,38 @@
 <!-- roomItem.vue, receives room details through props which is from roomData --> 
 <template>
-    <router-link :to="{ name: 'item-detail', params: { id: this.room.id } }">
-    <div class="room-box" @click="navigateToRoomDetails">
-        <div class="room-item">
-            <img src="img/room/room-1.jpg" alt="">
-            <div class="ri-text">
-                <h4>{{ room.name }}</h4>
-                <h3>${{ room.price }}<span>/Perunit</span></h3>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="r-o1">Store:</td>
-                            <td class="r-o2">{{ room.store }}</td>
-                        </tr>
-                        <tr>
-                            <td class="r-o1">Location:</td>
-                            <td class="r-o2">{{ room.location }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="heart-button" @click.prevent="toggleHeart">
-                <i :class="{ 'fa': true, 'fa-heart': isHeartSolid, 'fa-heart-o': !isHeartSolid }"></i>
+    <router-link
+        :to="{ name: 'item-detail', params: { id: this.room.id, name: this.room.name, price: this.room.price, store: this.room.store, location: this.room.location } }">
+        <div class="room-box" @click="navigateToRoomDetails()">
+            <div class="room-item">
+                <img src="img/room/room-1.jpg" alt="">
+                <div class="ri-text">
+                    <h4>{{ room.name }}</h4>
+                    <h3>${{ room.price }}<span>/Perunit</span></h3>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="r-o1">Store:</td>
+                                <td class="r-o2">{{ room.store }}</td>
+                            </tr>
+                            <tr>
+                                <td class="r-o1">Location:</td>
+                                <td class="r-o2">{{ room.location }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="heart-button" @click.prevent="toggleHeart">
+                    <i :class="{ 'fa': true, 'fa-heart': isHeartSolid, 'fa-heart-o': !isHeartSolid }"></i>
+                </div>
             </div>
         </div>
-    </div>
-</router-link>
+    </router-link>
 </template>
   
 <script>
-import { router } from '../router/index.js';  // Import router instance
+import router from '../router/index.js';  // Import router instance
 import { rooms } from './roomData';
+
 
 export default {
     props: {
@@ -46,6 +48,10 @@ export default {
             rooms: rooms,
         }
     },
+    mounted() {
+        console.log('Room Object:', this.room);
+    },
+
     methods: {
         toggleHeart() {
             this.isHeartSolid = !this.isHeartSolid;
@@ -53,7 +59,6 @@ export default {
         navigateToRoomDetails() {
             try {
                 console.log('Room ID:', this.room.id);
-                router.push({ name: 'item-detail', params: { id: this.room.id } });
             } catch (error) {
                 console.error('Error navigating to room details:', error);
             }
