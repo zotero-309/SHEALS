@@ -1,19 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-
-
-// Import  views using dynamic imports
-// Import views using dynamic imports
-const HomeView = () =>
-  import("../views/HomeView.vue");
-
-const AboutView = () =>
-  import("../views/AboutView.vue");
-
-const ItemDetailsView = () =>
-  import("../views/ItemDetailsView.vue");
-
-
-
+import  Home  from "../views/Home.vue"
+import ItemDetails from "../views/ItemDetails.vue"
+import Login from "../views/Login.vue"
 
   const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -21,24 +9,20 @@ const ItemDetailsView = () =>
       // routes
       {
         path: "/",
-        name: "home",
-        component: HomeView,
-      },
-      {
-        path: "/about",
-        name: "about",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: AboutView,
+        name: "Home",
+        component: Home,
       },
       {
         path: "/item/:id", // Assuming you have a route parameter for the item ID
         name: "item-detail",
-        component: ItemDetailsView,
+        component: ItemDetails,
         props: true,
-    
       },
+      {
+        path: '/login',
+        name: 'Login',
+        component: Login
+      }
     ],
   });
 
