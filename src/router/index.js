@@ -1,7 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import  Home  from "../views/Home.vue"
-import ItemDetails from "../views/ItemDetails.vue"
-import Login from "../views/Login.vue"
+
+
+// Import  views using dynamic imports
+// Import views using dynamic imports
+const HomeView = () =>
+  import("../views/HomeView.vue");
+
+const AboutView = () =>
+  import("../views/AboutView.vue");
+
+const ItemDetailsView = () =>
+  import("../views/ItemDetailsView.vue");
+
+
+
 
   const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -13,16 +25,12 @@ import Login from "../views/Login.vue"
         component: Home,
       },
       {
-        path: "/item/:id", // Assuming you have a route parameter for the item ID
+        path: "/item/:id/:name/:price/:store/:location", // Assuming you have a route parameter for the item ID
         name: "item-detail",
-        component: ItemDetails,
+        component: ItemDetailsView,
         props: true,
+    
       },
-      {
-        path: '/login',
-        name: 'Login',
-        component: Login
-      }
     ],
   });
 

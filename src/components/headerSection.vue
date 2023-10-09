@@ -1,4 +1,79 @@
 <template>
+	<!-- Offcanvas Menu Overlay -->
+	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
+	<!-- Canvas Open Button -->
+	<div class="canvas-open" @click="toggleMenu">
+		<i class="icon_menu"></i>
+	</div>
+	<!-- Offcanvas Menu Wrapper -->
+	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+	<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+		<!-- Canvas Close Button -->
+		<div class="canvas-close" @click="toggleMenu">
+			<i class="icon_close"></i>
+		</div>
+		<!-- Search Icon -->
+		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+				<input type="search" placeholder="Search" aria-describedby="button-addon1"
+					class="form-control border-0 bg-light">
+				<div class="input-group-append">
+					<span class="input-group-text border-0 bg-light">
+						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</form>
+		<!-- Header Configure Area -->
+		<div class="header-configure-area">
+			<a href="#" class="cart">
+				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
+			</a>
+			<!-- Notifications -->
+			<a href="#" class="notification">
+				<span><i class="fa fa-bell-o"></i>Notifications</span>
+				<span class="badge">3</span>
+			</a>
+			<!-- Profile Option -->
+			<div class="profile-option">
+				<span>
+					<i class="fa fa-user-o"></i>
+					Profile
+				</span>
+				<!-- Profile Dropdown -->
+				<div class="profile-dropdown">
+					<ul>
+						<li><a href="#">Login</a></li>
+						<li><a href="#">Register</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- FilterModal -->
+			<FilterModal />
+		</div>
+		<!-- <nav class="mainmenu mobile-menu">
+			<ul>
+				<li><a href="./bestDeals.html">Best Deals</a></li>
+				<li><a href="./bySupermarkets.html">By Supermarkets</a></li>
+				<li><a href="./byCommunity.html">By Community</a></li>
+			</ul>
+		</nav> -->
+		<div id="mobile-menu-wrap"></div>
+	</div>
+	<!-- Offcanvas Menu Section End -->
+
+
+
+	<!-- Header Section Begins -->
 	<header class="header-section header-normal fixed-top">
 		<!-- Top Navigation -->
 		<div class="top-nav">
@@ -9,9 +84,9 @@
 						<ul class="tn-left">
 							<!-- Logo -->
 							<li class="col-lg-2">
-								<router-link :to="{name:'Home'}">
+								<a href="./bestDeals.html">
 									<img src="img/logo.png" alt="Logo">
-								</router-link>
+								</a>
 							</li>
 							<!-- Search Form -->
 							<li>
@@ -76,16 +151,14 @@
 <script>
 
 export default {
-
+	components: {
+		FilterModal,
+	},
 };
 </script>
   
 <style scoped>
 /* Add your component-specific styles here */
-
-form {
-	padding: 0;
-}
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
@@ -145,7 +218,7 @@ form {
 	text-align: right;
 }
 
-.top-nav .tn-right .cart {
+.cart {
 	padding: 20px 16px;
 	position: relative;
 	display: inline-block;
@@ -154,16 +227,15 @@ form {
 	color: #393939;
 }
 
-.top-nav .tn-right .cart:hover {
+.cart:hover {
 	background: rgb(229, 229, 229);
 }
-
-.top-nav .tn-right .cart i {
+.cart i {
 	font-size: large;
 	margin-right: 5px;
 }
 
-.top-nav .tn-right .notification {
+.notification {
 	padding: 20px 25px 20px 16px;
 	position: relative;
 	display: inline-block;
@@ -172,16 +244,15 @@ form {
 	color: #393939;
 }
 
-.top-nav .tn-right .notification:hover {
+.notification:hover {
 	background: rgb(229, 229, 229);
 }
 
-.top-nav .tn-right .notification i {
+ .notification i {
 	font-size: large;
 	margin-right: 5px;
 }
-
-.top-nav .tn-right .notification .badge {
+.notification .badge {
 	position: absolute;
 	top: 5px;
 	border-radius: 50%;
@@ -189,7 +260,7 @@ form {
 	color: white;
 }
 
-.top-nav .tn-right .profile-option {
+.profile-option {
 	padding: 20px 16px;
 	display: inline-block;
 	cursor: pointer;
@@ -197,22 +268,22 @@ form {
 	color: #393939;
 }
 
-.top-nav .tn-right .profile-option:hover {
+.profile-option:hover {
 	background: rgb(229, 229, 229)
 }
 
-.top-nav .tn-right .profile-option i {
+.profile-option i {
 	font-size: large;
 	margin-right: 1px;
 }
 
-.top-nav .tn-right .profile-option:hover .profile-dropdown {
+.profile-option:hover .profile-dropdown {
 	top: 40px;
 	opacity: 1;
 	visibility: visible;
 }
 
-.top-nav .tn-right .profile-option .profile-dropdown {
+.profile-option .profile-dropdown {
 	position: absolute;
 	left: 0;
 	top: 60px;
@@ -231,15 +302,16 @@ form {
 }
 
 
-.top-nav .tn-right .profile-option .profile-dropdown ul{
+.profile-option .profile-dropdown ul {
 	padding-left: 7px;
 }
-.top-nav .tn-right .profile-option .profile-dropdown ul li {
+
+.profile-option .profile-dropdown ul li {
 	list-style: none;
 	text-align: left;
 }
 
-.top-nav .tn-right .profile-option .profile-dropdown ul li a {
+.profile-option .profile-dropdown ul li a {
 	font-size: 14px;
 	text-transform: uppercase;
 	font-weight: 500;
@@ -251,7 +323,7 @@ form {
 }
 
 /* orange font colour when hover */
-.top-nav .tn-right .profile-option .profile-dropdown ul li a:hover {
+.profile-option .profile-dropdown ul li a:hover {
 	color: #E97D2F;
 }
 
@@ -278,5 +350,90 @@ form {
 	padding: 0;
 }
 
+/* Menu Section: nav menu (left) */
+.menu-item .nav-menu {
+	text-align: left;
+	padding: 10px 0;
+}
+
+.menu-item .nav-menu .mainmenu {
+	display: flex;
+	/* Display list items horizontally */
+	margin: 0;
+	padding: 0;
+}
+
+.menu-item .nav-menu .mainmenu li {
+	list-style: none;
+	display: inline-block;
+	position: relative;
+	margin-right: 42px;
+}
+
+.menu-item .nav-menu .mainmenu li a {
+	font-size: 16px;
+	text-decoration: none;
+	color: #808080;
+	/* Grey color for inactive state */
+	font-weight: 500;
+	display: grid;
+	place-items: center;
+	/* Center both horizontally and vertically */
+	padding: 10px 0;
+	position: relative;
+	transition: all 0.3s;
+}
+
+.menu-item .nav-menu .mainmenu li a i {
+	color: #808080;
+	/* Grey color for inactive state */
+	margin-bottom: 5px;
+	/* Adjust the spacing between icon and text */
+}
+
+.menu-item .nav-menu .mainmenu li a:after {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 2px;
+	background: #E97D2F;
+	content: "";
+	opacity: 0;
+	transition: all 0.3s;
+}
+
+.menu-item .nav-menu .mainmenu li.active a,
+.menu-item .nav-menu .mainmenu li a:hover {
+	color: #000000;
+	/* Black color for active or hovered state */
+}
+
+.menu-item .nav-menu .mainmenu li.active a i,
+.menu-item .nav-menu .mainmenu li a:hover i {
+	color: #000000;
+	/* Black color for active or hovered state */
+}
+
+.menu-item .nav-menu .mainmenu li a:hover:after,
+.menu-item .nav-menu .mainmenu li.active a:after {
+	opacity: 1;
+	background: #E97D2F;
+	/* Yellow color for active state */
+}
+
+.menu-item .nav-menu i {
+	color: #808080;
+	/* Grey color for inactive state */
+	cursor: pointer;
+}
+
+.menu-item .nav-menu .custom-size-icon {
+	font-size: 1.4em;
+	color: #808080;
+	/* Grey color for inactive state */
+}
+
+/* End of Menu Section: nav menu (left) */
 </style>
   
