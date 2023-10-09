@@ -98,7 +98,7 @@
 
 							<!-- Search Form -->
 							<li>
-								<form action="">
+								<form action="" v-if="$store.state.user">
 									<div class="p-1 bg-light rounded rounded-pill shadow-sm" style="height: 40px">
 										<div class="input-group">
 											<div class="input-group-prepend">
@@ -111,14 +111,6 @@
 											</div>
 											<input type="search" placeholder="Search" aria-describedby="button-addon1"
 												class="form-control border-0 bg-light">
-											<div class="input-group-append">
-												<span class="input-group-text border-0 bg-light">
-													<button id="button-addon1" type="submit"
-														class="btn btn-link text-primary">
-														<i class="fa fa-search"></i>
-													</button>
-												</span>
-											</div>
 										</div>
 									</div>
 								</form>
@@ -131,18 +123,22 @@
 						<div class="tn-right">
 							<!-- Checkout Discounts -->
 							<a href="#" class="cart" v-if="$store.state.user">
+							<a href="#" class="cart" v-if="$store.state.user">
 								<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
 							</a>
 							<router-link :to="{ name: 'Login' }" v-if="!$store.state.user" class="profile-option">
 								<span><i class="fa fa-user-o"></i>Login/Register </span>
 							</router-link>
 
+							<router-link :to="{name:'Login'}" v-if="!$store.state.user" class="profile-option">
+								<span><i class="fa fa-user-o"></i>Login/Register </span>
+							</router-link>
 							<!-- Notifications -->
-							<!-- <a href="#" class="notification">
+							<!-- <!-- <a href="#" class="notification">
 						<span><i class="fa fa-bell-o"></i>Notifications</span>
 						<span class="badge">3</span>
 					</a> -->
-
+ -->
 							<!-- Profile Option -->
 							<div class="profile-option" v-if="$store.state.user">
 								<span>
@@ -153,6 +149,7 @@
 								<!-- Profile Dropdown -->
 								<div class="profile-dropdown">
 									<ul>
+										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 									</ul>
 								</div>
