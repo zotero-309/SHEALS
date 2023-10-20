@@ -84,13 +84,15 @@
 						<ul class="tn-left">
 							<!-- Logo -->
 							<li class="col-lg-2">
-								<a href="./bestDeals.html">
-									<img src="img/logo.png" alt="Logo">
-								</a>
+								<!-- <a href="../about"> -->
+								<router-link :to="{name:'Home'}">
+									<img src="/img/logo.png" alt="Logo">
+								</router-link>
+								<!-- </a> -->
 							</li>
 							<!-- Search Form -->
 							<li>
-								<form action="" v-if="$store.state.user">
+								<form action="">
 									<div class="p-1 bg-light rounded rounded-pill shadow-sm" style="height: 40px">
 										<div class="input-group">
 											<div class="input-group-prepend">
@@ -103,6 +105,14 @@
 											</div>
 											<input type="search" placeholder="Search" aria-describedby="button-addon1"
 												class="form-control border-0 bg-light">
+											<div class="input-group-append">
+												<span class="input-group-text border-0 bg-light">
+													<button id="button-addon1" type="submit"
+														class="btn btn-link text-primary">
+														<i class="fa fa-search"></i>
+													</button>
+												</span>
+											</div>
 										</div>
 									</div>
 								</form>
@@ -144,25 +154,79 @@
 			</div>
 		</div>
 
+				<!-- Menu Item Section -->
+				<div class="menu-item">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="nav-menu">
+							<!-- Main Navigation -->
+							<nav class="mainmenu">
+								<ul>
+									<li class="active">
+										<a href="./bestDeals.html">
+											<i class="fa fa-money custom-size-icon"></i>
+											<span>Best Deals</span>
+										</a>
+									</li>
+									<li>
+										<a href="./bySupermarkets.html">
+											<i class="fa fa-shopping-basket custom-size-icon"></i>
+											<span>By Supermarkets</span>
+										</a>
+									</li>
+									<li>
+										<a href="./byCommunity.html">
+											<i class="fa fa-users custom-size-icon"></i>
+											<span>By Community</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+							<!-- Filter Modal Component -->
+							<FilterModal />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</header>
 </template>
   
 <script>
+import FilterModal from './filterModal.vue';
 
 export default {
 	components: {
 		FilterModal,
 	},
+	data() {
+		return {
+			isMenuOpen: false,
+		};
+	},
+	methods: {
+		toggleMenu() {
+			this.isMenuOpen = !this.isMenuOpen;
+
+		}
+
+	}
 };
 </script>
   
 <style scoped>
 /* Add your component-specific styles here */
+
+
+
+/* Header Section Styling */
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	z-index: 1000;
+	display: flex;
 }
 
 .top-nav {
@@ -230,6 +294,7 @@ export default {
 .cart:hover {
 	background: rgb(229, 229, 229);
 }
+
 .cart i {
 	font-size: large;
 	margin-right: 5px;
@@ -248,10 +313,11 @@ export default {
 	background: rgb(229, 229, 229);
 }
 
- .notification i {
+.notification i {
 	font-size: large;
 	margin-right: 5px;
 }
+
 .notification .badge {
 	position: absolute;
 	top: 5px;
@@ -435,5 +501,117 @@ export default {
 }
 
 /* End of Menu Section: nav menu (left) */
+
+
+/* Off Menu Canvas Styles */
+
+@media only screen and (min-width: 1300px) {
+	.container {
+		max-width: 1300;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.top-nav {
+		display: none;
+	}
+
+	.menu-item .nav-menu {
+		display: none;
+	}
+
+	.offcanvas-menu-overlay {
+		position: fixed;
+		left: 0;
+		top: 0;
+		background: rgba(0, 0, 0, 0.7);
+		z-index: 98;
+		height: 100%;
+		width: 100%;
+		visibility: hidden;
+		-webkit-transition: 0.3s;
+		-o-transition: 0.3s;
+		transition: 0.3s;
+	}
+
+	.offcanvas-menu-overlay.active {
+		visibility: visible;
+	}
+
+	.canvas-open {
+		position: absolute;
+		right: 40px;
+		top: 25px;
+		font-size: 22px;
+		width: 30px;
+		height: 30px;
+		color: #19191a;
+		border: 1px solid #19191a;
+		border-radius: 2px;
+		line-height: 33px;
+		text-align: center;
+		z-index: 100;
+		display: block;
+		cursor: pointer;
+	}
+
+	.offcanvas-menu-wrapper {
+		position: fixed;
+		left: -300px;
+		top: 0;
+		width: 300px;
+		z-index: 999;
+		background: #ffffff;
+		text-align: center;
+		overflow-y: auto;
+		height: 100%;
+		opacity: 0;
+		visibility: hidden;
+		-webkit-transition: all 0.5s;
+		-o-transition: all 0.5s;
+		transition: all 0.5s;
+		padding: 80px 30px 30px 30px;
+		display: block;
+	}
+
+	.offcanvas-menu-wrapper .canvas-close {
+		height: 30px;
+		width: 30px;
+		border: 1px solid #19191a;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 30px;
+		cursor: pointer;
+		position: absolute;
+		right: 30px;
+		top: 30px;
+		padding-right: 1px;
+	}
+
+	.offcanvas-menu-wrapper .header-configure-area {
+		margin-bottom: 30px;
+		text-align: left;
+	}
+
+
+	.offcanvas-menu-wrapper .mainmenu {
+		display: none;
+	}
+
+	.offcanvas-menu-wrapper.show-offcanvas-menu-wrapper {
+		left: 0;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.footer-section .copyright-option ul {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+
+	.footer-section .copyright-option .co-text {
+		text-align: center;
+	}
+}
 </style>
   

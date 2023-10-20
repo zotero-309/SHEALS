@@ -63,6 +63,7 @@ export default {
 form {
     flex: 1 1 0%;
     padding: 8rem 1rem 1rem;
+    margin-top: 100px;
 }
 
 form.register {
@@ -73,6 +74,10 @@ form.register {
         rgb(245, 66, 101) 0%,
         r(189, 28,60) 100%
     );
+}
+
+form.login {
+    background-color: lightgray ;
 }
 
 h2 {

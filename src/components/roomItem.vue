@@ -30,7 +30,7 @@
 </template>
   
 <script>
-import router from '../router/index.js';  // Import router instance
+//import router from '../router/index.js';  // Import router instance
 import { rooms } from './roomData';
 
 
