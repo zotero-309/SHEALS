@@ -22,7 +22,7 @@ const routes = [
     component: Login
   },
   {
-    path: "/item/:id/:name/:price/:store/:location", // Assuming you have a route parameter for the item ID
+    path: "/item/:id", // Assuming you have a route parameter for the item ID
     name: "item-detail",
     component: ItemDetails,
 

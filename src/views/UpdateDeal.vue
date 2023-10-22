@@ -18,16 +18,6 @@
             </div>
             <div class="col-4">
                 <label for="pdtcat" class="py-2">Product Category</label>
-                <input type="text" class="form-control" id="pdtcat" ref="foodcategory"  readonly>                    
-            </div>         
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <label for="dealname" class="py-2">Deal Name</label>
-                <input type="text" class="form-control" id="dealname" ref="dealname" placeholder="e.g. Hot deals for soju!"  required>                    
-            </div>
-            <div class="col-6">
-                <label for="pdtcat" class="py-2">Product Category</label>
                 <select id="pdtcat" ref="foodcategory" class="form-control mb-2" required="required">
                         <option>Bakery</option>
                         <option>Diary, Chilled & Eggs</option>
@@ -38,7 +28,22 @@
                         <option>Fruits and Vegetables</option>
                         <option>Rice, Noodles & Cooking Ingredients</option>
                         <option>Meat & Seafood</option>
-                </select>  
+                        <option>Food Cupboard</option>
+                </select>                    
+            </div>         
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label for="dealname" class="py-2">Deal Name</label>
+                <input type="text" class="form-control" id="dealname" ref="dealname" placeholder="e.g. Hot deals for soju!"  required>                    
+            </div>
+            <div class="col-6">
+                <label for="deal_type" class="py-2" ref="dealtype">Select Deal Type</label>
+                    <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
+                        <option>Discounts</option>
+                        <option>Bundle Deal</option>
+                        <option>1 For 1</option>
+                    </select>  
             </div>
 
         </div>
@@ -52,7 +57,7 @@
                 </div>
                 <div class="col-lg-2 col-sm-4">
                     <label for="dealprice" class="py-2">Price</label>
-                    <input type="number" class="form-control" id="dealprice" ref="dealprice" required> 
+                    <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
                     <label for="dealqty" class="py-2">Quantity</label>
                     <input type="text" class="form-control" id="dealqty" ref="dealqty" required>                   
                 </div>

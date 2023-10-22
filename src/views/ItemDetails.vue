@@ -3,31 +3,30 @@
     <HeaderSection />
     <!-- Header Section End -->
    <!-- Product section-->
-   <section class="py-5">
+   <section class="py-5 my-4">
     <div class="container px-4 px-lg-5 my-5">
       <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-6">
           <img class="card-img-top mb-5 mb-md-0"
-            src="https://dummyimage.com/550x550/dee2e6/6c757d.jpg" alt="..." /></div>
+            :src="item_list.image" alt="..." /></div>
         <div class="col-md-6">
-          <h1 class="fs-1 fw-bold"> {{ $route.params.name }} </h1>
-          <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ $route.params.price }}</h3>
+          <h1 class="fs-1 fw-bold"> {{ item_list.deal_name }} </h1>
+          <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ item_list.deal_price }}</h3>
           <p class="fs-6 mb-4">
-            [A product description, perferably in one short paragraph so that there's no need for extra formatting /
-            expand dropdown etc]
+            {{ item_list.deal_description }}
           </p>
-          <div class="fs-6 mb-3">
+          <div class="fs-6 mb-3" v-if="item_list.uploaded_by">
             <i class="fa fa-building-o"></i>
-            Store: <br>{{ $route.params.store }}
+            Store: <br> {{ item_list.uploaded_by.name }}
           </div>
           <div class="fs-6 mb-4">
             <i class="fa fa-map-marker"></i>
-            Address: <br>{{ $route.params.location }}
+            Address: <br>{{ item_list.location }}
           </div>
-          <div class="d-flex" v-if="$store.state.user">
+          <div class="d-flex" v-if="$store.state.user && item_list.uploaded_by">
             <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"
-              style="max-width: 3rem" />
-            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+              style="max-width: 3rem" v-if="item_list.uploaded_by.type=='store'" />
+            <button class="btn btn-outline-dark flex-shrink-0" type="button" v-if="item_list.uploaded_by.type=='store'" >
               <i class="fa fa-shopping-cart"></i>
               Add to cart
             </button>
@@ -140,20 +139,39 @@
  
  <script>
  import HeaderSection from '../components/headerSection.vue';
- //import ItemDetails from '../components/itemDetails.vue';
- 
+ import  { storage, db } from '../firebase/index.js'
+ import {doc, getDoc } from "firebase/firestore"
+ import {ref, getDownloadURL } from "firebase/storage"
  
  export default {
-    //props: ['id', 'name', 'price', 'store', 'location'],
-    // Other component logic...
     components: {
         HeaderSection
     },
     data() {
     return {
-      //room: null,
+      item_list:{}
     };
   },
+  created () {
+    this.getdealitem()
+  },
+  methods: {
+    async getdealitem(){
+      const docRef = doc(db, "deals", this.$route.params.id);
+      const docSnap = (await getDoc(docRef)).data()
+      this.item_list = docSnap
+      this.item_list.image = await this.generateImgUrl(this.$route.params.id,this.item_list.image,this.item_list.uploaded_by.email)
+    },
+    async generateImgUrl(dealId,dealImg,uploadEmail) {
+            try {
+                const url = await getDownloadURL(ref(storage, `deals/${uploadEmail}/${dealId}/${dealImg}`));
+                return url;
+            } catch (error) {
+                console.error("Error fetching image URL:", error);
+                return ""; // Return a default value or handle errors gracefully
+            }
+        }
+  }
  };
  
  </script>

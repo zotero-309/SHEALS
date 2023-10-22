@@ -1,22 +1,22 @@
 <!-- roomItem.vue, receives room details through props which is from roomData --> 
 <template>
     <router-link
-        :to="{ name: 'item-detail', params: { id: this.room.id, name: this.room.name, price: this.room.price, store: this.room.store, location: this.room.location } }">
-        <div class="room-box" @click="navigateToRoomDetails()">
+        :to="{ name: 'item-detail', params: { id: deal.id } }">
+        <div class="room-box">
             <div class="room-item">
-                <img src="img/room/room-1.jpg" alt="">
+                <img :src="deal.image" alt="">
                 <div class="ri-text">
-                    <h4>{{ room.name }}</h4>
-                    <h3>${{ room.price }}<span>/Perunit</span></h3>
+                    <h4>{{ deal.deal_name }}</h4>
+                    <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
                     <table>
                         <tbody>
                             <tr>
                                 <td class="r-o1">Store:</td>
-                                <td class="r-o2">{{ room.store }}</td>
+                                <td class="r-o2">{{ deal.uploaded_by.name }}</td>
                             </tr>
                             <tr>
                                 <td class="r-o1">Location:</td>
-                                <td class="r-o2">{{ room.location }}</td>
+                                <td class="r-o2">{{ deal.location }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -36,7 +36,7 @@ import { rooms } from './roomData';
 
 export default {
     props: {
-        room: Object,
+        deal: Object,
     },
     //     checks if room props if being received properly
     //     mounted() {
@@ -49,20 +49,13 @@ export default {
         }
     },
     mounted() {
-        console.log('Room Object:', this.room);
+        console.log(this.deal);
     },
 
     methods: {
         toggleHeart() {
             this.isHeartSolid = !this.isHeartSolid;
-        },
-        navigateToRoomDetails() {
-            try {
-                console.log('Room ID:', this.room.id);
-            } catch (error) {
-                console.error('Error navigating to room details:', error);
-            }
-        },
+        }
     },
 };
 </script>

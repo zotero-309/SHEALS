@@ -145,7 +145,10 @@ export default {
             // doc.data() is never undefined for query doc snapshots
             let obj = doc.data()
             obj['id'] = doc.id
+            //getting image url with func generateImgUrl -> passing id and image name due to storage path
             obj.image = await this.generateImgUrl(obj.id,obj.image)
+            //slice first 100 characters so that tab
+            obj.deal_description = obj.deal_description.slice(0,100) + '...'
             this.deal_list.push(obj)
             this.display_list = this.deal_list
             });

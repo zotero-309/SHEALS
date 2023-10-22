@@ -47,6 +47,7 @@
                         <option>Fruits and Vegetables</option>
                         <option>Rice, Noodles & Cooking Ingredients</option>
                         <option>Meat & Seafood</option>
+                        <option>Food Cupboard</option>
                 </select>                   
             </div>         
         </div>
@@ -75,7 +76,7 @@
                 </div>
                 <div class="col-lg-2 col-sm-4">
                     <label for="dealprice" class="py-2">Price</label>
-                    <input type="number" class="form-control" id="dealprice" ref="dealprice" required> 
+                    <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
                     <label for="dealqty" class="py-2">Quantity</label>
                     <input type="text" class="form-control" id="dealqty" ref="dealqty" required>                   
                 </div>
@@ -119,6 +120,7 @@ export default {
             let userEmail = localStorage.getItem('userEmail')
             let userType = localStorage.getItem('userType')
             let userAddr = localStorage.getItem('homeAddress')
+            let storename = localStorage.getItem('storeName')
 
             // add document to products collection (with extracting photo)
             await addDoc(collection(db, "deals"),{
@@ -131,7 +133,7 @@ export default {
                 deal_description: this.$refs.dealdescr.value,
                 deal_price: this.$refs.dealprice.value,
                 deal_quantity: this.$refs.dealqty.value,
-                uploaded_by: {email: userEmail, type:userType},
+                uploaded_by: {email: userEmail, type:userType, name:storename},
                 location: userAddr,
                 image: dealImgName
             }).then(docRef => {
@@ -193,12 +195,8 @@ export default {
                 console.log(response.data.product.categories);
                 let fooditem = response.data.product
                 let foodcat = response.data.product.categories
-                //properties of fooditem are different, if statement accounts for different naming
-                if(fooditem.abbreviated_product_name_fr) {
-                    fooditem = fooditem.abbreviated_product_name_fr
-                } else{
-                    fooditem = fooditem.product_name
-                }
+                fooditem = fooditem.product_name
+
                 this.$refs.productname.value = fooditem
                 this.$refs.foodtag.value = foodcat
                 

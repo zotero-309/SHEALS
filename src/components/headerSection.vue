@@ -155,7 +155,7 @@
 		</div>
 
 				<!-- Menu Item Section -->
-				<div class="menu-item">
+				<div class="menu-item" v-if="$route.name !=='Login'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
@@ -179,6 +179,12 @@
 										<a href="./byCommunity.html">
 											<i class="fa fa-users custom-size-icon"></i>
 											<span>By Community</span>
+										</a>
+									</li>
+									<li>
+										<a href="./byCommunity.html">
+											<i class="fa fa-users custom-size-icon"></i>
+											<span>Likes</span>
 										</a>
 									</li>
 								</ul>
