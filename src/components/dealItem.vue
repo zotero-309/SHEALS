@@ -1,5 +1,10 @@
 <!-- roomItem.vue, receives room details through props which is from roomData --> 
 <template>
+    <!-- preloader -->
+    <div v-if="loading" id="preloader">
+        <!-- Preloader -->
+        <div class="loader"></div>
+    </div>
     <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6">
         <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
         <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
@@ -49,6 +54,7 @@ export default {
     },
     data() {
         return {
+            loading: true, // initially show preloader
             favourites: [], //Initialize favorites as an empty array
             deal_list: [], // Initialize deal_list as an empty array
             display_list: [], // Initialize display_list as an empty array
@@ -86,7 +92,9 @@ export default {
             return this.favourites.includes(dealBarcode);
         },
         async fetchDeals() {
-            console.log('Selected Categories:', [...this.selectedCategories]);
+            // show preloader before fetching data
+            this.loading = true;
+            
             const querySnapshot = await getDocs(collection(db, "deals"));
             const deal_list = [];
 
@@ -98,6 +106,7 @@ export default {
             }
             this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
             this.display_list = deal_list; // initially set display_list to all deals
+            this.loading = false; // stop preloader
 
             // Call the method to update the display list based on selected categories after fetching deals
             this.updateDisplayList();
