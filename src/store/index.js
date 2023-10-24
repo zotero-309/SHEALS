@@ -51,18 +51,19 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       const user_data = await getDoc(doc(db,"users",auth.currentUser.uid))
       const user_rec = user_data.data()
       
-      localStorage.setItem('user', JSON.stringify(user_rec.type))
-      localStorage.setItem('userEmail', JSON.stringify(user_rec.email))
+      localStorage.setItem('userType', user_rec.type)
+      localStorage.setItem('userEmail', user_rec.email)
+      localStorage.setItem('homeAddress', user_rec.homeaddress)
 
       if (user_rec.type === "consumer"){
         // if (user_rec.address == "" || user_rec.catpref == "" || user_rec.dealpref ==""){
         //   router.push('/questionaire')
         // } else {
           router.push("/")
-        }
-      // } else {
-      //   router.push("/storehome")
-      // }
+      } else {
+        localStorage.setItem('storeName', user_rec.storename)
+        router.push("/storehome")
+      }
 
     },
 
@@ -93,7 +94,7 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       await setDoc(doc(db, "users", auth.currentUser.uid),{
         email: auth.currentUser.email,
         type: 'consumer',
-        address: '',
+        homeaddress: '',
         catpref: '',
         dealpref: ''
       })
@@ -118,7 +119,12 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
 
     async logout({commit}){
       await signOut(auth)
-      localStorage.removeItem('user');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('homeAddress');
+      if(localStorage.getItem('storeName')){
+        localStorage.removeItem('storeName');
+      }
       commit('CLEAR_USER') 
       router.push('/')
     },

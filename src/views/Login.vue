@@ -75,6 +75,10 @@ form.register {
     );
 }
 
+form.login {
+    background-color: lightgray ;
+}
+
 h2 {
     text-transform: uppercase;
     margin-bottom: 2rem;
