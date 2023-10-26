@@ -78,7 +78,7 @@
                     <label for="dealprice" class="py-2">Price</label>
                     <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
                     <label for="dealqty" class="py-2">Quantity</label>
-                    <input type="text" class="form-control" id="dealqty" ref="dealqty" required>                   
+                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                   
                 </div>
 
             </div>
@@ -99,8 +99,8 @@
 import  Quagga  from '../assets/quagga.min.js'
 import axios from 'axios'
 import  { storage, db } from '../firebase/index.js'
-import {addDoc, collection} from 'firebase/firestore'
-import { ref, uploadBytes} from 'firebase/storage'
+import {addDoc, updateDoc, collection, doc} from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 
 export default {
@@ -131,16 +131,18 @@ export default {
                 deal_type: this.$refs.dealtype.value,
                 deal_name: this.$refs.dealname.value,
                 deal_description: this.$refs.dealdescr.value,
-                deal_price: this.$refs.dealprice.value,
-                deal_quantity: this.$refs.dealqty.value,
+                deal_price: parseFloat(this.$refs.dealprice.value),
+                deal_quantity: parseInt(this.$refs.dealqty.value),
                 uploaded_by: {email: userEmail, type:userType, name:storename},
                 location: userAddr,
-                image: dealImgName
+                image_name:dealImgName
             }).then(docRef => {
                 const storageRef = ref(storage, `deals/${userEmail}/${docRef.id}/${dealImgName}`)
-                uploadBytes(storageRef, this.$refs.dealimg.files[0]).then((snapshot) => {
-                    console.log('Uploaded a blob or file!');
-                });
+                uploadBytes(storageRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
+                    let dealImgURL = await getDownloadURL(snapshot.ref)
+                    console.log(dealImgURL)
+                    await updateDoc(doc(db,"deals",docRef.id),{image:dealImgURL})
+                })
             })
 
             this.$router.push({name:'DealListStore'})
