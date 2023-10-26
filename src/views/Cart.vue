@@ -1,0 +1,323 @@
+<template>
+    <!-- <div class="bg-gray-50">
+        <input type="text" v-model="qrValue">
+    </div>
+    <qrcode-vue :value="qrValue"  v-if="qrValue"></qrcode-vue> -->
+
+    <HeaderSection/>
+
+    <div class="container padding-bottom-3x mb-1" style="margin-top: 200px;" >
+
+    <!-- Drop down list to select store -->
+    <select class="form-select my-4" ref="storeChosen" @change="filterByStore">
+        <option v-for="store in store_list" :key="store">{{store}}</option>
+    </select>
+    
+    <!-- Shopping Cart-->
+    <div class="table-responsive shopping-cart">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center col-5">Deal and Product Information</th>
+                    <th class="text-center">Type</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-center">Price/Unit</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="deal in display_list" :key="deal.id">
+                    <td>
+                        <div class="product-item">
+                            <a class="product-thumb" href="#"><img :src="deal.url" alt="Product"></a>
+                            <h4 class="product-title"><a href="#">{{ deal.deal_name }}</a></h4>
+                            <span><em>Product: {{ deal.product_name }}</em></span>
+                        </div>
+                    </td>
+                    <td>{{ deal.type }}</td>
+                    <td class="text-center">
+                            <div class="count-input">
+                                {{ deal.cart_qty}}                   
+                            </div>
+                    </td>
+                    <td class="text-center text-lg text-medium">${{ deal.perunit }}</td>
+                    <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" @click="deleteCartItem(deal.id)"><i class="fa fa-trash"></i></a></td>
+                </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+    <!-- <div class="shopping-cart-footer">
+        <div class="column text-lg">Subtotal: <span class="text-medium">$289.68</span></div>
+    </div> -->
+    <div class="shopping-cart-footer">
+        <div class="column"><a class="btn btn-outline-secondary" href="#"><i class="icon-arrow-left"></i>Back to Home</a></div>
+        <div class="column"><a class="btn btn-success" href="#">Reedem Deals</a></div>
+    </div>
+</div>
+</template>
+
+<script>
+ import QrcodeVue from 'qrcode.vue'
+ import HeaderSection from '../components/headerSection.vue'
+ import  { db } from '../firebase/index.js'
+ import {doc, getDoc, updateDoc} from "firebase/firestore"
+ 
+export default {
+    components: {
+        QrcodeVue, HeaderSection
+    },
+    data(){
+        return {
+            qrValue: null,
+            store_list:[],
+            cart_list:[],
+            display_list:[]
+        }
+    },
+    created() {
+        this.fetchCart()
+    },
+    methods: {
+        async fetchCart(){
+            //fetch all cart items, localstorage used over vue store due to loading of store
+            const userRef = doc(db,"users",localStorage.getItem("userID"))
+
+            //retrieve cart array
+            const userDoc = (await getDoc(userRef)).data() //retrieve fields
+            let cart_arr = userDoc.cart
+
+            //packing pdt id in the list to use as condition later
+            for (var item of cart_arr){
+                //populate store list for drop down selection
+                if(this.store_list.indexOf(item.storename) == -1){
+                    this.store_list.push(item.storename)
+                }
+
+                //for each item, there is a unique product id
+                let dealRef = doc(db, "deals", item.pdt)
+                let deal_rec = (await getDoc(dealRef)).data()
+
+                this.cart_list.push({ //main copy
+                    id:item.pdt,
+                    cart_qty: item.qty,
+                    store: item.storename,
+                    deal_name: deal_rec.deal_name,
+                    product_name: deal_rec.product_name,
+                    url: deal_rec.image,
+                    perunit: deal_rec.deal_price,
+                    type: deal_rec.deal_type })
+            }
+
+            this.display_list = this.cart_list.filter((item) => {
+                return item.store == this.store_list[0]
+            })
+
+
+            console.log(this.cart_list)
+        },
+        //initial chosen store is empty, therefore cart empty
+        filterByStore(){
+            this.display_list = this.cart_list.filter((item) => {
+                return item.store == this.$refs.storeChosen.value
+            })
+        },
+        async deleteCartItem(id){
+            //fetch all cart items, localstorage used over vue store due to loading of store
+            const userRef = doc(db,"users",localStorage.getItem("userID"))
+
+            //retrieve cart array
+            const userDoc = (await getDoc(userRef)).data() //retrieve fields
+            let cart_arr = userDoc.cart
+
+            //update in display_list without refreshing
+            this.display_list = this.cart_list.filter((item) => {
+                return item.id != id
+            })
+            console.log(this.display_list)
+
+            //arrow functions to remove cart items and update in firebase
+            let updated_list = cart_arr.filter((item)=>!(item.pdt == id))
+
+            await updateDoc(userRef,{cart:updated_list})
+
+            alert("Item Removed!")
+        }
+    }
+}
+</script>
+
+<style>
+
+
+.form-select {
+    width: 40% !important;
+}
+
+.shopping-cart,
+.order-table {
+    margin-bottom: 20px
+}
+
+.shopping-cart .table,
+.order-table .table {
+    margin-bottom: 0
+}
+
+.shopping-cart .btn,
+.order-table .btn {
+    margin: 0
+}
+
+.shopping-cart>table>thead>tr>th,
+.shopping-cart>table>thead>tr>td,
+.shopping-cart>table>tbody>tr>th,
+.shopping-cart>table>tbody>tr>td,
+.order-table>table>thead>tr>th,
+.order-table>table>thead>tr>td,
+.order-table>table>tbody>tr>th,
+.order-table>table>tbody>tr>td {
+    vertical-align: middle !important;
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+}
+
+.shopping-cart>table thead th,
+.order-table>table thead th {
+    padding-top: 17px;
+    padding-bottom: 17px;
+    border-width: 1px
+}
+
+.shopping-cart .remove-from-cart,
+.order-table .remove-from-cart {
+    display: inline-block;
+    color: #ff5252;
+    font-size: 18px;
+    line-height: 1;
+    text-decoration: none
+}
+
+.shopping-cart .count-input,
+.order-table .count-input {
+    display: inline-block;
+    width: 100%;
+    width: 86px
+}
+
+.shopping-cart .product-item,
+.order-table .product-item {
+    display: table;
+    min-width: 150px;
+    margin-top: 5px;
+    margin-bottom: 3px
+}
+
+.shopping-cart .product-item .product-thumb,
+.shopping-cart .product-item .product-info,
+.order-table .product-item .product-thumb,
+.order-table .product-item .product-info {
+    display: table-cell;
+    vertical-align: top
+}
+
+.shopping-cart .product-item .product-thumb,
+.order-table .product-item .product-thumb {
+    width: 130px;
+    padding-right: 20px
+}
+
+.shopping-cart .product-item .product-thumb>img,
+.order-table .product-item .product-thumb>img {
+    display: block;
+    width: 100%
+}
+
+@media screen and (max-width: 860px) {
+    .shopping-cart .product-item .product-thumb,
+    .order-table .product-item .product-thumb {
+        display: none
+    }
+}
+
+.shopping-cart .product-item .product-info span,
+.order-table .product-item .product-info span {
+    display: block;
+    font-size: 13px;
+}
+
+.shopping-cart .product-item .product-info span>em,
+.order-table .product-item .product-info span>em {
+    font-weight: 500;
+    font-style: normal
+}
+
+.shopping-cart .product-item .product-title,
+.order-table .product-item .product-title {
+    margin-bottom: 6px;
+    padding-top: 5px;
+    font-size: 16px;
+    font-weight: 500
+}
+
+.shopping-cart .product-item .product-title>a,
+.order-table .product-item .product-title>a {
+    transition: color .3s;
+    color: #374250;
+    line-height: 1.5;
+    text-decoration: none
+}
+
+.shopping-cart .product-item .product-title>a:hover,
+.order-table .product-item .product-title>a:hover {
+    color: #0da9ef
+}
+
+.shopping-cart .product-item .product-title small,
+.order-table .product-item .product-title small {
+    display: inline;
+    margin-left: 6px;
+    font-weight: 500
+}
+
+
+.shopping-cart-footer {
+    display: table;
+    width: 100%;
+    padding: 10px 0;
+    border-top: 1px solid #e1e7ec
+}
+
+.shopping-cart-footer>.column {
+    display: table-cell;
+    padding: 5px 0;
+    vertical-align: middle
+}
+
+.shopping-cart-footer>.column:last-child {
+    text-align: right
+}
+
+.shopping-cart-footer>.column:last-child .btn {
+    margin-right: 0;
+    margin-left: 15px
+}
+
+@media (max-width: 768px) {
+    .shopping-cart-footer>.column {
+        display: block;
+        width: 100%
+    }
+    .shopping-cart-footer>.column:last-child {
+        text-align: center
+    }
+    .shopping-cart-footer>.column .btn {
+        width: 100%;
+        margin: 12px 0 !important
+    }
+}
+
+
+
+</style>
