@@ -8,7 +8,7 @@
       <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-6">
           <img class="card-img-top mb-5 mb-md-0"
-            :src="item_list.image" alt="..." /></div>
+            :src="item_list.image" alt="..." v-if="image_loaded"/></div>
         <div class="col-md-6">
           <h1 class="fs-1 fw-bold"> {{ item_list.deal_name }} </h1>
           <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ item_list.deal_price }}</h3>
@@ -24,9 +24,9 @@
             Address: <br>{{ item_list.location }}
           </div>
           <div class="d-flex" v-if="$store.state.user && item_list.uploaded_by">
-            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"
+            <input class="form-control text-center me-3" id="inputQuantity" ref="inputQuantity" type="num" value="1"
               style="max-width: 3rem" v-if="item_list.uploaded_by.type=='store'" />
-            <button class="btn btn-outline-dark flex-shrink-0" type="button" v-if="item_list.uploaded_by.type=='store'" >
+            <button class="btn btn-outline-dark flex-shrink-0" type="button" v-if="item_list.uploaded_by.type=='store'" @click="addToCart()">
               <i class="fa fa-shopping-cart"></i>
               Add to cart
             </button>
@@ -139,9 +139,8 @@
  
  <script>
  import HeaderSection from '../components/headerSection.vue';
- import  { storage, db } from '../firebase/index.js'
- import {doc, getDoc } from "firebase/firestore"
- import {ref, getDownloadURL } from "firebase/storage"
+ import  {db } from '../firebase/index.js'
+ import {doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore"
  
  export default {
     components: {
@@ -149,7 +148,8 @@
     },
     data() {
     return {
-      item_list:{}
+      item_list:{},
+      image_loaded: false
     };
   },
   created () {
@@ -160,17 +160,38 @@
       const docRef = doc(db, "deals", this.$route.params.id);
       const docSnap = (await getDoc(docRef)).data()
       this.item_list = docSnap
-      this.item_list.image = await this.generateImgUrl(this.$route.params.id,this.item_list.image,this.item_list.uploaded_by.email)
+      this.image_loaded = true //prevent src attr from img tag taking wrong url, need await generateImgUrl
     },
-    async generateImgUrl(dealId,dealImg,uploadEmail) {
-            try {
-                const url = await getDownloadURL(ref(storage, `deals/${uploadEmail}/${dealId}/${dealImg}`));
-                return url;
-            } catch (error) {
-                console.error("Error fetching image URL:", error);
-                return ""; // Return a default value or handle errors gracefully
-            }
+
+    async addToCart(){ //async function since updatedoc is async
+
+      //reference to the path of firestore users table db->users->userid
+      const userRef = doc(db, "users", this.$store.state.user.uid)
+      let pdt_id = this.$route.params.id
+      let quantity = this.$refs.inputQuantity.value
+
+      //check if the deal already exists in the db
+      var deal_exist = false
+      const userSnap = (await getDoc(userRef)).data()
+
+      for (var item of userSnap.cart){
+        if (item.pdt == pdt_id){
+          alert("Deal already in cart! View your discount cart")
+          deal_exist = true
         }
+      } 
+
+      const dealRef = doc (db, "deals", this.$route.params.id)
+      const storeSnap = (await getDoc(dealRef)).data()
+
+      //Update and add {pdt_id: quantity} to cart array in db
+      if (deal_exist === false){
+        await updateDoc(userRef, {
+          cart: arrayUnion({pdt: pdt_id, qty: parseInt(quantity), storename: storeSnap.uploaded_by.name})
+        })
+        alert("Item added!")
+      }
+    }
   }
  };
  
