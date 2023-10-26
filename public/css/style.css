@@ -271,8 +271,8 @@ ol {
 -----------------------*/
 
 .breadcrumb-section {
-	padding-top: 90px; /* spacing for breadcrumb section to be below header section */
-	padding-bottom: 30px;
+	padding-top: 160px; /* spacing for breadcrumb section to be below header section */
+	padding-bottom: 10px;
 }
 .breadcrumb-text {
 	text-align: center;
