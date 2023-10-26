@@ -1,10 +1,12 @@
 <template>
 	<!-- Offcanvas Menu Overlay -->
 	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
+
 	<!-- Canvas Open Button -->
 	<div class="canvas-open" @click="toggleMenu">
 		<i class="icon_menu"></i>
 	</div>
+
 	<!-- Offcanvas Menu Wrapper -->
 	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
 	<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
@@ -12,8 +14,10 @@
 		<div class="canvas-close" @click="toggleMenu">
 			<i class="icon_close"></i>
 		</div>
+
 		<!-- Search Icon -->
 		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+			<!-- Search Form -->
 			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text border-0 bg-light">
@@ -33,22 +37,26 @@
 				</div>
 			</div>
 		</form>
+
 		<!-- Header Configure Area -->
 		<div class="header-configure-area">
 			<a href="#" class="cart">
 				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
 			</a>
+
 			<!-- Notifications -->
 			<a href="#" class="notification">
 				<span><i class="fa fa-bell-o"></i>Notifications</span>
 				<span class="badge">3</span>
 			</a>
+
 			<!-- Profile Option -->
 			<div class="profile-option">
 				<span>
 					<i class="fa fa-user-o"></i>
 					Profile
 				</span>
+
 				<!-- Profile Dropdown -->
 				<div class="profile-dropdown">
 					<ul>
@@ -57,21 +65,18 @@
 					</ul>
 				</div>
 			</div>
-			<!-- FilterModal -->
-			<FilterModal />
 		</div>
+
 		<!-- <nav class="mainmenu mobile-menu">
-			<ul>
-				<li><a href="./bestDeals.html">Best Deals</a></li>
-				<li><a href="./bySupermarkets.html">By Supermarkets</a></li>
-				<li><a href="./byCommunity.html">By Community</a></li>
-			</ul>
-		</nav> -->
+		  <ul>
+			  <li><a href="./bestDeals.html">Best Deals</a></li>
+			  <li><a href="./bySupermarkets.html">By Supermarkets</a></li>
+			  <li><a href="./byCommunity.html">By Community</a></li>
+		  </ul>
+	  </nav> -->
 		<div id="mobile-menu-wrap"></div>
 	</div>
 	<!-- Offcanvas Menu Section End -->
-
-
 
 	<!-- Header Section Begins -->
 	<header class="header-section header-normal fixed-top">
@@ -85,11 +90,12 @@
 							<!-- Logo -->
 							<li class="col-lg-2">
 								<!-- <a href="../about"> -->
-								<router-link :to="{name:'Home'}">
+								<router-link :to="{ name: 'Home' }">
 									<img src="/img/logo.png" alt="Logo">
 								</router-link>
 								<!-- </a> -->
 							</li>
+
 							<!-- Search Form -->
 							<li>
 								<form action="">
@@ -125,22 +131,25 @@
 						<div class="tn-right">
 							<!-- Checkout Discounts -->
 							<a href="#" class="cart" v-if="$store.state.user">
-								<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
+								<span><i class="fa fa-shopping-cart"></i><router-link :to="{ name: 'Cart' }" >Checkout Discounts</router-link></span>
 							</a>
-							<router-link :to="{name:'Login'}" v-if="!$store.state.user" class="profile-option">
+							<router-link :to="{ name: 'Login' }" v-if="!$store.state.user" class="profile-option">
 								<span><i class="fa fa-user-o"></i>Login/Register </span>
 							</router-link>
+
 							<!-- Notifications -->
 							<!-- <a href="#" class="notification">
-								<span><i class="fa fa-bell-o"></i>Notifications</span>
-								<span class="badge">3</span>
-							</a> -->
+						<span><i class="fa fa-bell-o"></i>Notifications</span>
+						<span class="badge">3</span>
+					</a> -->
+
 							<!-- Profile Option -->
 							<div class="profile-option" v-if="$store.state.user">
 								<span>
 									<i class="fa fa-user-o"></i>
 									Profile
 								</span>
+
 								<!-- Profile Dropdown -->
 								<div class="profile-dropdown">
 									<ul>
@@ -154,8 +163,8 @@
 			</div>
 		</div>
 
-				<!-- Menu Item Section -->
-				<div class="menu-item" v-if="$route.name !=='Login'">
+		<!-- Menu Item Section -->
+		<div class="menu-item" v-if="$route.name !== 'Login'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
@@ -164,10 +173,10 @@
 							<nav class="mainmenu">
 								<ul>
 									<li class="active">
-										<a href="./bestDeals.html">
+										<router-link :to="{ name: 'Home' }">
 											<i class="fa fa-money custom-size-icon"></i>
 											<span>Best Deals</span>
-										</a>
+										</router-link>
 									</li>
 									<li>
 										<a href="./bySupermarkets.html">
@@ -183,56 +192,120 @@
 									</li>
 									<li>
 										<a href="./byCommunity.html">
-											<i class="fa fa-users custom-size-icon"></i>
-											<span>Likes</span>
+											<i class="fa fa-heart custom-size-icon"></i>
+											<span>Favourites</span>
 										</a>
 									</li>
 								</ul>
 							</nav>
+
 							<!-- Filter Modal Component -->
-							<FilterModal />
+							<button @click="openModal" class="filter-button">
+								<i class="fa fa-sliders custom-size-icon"></i>
+								<span>Filter</span>
+							</button>
+
+							<!-- Filter Modal Open -->
+							<div v-if="showModal" class="modal-container">
+								<div class="modal-background" @click="closeModal"></div>
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title">Filters</h4>
+										<button type="button" class="close" @click="closeModal">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+
+									<!-- price slider -->
+									<div class="modal-body fs-5 py-3"> Select your categories: </div>
+
+									<!-- category filter -->
+									<div class="container-fluid">
+										<div class="row	">
+											<div class="categoryFilter col-md-3 mb-2 " v-for="cat in categoryList" :key="cat">
+												<input type="checkbox" :id="cat" :value="cat" v-model="selectedCategories">
+												<label class="btn btn-outline-dark" :for="cat">{{ cat }}</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- below codes are for checking selected categories are captured -->
+									<!-- <br>
+									  <strong>You have chosen: </strong> {{ selectedCategories }}
+									  <strong>Items in chosen category(s)</strong> -->
+
+									<div>
+										<button class="btn btn-outline-dark my-3 custom-btn-width-L" @click="applyFilter">Apply
+											Filter</button>
+										<button class="btn btn-outline-dark my-3 custom-btn-width-R" @click="resetFilter">Clear
+											Selection</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
 	</header>
 </template>
   
 <script>
-import FilterModal from './filterModal.vue';
 
 export default {
-	components: {
-		FilterModal,
-	},
+	emits: ['filter-applied'],
 	data() {
 		return {
 			isMenuOpen: false,
+			showModal: false,
+			selectedCategories: [],
+			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
+				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
+				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
+				'Snacks & Confectionery', 'Vegetables']
 		};
 	},
 	methods: {
 		toggleMenu() {
 			this.isMenuOpen = !this.isMenuOpen;
-
-		}
-
-	}
+		},
+		openModal() {
+			this.showModal = true;
+		},
+		closeModal() {
+			this.showModal = false;
+		},
+		applyFilter() {
+			console.log('Applying filter with categories:', this.selectedCategories);
+			this.$emit('filter-applied', this.selectedCategories);
+			this.closeModal();
+		},
+		resetFilter() {
+			this.selectedCategories = []; // Reset selectedCategories to an empty array
+		},
+	},
 };
 </script>
   
 <style scoped>
-/* Add your component-specific styles here */
 
-
+a {
+	text-decoration-line: none;
+	color: #393939;
+}
 
 /* Header Section Styling */
+
+.header-section {
+	font-family: "Cabin", sans-serif;
+}
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	z-index: 1000;
 	display: flex;
+	display: block;
+
 }
 
 .top-nav {
@@ -243,6 +316,7 @@ export default {
 
 .top-nav ul {
 	margin-bottom: 0;
+
 }
 
 .top-nav .tn-left li {
@@ -350,7 +424,7 @@ export default {
 }
 
 .profile-option:hover .profile-dropdown {
-	top: 40px;
+	top: 65px;
 	opacity: 1;
 	visibility: visible;
 }
@@ -358,11 +432,10 @@ export default {
 .profile-option .profile-dropdown {
 	position: absolute;
 	left: 0;
-	top: 60px;
-	width: 93px;
+	width: 95px;
 	background: #ffffff;
 	display: block;
-	padding: 10px 10px;
+	padding: 10px;
 	-webkit-box-shadow: 0px 9px 10px rgba(25, 25, 26, 0.2);
 	box-shadow: 0px 9px 10px rgba(25, 25, 26, 0.2);
 	opacity: 0;
@@ -373,9 +446,8 @@ export default {
 	z-index: 99;
 }
 
-
 .profile-option .profile-dropdown ul {
-	padding-left: 7px;
+	padding-left: 15px;
 }
 
 .profile-option .profile-dropdown ul li {
@@ -425,7 +497,7 @@ export default {
 /* Menu Section: nav menu (left) */
 .menu-item .nav-menu {
 	text-align: left;
-	padding: 10px 0;
+	padding-top: 10px;
 }
 
 .menu-item .nav-menu .mainmenu {
@@ -609,15 +681,148 @@ export default {
 		opacity: 1;
 		visibility: visible;
 	}
-
-	.footer-section .copyright-option ul {
-		text-align: center;
-		margin-bottom: 10px;
-	}
-
-	.footer-section .copyright-option .co-text {
-		text-align: center;
-	}
 }
-</style>
+
+/*---------------------
+    Filter Button
+    -----------------------*/
+.filter-button {
+	font-size: 16px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	background-color: #ffffff;
+	margin-left: auto;
+	/* Push the filter button to the right */
+	border: 1.5px solid #e5e5e5;
+	/* Grey border color */
+	border-radius: 25px;
+	/* Rounded corners */
+	height: 50px;
+	/* Set a maximum height for the content */
+	padding: 15px;
+	/* Adjust padding as needed */
+	margin-top: 10px;
+
+}
+
+.filter-button i {
+	color: #393939;
+	margin-right: 5px;
+	/* Adjust spacing between icon and text */
+	padding: 0px;
+}
+
+/*---------------------
+    Modal
+    -----------------------*/
+.modal-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	font-family: "Cabin", sans-serif;
+}
+
+.modal-background {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	/* Semi-transparent black background */
+}
+
+.modal-content {
+	border-radius: 35px;
+	background-color: #fff;
+	padding: 10px 30px 15px 30px;
+	max-width: 600px;
+	overflow-y: auto;
+	max-height: 100%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+	/* Ensure it's above other elements */
+}
+
+.modal-header {
+	display: flex;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.close {
+	/* display: flex; */
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 40px;
+	color: #333;
+}
+
+/*---------------------
+    Inline Checkboxes
+    -----------------------*/
+.modal-body {
+	display: block;
+	width: 100%;
+}
+
+.modal-body .row {
+	margin-bottom: 10px;
+	/* display: flex; */
+}
+
+.categoryFilter {
+	padding: 0px;
+	margin: 0px;
+}
+
+.categoryFilter input {
+	display: none;
+	/* Hide the actual checkboxes */
+}
+
+.categoryFilter label {
+	/* border: 1.5px solid #e5e5e5; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+/* Style for checked checkboxes */
+.categoryFilter input:checked+label {
+	background-color: rgb(40, 40, 40);
+	color: white;
+}
+
+.btn {
+	font-weight: 500;
+	border-radius: 25px;
+	cursor: pointer;
+	border-width: 1.5px;
+
+}
+.categoryFilter .btn {
+	transition: background-color 0.3s, color 0.3s;
+	width: 130px;
+	/* Set a fixed width for the button */
+	height: 120px;
+	/*Set a fixed height for the button  */
+}
+
+.custom-btn-width-R {
+	width: 48%;
+	margin-left: 1%;
+}
+
+.custom-btn-width-L {
+	background-color: #19191a;
+	color: white;
+	width: 48%;
+	margin-right: 1%;
+}</style>
   
