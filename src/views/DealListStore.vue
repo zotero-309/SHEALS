@@ -36,7 +36,7 @@
                 <th scope="col">Actions</th>
             </tr>
         </thead>
-    <tbody class="dealListStoreTable">
+    <tbody>
         <tr v-for="deal in display_list" :key="deal.id">
             <td scope="col"><img :src="deal.image" alt="" class="dealimg"></td>
             <td scope="col">{{ deal.deal_name }}</td>
@@ -145,23 +145,12 @@ export default {
             // doc.data() is never undefined for query doc snapshots
             let obj = doc.data()
             obj['id'] = doc.id
-            //getting image url with func generateImgUrl -> passing id and image name due to storage path
-            obj.image = await this.generateImgUrl(obj.id,obj.image)
+
             //slice first 100 characters so that tab
             obj.deal_description = obj.deal_description.slice(0,100) + '...'
             this.deal_list.push(obj)
             this.display_list = this.deal_list
             });
-        },
-        async generateImgUrl(dealId,dealImg) {
-            try {
-                console.log(dealId, dealImg)
-                const url = await getDownloadURL(ref(storage, `deals/${localStorage.getItem("userEmail")}/${dealId}/${dealImg}`));
-                return url;
-            } catch (error) {
-                console.error("Error fetching image URL:", error);
-                return ""; // Return a default value or handle errors gracefully
-            }
         }
 
     }
@@ -169,7 +158,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 table, th, tr {
     text-align: center;
 }

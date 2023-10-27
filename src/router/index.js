@@ -1,12 +1,13 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home";
-import Login from "../views/Login.vue";
-import ItemDetails from "../views/ItemDetails.vue";
-import StoreHome from "../views/StoreHome.vue";
-import Dashboard from "../views/Dashboard.vue";
-import AddDealStore from "../views/AddDealStore.vue";
-import DealListStore from "../views/DealListStore.vue";
+import { createRouter, createWebHistory } from "vue-router"
+import Home from "../views/Home"
+import Login from "../views/Login.vue"
+import ItemDetails from "../views/ItemDetails.vue"
+import StoreHome from "../views/StoreHome.vue"
+import Dashboard from "../views/Dashboard.vue"
+import AddDealStore from "../views/AddDealStore.vue"
+import DealListStore from "../views/DealListStore.vue"
 import UpdateDeal from "../views/UpdateDeal.vue"
+import Cart from "../views/Cart.vue"
 
 
 const routes = [
@@ -22,7 +23,12 @@ const routes = [
     component: Login
   },
   {
-    path: "/item/:id", // Assuming you have a route parameter for the item ID
+    path: '/cart',
+    name: 'Cart',
+    component: Cart
+  },
+  {
+    path: "/item/:id/", // Assuming you have a route parameter for the item ID
     name: "item-detail",
     component: ItemDetails,
 

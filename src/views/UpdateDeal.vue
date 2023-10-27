@@ -59,7 +59,7 @@
                     <label for="dealprice" class="py-2">Price</label>
                     <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
                     <label for="dealqty" class="py-2">Quantity</label>
-                    <input type="text" class="form-control" id="dealqty" ref="dealqty" required>                   
+                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                   
                 </div>
 
             </div>
@@ -104,12 +104,12 @@ export default {
                 this.$refs.dealdescr.value = deal_rec.deal_description
                 this.$refs.dealprice.value = deal_rec.deal_price
                 this.$refs.dealqty.value = deal_rec.deal_quantity
+                this.imageURL = deal_rec.image
             } else {
             // docSnap.data() will be undefined in this case
             console.log("No such document!");
             }
 
-            this.imageURL = await getDownloadURL(ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${docSnap.data().image}`));
         },
         async UpdateDealInfo(){
             const deal_doc = doc(db, "deals", this.$route.params.id)
@@ -118,17 +118,20 @@ export default {
             const dDoc = await getDoc(deal_doc)
             const doc_rec = dDoc.data()
             let dealImage = "" // initialise image name
-            if(this.$refs.dealimg.files[0]){
+            if(this.$refs.dealimg.files[0]){//check if there is any new image uploaded
                 dealImage = this.$refs.dealimg.files[0].name
+
                 //upload image if there is an image uploaded
                 const newRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${dealImage}`)
-                uploadBytes(newRef, this.$refs.dealimg.files[0]).then((snapshot) => {
+                uploadBytes(newRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
+                    let dealImgURL = await getDownloadURL(snapshot.ref)
+                    await updateDoc(deal_doc,{image:dealImgURL})
                     console.log('reuploaded a blob or file!');
                 });
 
                 //remove delete old image
                 // Create a reference to the file to delete
-                const desertRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${doc_rec.image}`);
+                const desertRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${doc_rec.image_name}`);
 
                 // Delete the file
                 deleteObject(desertRef).then(() => {
@@ -137,7 +140,7 @@ export default {
                 // Uh-oh, an error occurred!
                 })
             } else {
-                dealImage = doc_rec.image
+                dealImage = doc_rec.image_name
             }
 
             //updating doc
@@ -145,10 +148,10 @@ export default {
                 deal_name: this.$refs.dealname.value,
                 deal_type: this.$refs.dealtype.value,
                 deal_description: this.$refs.dealdescr.value,
-                deal_price: this.$refs.dealprice.value,
-                deal_quantity:this.$refs.dealqty.value,
+                deal_price: parseFloat(this.$refs.dealprice.value),
+                deal_quantity: parseInt(this.$refs.dealqty.value),
                 product_category: this.$refs.foodcategory.value,
-                image: dealImage
+                image_name: dealImage
             });
 
             this.$router.push({ name: 'DealListStore'})

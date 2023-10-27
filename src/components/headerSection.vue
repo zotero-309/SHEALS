@@ -2,10 +2,12 @@
 	<!-- Offcanvas Menu Overlay -->
 	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
 
+
 	<!-- Canvas Open Button -->
 	<div class="canvas-open" @click="toggleMenu">
 		<i class="icon_menu"></i>
 	</div>
+
 
 	<!-- Offcanvas Menu Wrapper -->
 	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
@@ -15,8 +17,10 @@
 			<i class="icon_close"></i>
 		</div>
 
+
 		<!-- Search Icon -->
 		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+			<!-- Search Form -->
 			<!-- Search Form -->
 			<div class="input-group">
 				<div class="input-group-prepend">
@@ -131,7 +135,7 @@
 						<div class="tn-right">
 							<!-- Checkout Discounts -->
 							<a href="#" class="cart" v-if="$store.state.user">
-								<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
+								<span><i class="fa fa-shopping-cart"></i><router-link :to="{ name: 'Cart' }" >Checkout Discounts</router-link></span>
 							</a>
 							<router-link :to="{ name: 'Login' }" v-if="!$store.state.user" class="profile-option">
 								<span><i class="fa fa-user-o"></i>Login/Register </span>
@@ -246,6 +250,89 @@
 					</div>
 				</div>
 			</div>
+		</div>		<!-- Menu Item Section -->
+		<div class="menu-item" v-if="$route.name !== 'Login'">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="nav-menu">
+							<!-- Main Navigation -->
+							<nav class="mainmenu">
+								<ul>
+									<li class="active">
+										<router-link :to="{ name: 'Home' }">
+											<i class="fa fa-money custom-size-icon"></i>
+											<span>Best Deals</span>
+										</router-link>
+									</li>
+									<li>
+										<a href="./bySupermarkets.html">
+											<i class="fa fa-shopping-basket custom-size-icon"></i>
+											<span>By Supermarkets</span>
+										</a>
+									</li>
+									<li>
+										<a href="./byCommunity.html">
+											<i class="fa fa-users custom-size-icon"></i>
+											<span>By Community</span>
+										</a>
+									</li>
+									<li>
+										<a href="./byCommunity.html">
+											<i class="fa fa-heart custom-size-icon"></i>
+											<span>Favourites</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+
+							<!-- Filter Modal Component -->
+							<button @click="openModal" class="filter-button">
+								<i class="fa fa-sliders custom-size-icon"></i>
+								<span>Filter</span>
+							</button>
+
+							<!-- Filter Modal Open -->
+							<div v-if="showModal" class="modal-container">
+								<div class="modal-background" @click="closeModal"></div>
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title">Filters</h4>
+										<button type="button" class="close" @click="closeModal">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+
+									<!-- price slider -->
+									<div class="modal-body fs-5 py-3"> Select your categories: </div>
+
+									<!-- category filter -->
+									<div class="container-fluid">
+										<div class="row	">
+											<div class="categoryFilter col-md-3 mb-2 " v-for="cat in categoryList" :key="cat">
+												<input type="checkbox" :id="cat" :value="cat" v-model="selectedCategories">
+												<label class="btn btn-outline-dark" :for="cat">{{ cat }}</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- below codes are for checking selected categories are captured -->
+									<!-- <br>
+									  <strong>You have chosen: </strong> {{ selectedCategories }}
+									  <strong>Items in chosen category(s)</strong> -->
+
+									<div>
+										<button class="btn btn-outline-dark my-3 custom-btn-width-L" @click="applyFilter">Apply
+											Filter</button>
+										<button class="btn btn-outline-dark my-3 custom-btn-width-R" @click="resetFilter">Clear
+											Selection</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</header>
 </template>
@@ -253,6 +340,36 @@
 <script>
 
 export default {
+	emits: ['filter-applied'],
+	data() {
+		return {
+			isMenuOpen: false,
+			showModal: false,
+			selectedCategories: [],
+			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
+				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
+				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
+				'Snacks & Confectionery', 'Vegetables']
+		};
+	},
+	methods: {
+		toggleMenu() {
+			this.isMenuOpen = !this.isMenuOpen;
+		},
+		openModal() {
+			this.showModal = true;
+		},
+		closeModal() {
+			this.showModal = false;
+		},
+		applyFilter() {
+			console.log('Applying filter with categories:', this.selectedCategories);
+			this.$emit('filter-applied', this.selectedCategories);
+			this.closeModal();
+		},
+		resetFilter() {
+			this.selectedCategories = []; // Reset selectedCategories to an empty array
+		},
 	emits: ['filter-applied'],
 	data() {
 		return {
@@ -310,6 +427,7 @@ export default {
 
 .top-nav ul {
 	margin-bottom: 0;
+
 
 }
 
@@ -736,6 +854,7 @@ export default {
 	padding: 10px 30px 15px 30px;
 	max-width: 600px;
 	overflow-y: auto;
+	max-height: 100%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	z-index: 1000;
 	/* Ensure it's above other elements */
