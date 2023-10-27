@@ -1,12 +1,23 @@
 <template>
-    <!-- <div class="bg-gray-50">
-        <input type="text" v-model="qrValue">
-    </div>
-    <qrcode-vue :value="qrValue"  v-if="qrValue"></qrcode-vue> -->
-
     <HeaderSection/>
 
-    <div class="container padding-bottom-3x mb-1" style="margin-top: 200px;" >
+    <!-- Modal to show compiled QR code -->
+    <div v-if="qrModal" class="modal-container">
+        <div class="modal-background" @click="qrModal=false"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Let Cashier Staff Scan</h5>
+                    <button type="button" class="close" @click="qrModal=false">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+        <div class="modal-body">
+            <div class="qrcode"><qrcode-vue :value="qrValue"  v-if="qrValue"></qrcode-vue></div>
+        </div>
+    </div>
+    </div>
+
+    <div class="container padding-bottom-3x mb-1 cartcontent">
 
     <!-- Drop down list to select store -->
     <select class="form-select my-4" ref="storeChosen" @change="filterByStore">
@@ -28,18 +39,23 @@
             <tbody>
                 <tr v-for="deal in display_list" :key="deal.id">
                     <td>
-                        <div class="product-item">
+                        <div class="product-item" >
                             <a class="product-thumb" href="#"><img :src="deal.url" alt="Product"></a>
                             <h4 class="product-title"><a href="#">{{ deal.deal_name }}</a></h4>
                             <span><em>Product: {{ deal.product_name }}</em></span>
                         </div>
                     </td>
                     <td>{{ deal.type }}</td>
-                    <td class="text-center">
-                            <div class="count-input">
-                                {{ deal.cart_qty}}                   
+                    <td class="qtycol">
+                            <div class="row justify-content-center">
+                            <div class="col-6 qtyalign">{{ deal.cart_qty}}</div>
+                            <div class="col-6">
+                                <input class="btn bg-secondary increment col-12 my-1"  value="+" @click="changeQty('+', deal.id)" readonly>
+                                <input class="btn btn-secondary increment col-12 my-1"  value="-" @click="changeQty('-', deal.id)" readonly>
+                            </div>
                             </div>
                     </td>
+                           
                     <td class="text-center text-lg text-medium">${{ deal.perunit }}</td>
                     <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" @click="deleteCartItem(deal.id)"><i class="fa fa-trash"></i></a></td>
                 </tr>
@@ -52,8 +68,8 @@
         <div class="column text-lg">Subtotal: <span class="text-medium">$289.68</span></div>
     </div> -->
     <div class="shopping-cart-footer">
-        <div class="column"><a class="btn btn-outline-secondary" href="#"><i class="icon-arrow-left"></i>Back to Home</a></div>
-        <div class="column"><a class="btn btn-success" href="#">Reedem Deals</a></div>
+        <router-link :to="{name:'Home'}"><div class="homeleft"><a class="btn btn-secondary">Back To Home</a></div></router-link>
+        <div class="redeemright"><a class="btn btn-success" href="#" @click="qrGenerate()">Reedem Deals</a></div>
     </div>
 </div>
 </template>
@@ -70,10 +86,12 @@ export default {
     },
     data(){
         return {
+            qrModal: false,
             qrValue: null,
-            store_list:[],
-            cart_list:[],
-            display_list:[]
+            cart_arr: null, //imitates cart arr in firebase (to update)
+            store_list:[], //used for drop down to track
+            cart_list:[], //used for mainset to filter
+            display_list:[] //usde for the result of filter
         }
     },
     created() {
@@ -86,10 +104,10 @@ export default {
 
             //retrieve cart array
             const userDoc = (await getDoc(userRef)).data() //retrieve fields
-            let cart_arr = userDoc.cart
+            this.cart_arr = userDoc.cart
 
             //packing pdt id in the list to use as condition later
-            for (var item of cart_arr){
+            for (var item of this.cart_arr){
                 //populate store list for drop down selection
                 if(this.store_list.indexOf(item.storename) == -1){
                     this.store_list.push(item.storename)
@@ -114,10 +132,7 @@ export default {
                 return item.store == this.store_list[0]
             })
 
-
-            console.log(this.cart_list)
         },
-        //initial chosen store is empty, therefore cart empty
         filterByStore(){
             this.display_list = this.cart_list.filter((item) => {
                 return item.store == this.$refs.storeChosen.value
@@ -127,29 +142,94 @@ export default {
             //fetch all cart items, localstorage used over vue store due to loading of store
             const userRef = doc(db,"users",localStorage.getItem("userID"))
 
-            //retrieve cart array
-            const userDoc = (await getDoc(userRef)).data() //retrieve fields
-            let cart_arr = userDoc.cart
-
             //update in display_list without refreshing
-            this.display_list = this.cart_list.filter((item) => {
+            this.cart_list = this.cart_list.filter((item) => {
                 return item.id != id
             })
+
+            this.display_list = this.cart_list
             console.log(this.display_list)
+            console.log(this.cart_list)
 
             //arrow functions to remove cart items and update in firebase
-            let updated_list = cart_arr.filter((item)=>!(item.pdt == id))
+            this.cart_arr = this.cart_arr.filter((item)=>!(item.pdt == id))
 
-            await updateDoc(userRef,{cart:updated_list})
+            await updateDoc(userRef,{cart:this.cart_arr})
 
             alert("Item Removed!")
+        },
+
+        async changeQty(operation,dealid){
+            //update the display_list and cart_list
+            this.cart_list.forEach((item)=>{
+                //identify right deal in cart to increment qty
+                if(item.id == dealid){
+                    item.cart_qty = eval(item.cart_qty + operation + 1)
+                }
+            })
+
+            console.log(this.display_list)
+            console.log(this.cart_list)
+
+
+            this.cart_arr.forEach((item)=>{
+                //identify right deal in cart to increment qty
+                if(item.pdt === dealid){
+                    item.qty = eval(item.qty + operation + 1)
+                }
+            })
+
+            const userRef = doc(db, "users", localStorage.getItem("userID"))
+            await updateDoc(userRef,{
+                cart: this.cart_arr
+            })
+
+        },
+        qrGenerate(){
+            //open up the modal
+            this.qrModal = true
+
+            //assign items in cart to qrValue
+            this.qrValue = JSON.stringify(this.cart_arr) + `+${localStorage.getItem("userID")}`
+            console.log(this.qrValue)
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
+.qtyalign {
+    display: flex;
+    align-items: center;
+}
 
+.qtycol {
+    width:20px
+}
+
+.cartcontent{
+    margin-top: 200px;
+}
+
+.homeleft{
+    float: left;
+}
+
+.redeemright{
+    float: right;
+}
+
+.qrcode {
+    width: 200px;
+    margin: auto;
+    text-align: center;
+}
+
+.increment {
+    width: 40px;
+    margin-bottom: 10px;
+    box-sizing: content-box;
+}
 
 .form-select {
     width: 40% !important;
@@ -305,7 +385,7 @@ export default {
 }
 
 @media (max-width: 768px) {
-    .shopping-cart-footer>.column {
+    .shopping-cart-footer> {
         display: block;
         width: 100%
     }
