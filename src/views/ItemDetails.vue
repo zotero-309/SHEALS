@@ -1,193 +1,242 @@
+<!-- roomItem.vue, receives room details through props which is from roomData --> 
 <template>
-    <!-- Header Section Begin -->
-    <HeaderSection />
-    <!-- Header Section End -->
-   <!-- Product section-->
-   <section class="py-5 my-4">
-    <div class="container px-4 px-lg-5 my-5">
-      <div class="row gx-4 gx-lg-5 align-items-center">
-        <div class="col-md-6">
-          <img class="card-img-top mb-5 mb-md-0"
-            :src="item_list.image" alt="..." /></div>
-        <div class="col-md-6">
-          <h1 class="fs-1 fw-bold"> {{ item_list.deal_name }} </h1>
-          <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ item_list.deal_price }}</h3>
-          <p class="fs-6 mb-4">
-            {{ item_list.deal_description }}
-          </p>
-          <div class="fs-6 mb-3" v-if="item_list.uploaded_by">
-            <i class="fa fa-building-o"></i>
-            Store: <br> {{ item_list.uploaded_by.name }}
-          </div>
-          <div class="fs-6 mb-4">
-            <i class="fa fa-map-marker"></i>
-            Address: <br>{{ item_list.location }}
-          </div>
-          <div class="d-flex" v-if="$store.state.user && item_list.uploaded_by">
-            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"
-              style="max-width: 3rem" v-if="item_list.uploaded_by.type=='store'" />
-            <button class="btn btn-outline-dark flex-shrink-0" type="button" v-if="item_list.uploaded_by.type=='store'" >
-              <i class="fa fa-shopping-cart"></i>
-              Add to cart
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- Related items section-->
-  <section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
-      <h2 class="fw-bolder mb-4">Related products</h2>
-      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        <div class="col mb-5">
-          <div class="card h-100">
-            <!-- Product image-->
-            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-            <!-- Product details-->
-            <div class="card-body p-4">
-              <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">Fancy Product</h5>
-                <!-- Product price-->
-                $40.00 - $80.00
+  <!-- preloader -->
+  <div v-if="loading" id="preloader">
+      <!-- Preloader -->
+      <div class="loader"></div>
+  </div>
+  <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6" >
+      <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
+      <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
+          <div class="room-box">
+              <div class="room-item">
+                  <img :src="deal.image" alt="">
+                  <div class="ri-text">
+                      <h4>{{ deal.deal_name }}</h4>
+                      <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
+                      <table>
+                          <tbody>
+                              <tr>
+                                  <td class="r-o1">Store:</td>
+                                  <td class="r-o2">{{ deal.uploaded_by.name }}</td>
+                              </tr>
+                              <tr>
+                                  <td class="r-o1">Address:</td>
+                                  <td class="r-o2">{{ deal.location }}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
+                      <i
+                          :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
+                  </div>
               </div>
-            </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-            </div>
           </div>
-        </div>
-        <div class="col mb-5">
-          <div class="card h-100">
-            <!-- Sale badge-->
-            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
-            </div>
-            <!-- Product image-->
-            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-            <!-- Product details-->
-            <div class="card-body p-4">
-              <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">Special Item</h5>
-                <!-- Product reviews-->
-                <div class="d-flex justify-content-center small text-warning mb-2">
+      </router-link>
+  </div>
+</template>
 
-                </div>
-                <!-- Product price-->
-                <span class="text-muted text-decoration-line-through">$20.00</span>
-                $18.00
-              </div>
-            </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-            </div>
-          </div>
-        </div>
-        <div class="col mb-5">
-          <div class="card h-100">
-            <!-- Sale badge-->
-            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
-            </div>
-            <!-- Product image-->
-            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-            <!-- Product details-->
-            <div class="card-body p-4">
-              <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">Sale Item</h5>
-                <!-- Product price-->
-                <span class="text-muted text-decoration-line-through">$50.00</span>
-                $25.00
-              </div>
-            </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-            </div>
-          </div>
-        </div>
-        <div class="col mb-5">
-          <div class="card h-100">
-            <!-- Product image-->
-            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-            <!-- Product details-->
-            <div class="card-body p-4">
-              <div class="text-center">
-                <!-- Product name-->
-                <h5 class="fw-bolder">Popular Item</h5>
-                <!-- Product reviews-->
-                <div class="d-flex justify-content-center small text-warning mb-2">
-                </div>
-                <!-- Product price-->
-                $40.00
-              </div>
-            </div>
-            <!-- Product actions-->
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-              <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
- 
- </template>
- 
- <script>
- import HeaderSection from '../components/headerSection.vue';
- import  { storage, db } from '../firebase/index.js'
- import {doc, getDoc } from "firebase/firestore"
- import {ref, getDownloadURL } from "firebase/storage"
- 
- export default {
-    components: {
-        HeaderSection
-    },
-    data() {
-    return {
-      item_list:{}
-    };
+<script>
+//import router from '../router/index.js';  // Import router instance
+import { storage, db } from '../firebase/index.js'
+import { collection, getDocs } from "firebase/firestore"
+import { ref, getDownloadURL } from "firebase/storage"
+
+export default {
+  props: {
+      deal: Object,
+      deals: Array,
+      selectedCategories: {
+          type: Array,
+          default: () => [],
+      },
   },
-  created () {
-    this.getdealitem()
+  data() {
+      return {
+          loading: true, // initially show preloader
+          favourites: [], //Initialize favorites as an empty array
+          deal_list: [], // Initialize deal_list as an empty array
+          display_list: [], // Initialize display_list as an empty array
+
+      }
+  },
+  //trigger function before mounted
+  created() {
+      this.fetchDeals()
+  },
+  watch: {
+      // Watch for changes in selectedCategories
+      selectedCategories: {
+          handler: 'updateDisplayList',
+          immediate: true, // Execute the handler immediately on component creation
+          deep: true, // Watch for changes in the array's elements
+      },
   },
   methods: {
-    async getdealitem(){
-      const docRef = doc(db, "deals", this.$route.params.id);
-      const docSnap = (await getDoc(docRef)).data()
-      this.item_list = docSnap
-      this.item_list.image = await this.generateImgUrl(this.$route.params.id,this.item_list.image,this.item_list.uploaded_by.email)
-    },
-    async generateImgUrl(dealId,dealImg,uploadEmail) {
-            try {
-                const url = await getDownloadURL(ref(storage, `deals/${uploadEmail}/${dealId}/${dealImg}`));
-                return url;
-            } catch (error) {
-                console.error("Error fetching image URL:", error);
-                return ""; // Return a default value or handle errors gracefully
-            }
-        }
+      toggleHeart(dealBarcode) {
+          // Toggle the favorite status for the given item barcode
+          const index = this.favourites.indexOf(dealBarcode);
+          console.log('Toggle Heart - dealBarcode:', dealBarcode, 'Index:', index);
+          if (index === -1) {
+              // Add to favorites
+              this.favourites.push(dealBarcode);
+          } else {
+              // Remove from favorites
+              this.favourites.splice(index, 1);
+          }
+          console.log('Updated Favourites:', this.favourites);
+      },
+      isFavourite(dealBarcode) {
+          // Check if the item is in favorites
+          return this.favourites.includes(dealBarcode);
+      },
+      async fetchDeals() {
+          // show preloader before fetching data
+          this.loading = true;
+          
+          const querySnapshot = await getDocs(collection(db, "deals"));
+          const deal_list = [];
+
+          for (const doc of querySnapshot.docs) {
+              const obj = doc.data();
+              obj['id'] = doc.id;
+              deal_list.push(obj);
+          }
+          this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
+          this.display_list = deal_list; // initially set display_list to all deals
+          this.loading = false; // stop preloader
+
+          // Call the method to update the display list based on selected categories after fetching deals
+          this.updateDisplayList();
+      },
+
+      async updateDisplayList() {
+          // If no categories are selected, show all deals
+          if (this.selectedCategories.length === 0) {
+              this.display_list = this.deal_list;
+          } else {
+              // Filter deals based on selected categories
+              const filteredDeals = this.deal_list.filter(deal =>
+                  this.selectedCategories.includes(deal.product_category)
+              );
+              this.display_list = filteredDeals;
+          }
+          console.log('Display List:', this.display_list);
+      },
+
+  },
+  mounted() {
+      console.log(this.deal);
   }
- };
- 
- </script>
+}
+
+
+</script>
 
 <style scoped>
-
-img {
-  width: 100%;
+::v-deep a {
+  text-decoration: none;
 }
-.customColour {
-  color: #E97D2F
+
+.room-box {
+  border-radius: 15px;
+  overflow: hidden;
+  display: block;
+  font-family: "Cabin", sans-serif;
+}
+
+.room-item {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.room-item img {
+  min-width: 100%;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  max-height: 290px;
+  /* Adjust the value as needed */
+  object-fit: cover;
+  /* This property ensures the image retains its aspect ratio while covering the specified height */
+
+}
+
+.room-item .ri-text {
+  border: 1px solid #ebebeb;
+  border-top: none;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  padding: 24px;
+}
+
+.room-item .ri-text h4 {
+  color: #19191a;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+}
+
+.room-item .ri-text h3 {
+  font-size: 24px;
+  color: #E97D2F;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.room-item .ri-text h3 span {
+  font-size: 15px;
+  font-weight: 400;
+  color: #19191a;
+}
+
+.room-item .ri-text table tbody tr td {
+  font-size: 15px;
+  color: #707079;
+  line-height: 20px;
+}
+
+.room-item .ri-text table tbody tr td.r-o1 {
+  width: 80px;
+}
+
+.room-item .ri-text table tbody tr td.r-o2 {
+  max-width: 60px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* add an ellipsis (...) if the text overflows */
+  white-space: nowrap;
+  /* prevents the text from wrapping to the next line */
+}
+
+.heart-button {
+  position: absolute;
+  top: 12px;
+  /* Adjust the position as needed */
+  right: 18px;
+  /* Adjust the position as needed */
+  font-size: 30px;
+  /* Increased font size for better visibility */
+  z-index: 1;
+  /* Ensure the heart is above the image */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.fa-heart {
+  -webkit-text-stroke: 0.3x rgb(212, 42, 42);
+  /* Add a red outline */
+  color: rgb(212, 42, 42);
+}
+
+.fa-heart-o {
+  color: white;
 }
 </style>
- 
- 
- 
-  
- 
-    
+
