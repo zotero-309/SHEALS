@@ -289,7 +289,7 @@ export default {
   
 <style scoped>
 
-a {
+a, a:hover {
 	text-decoration-line: none;
 	color: #393939;
 }
