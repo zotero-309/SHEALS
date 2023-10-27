@@ -5,7 +5,7 @@
         <!-- Preloader -->
         <div class="loader"></div>
     </div>
-    <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6">
+    <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6" >
         <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
         <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
             <div class="room-box">
@@ -27,9 +27,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="heart-button" @click.prevent="toggleHeart(deal.barcode)">
+                    <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
                         <i
-                            :class="{ 'fa': true, 'fa-heart': isFavourite(deal.barcode), 'fa-heart-o': !isFavourite(deal.barcode) }"></i>
+                            :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,6 @@ export default {
             for (const doc of querySnapshot.docs) {
                 const obj = doc.data();
                 obj['id'] = doc.id;
-                obj.image = await this.generateImgUrl(obj.id, obj.image, obj.uploaded_by.email);
                 deal_list.push(obj);
             }
             this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
@@ -110,16 +109,6 @@ export default {
 
             // Call the method to update the display list based on selected categories after fetching deals
             this.updateDisplayList();
-        },
-
-        async generateImgUrl(dealId, dealImg, uploadEmail) {
-            try {
-                const url = await getDownloadURL(ref(storage, `deals/${uploadEmail}/${dealId}/${dealImg}`));
-                return url;
-            } catch (error) {
-                console.error("Error fetching image URL:", error);
-                return ""; // Return a default value or handle errors gracefully
-            }
         },
 
         async updateDisplayList() {
