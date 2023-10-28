@@ -6,7 +6,7 @@
     </div>
 
     <!-- Deal items section -->
-    <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6 col-12">
+    <div v-for="deal in display_list" :key="deal.id" class="col-6 col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
         <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
         <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
             <!-- deal box for each deal -->
@@ -22,18 +22,18 @@
 
                         <!-- Table with store and address information -->
                         <div class="row">
-                            <div class="col-3 col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-3">
-                                <strong>Store:</strong>
+                            <div class="col-3 col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                                <div>Store:</div>
                             </div>
-                            <div class="col-9 col-xs-11 col-sm-10 col-md-9 col-lg-8 col-xl-9 info">
+                            <div class="col-9 col-xs-6 col-sm-9 col-md-9 col-lg-9 col-xl-9 info">
                                 {{ deal.uploaded_by.name }}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-3 col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-3">
-                                <strong>Address:</strong>
+                            <div class="col-3 col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                                <div>Address:</div>
                             </div>
-                            <div class="col-9 col-xs-11 col-sm-10 col-md-9 col-lg-8 col-xl-9 info">
+                            <div class="col-9 col-xs-6 col-sm-9 col-md-9 col-lg-9 col-xl-9 info">
                                 {{ deal.location }}
                             </div>
                         </div>
@@ -174,7 +174,24 @@ export default {
     /* Adjust the value to alter img height */
     object-fit: cover;
     /* This property ensures the image retains its aspect ratio while covering the specified height */
+}
 
+/* Adjust img styling for smaller and small screens */
+@media (max-width: 767.98px) {
+    .deal-box .deal-item img {
+        max-height: 210px;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+}
+
+/* Adjust img styling for medium and large screens */
+@media (min-width: 767) and (max-width: 1199.98px) {
+    .deal-box .deal-item img {
+        max-height: 250px;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+    }
 }
 
 /* Styles for deal information */
@@ -183,7 +200,14 @@ export default {
     border-top: none;
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
-    padding: 24px;
+    padding: 18px;
+}
+
+/* Adjust for deal information style for smaller, small, medium, large screens */
+@media (max-width: 1199.98px) {
+    .deal-item .ri-text {
+        padding: 12px;
+    }
 }
 
 /* Styles for deal name */
@@ -197,6 +221,22 @@ export default {
     white-space: nowrap;
 }
 
+/* Adjust deal name fs for smaller and small screens */
+@media (max-width: 767.98px) {
+    .deal-item .ri-text h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+}
+
+/* Adjust deal name fs for medium and large screens */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .deal-item .ri-text h4 {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+}
+
 /* Styles for deal price */
 .deal-item .ri-text h3 {
     font-size: 24px;
@@ -205,16 +245,65 @@ export default {
     margin-bottom: 10px;
 }
 
+/* Adjust deal price fs for smaller and small screens */
+@media (max-width: 767.98px) {
+    .deal-item .ri-text h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+}
+
+/* Adjust deal name fs for medium and large screens */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .deal-item .ri-text h3 {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+}
+
+
+/* Styling for span fs*/
 .deal-item .ri-text h3 span {
     font-size: 15px;
     font-weight: 400;
     color: #19191a;
 }
 
+/* Adjust span fs for smaller and small screens */
+@media (max-width: 767.98px) {
+    .deal-item .ri-text h3 span {
+        font-size: 10px;
+    }
+}
+
+/* Adjust span fs for large screens */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .deal-item .ri-text h3 span {
+        font-size: 12px;
+    }
+}
+
+/* Styles for store name and address */
 .deal-item .ri-text .row {
     font-size: 15px;
     color: #707079;
     line-height: 20px;
+}
+
+/* Adjust store name and address fs for smaller and small screens */
+@media (max-width: 767.98px) {
+    .deal-item .ri-text .row {
+        font-size: 12px;
+        line-height: 15px;
+    }
+}
+
+/* Adjust store name and address fs for medium and large screens */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .deal-item .ri-text .row {
+        font-size: 13px;
+        line-height: 17px;
+    }
 }
 
 .deal-item .ri-text .row .info {
@@ -222,7 +311,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
 
 /* Styles for heart button */
 .heart-button {
@@ -241,10 +329,25 @@ export default {
     transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
+/* Adjust for hear button e for smaller, small screens */
+@media (max-width: 575.98px) {
+    .heart-button {
+        top: 10px;
+        right: 14px;
+        font-size: 22px;
+    }
+}
+
+/* Adjust for hear button e for medium, large screens */
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    .heart-button {
+        font-size: 25px;
+    }
+}
+
 /* Styles for heart button on hover */
 .heart-button:hover {
     transform: scale(1.2);
-    /* Increase the scale factor as needed */
 }
 
 /* Styles for filled heart icon */
