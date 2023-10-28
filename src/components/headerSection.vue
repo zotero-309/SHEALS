@@ -252,7 +252,7 @@
 </template>
   
 <script>
-
+import router from '../router'
 export default {
 	emits: ['filter-applied'],
 	data() {
