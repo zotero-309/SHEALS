@@ -17,15 +17,15 @@
     </div>
     <!-- Breadcrumb Section End -->
 
-    <!-- Rooms Section Begin -->
-    <section class="rooms-section">
+    <!-- deals Section Begin -->
+    <section class="deals-section">
         <div class="container">
             <div class="row">
                 <dealItem :deals="display_list" :selectedCategories="selectedCategories" />
             </div>
         </div>
     </section>
-    <!-- Rooms Section End -->
+    <!-- deals Section End -->
 </template>
 
 <script>

@@ -1,35 +1,48 @@
-<!-- roomItem.vue, receives room details through props which is from roomData --> 
+<!-- dealItem.vue, receives deal details through props which is from dealData --> 
 <template>
-    <!-- preloader -->
+    <!-- Preloader section -->
     <div v-if="loading" id="preloader">
-        <!-- Preloader -->
         <div class="loader"></div>
     </div>
-    <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6" >
+
+    <!-- Deal items section -->
+    <div v-for="deal in display_list" :key="deal.id" class="col-lg-3 col-md-6 col-12">
         <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
         <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
-            <div class="room-box">
-                <div class="room-item">
+            <!-- deal box for each deal -->
+            <div class="deal-box">
+                <div class="deal-item">
+                    <!-- Deal image -->
                     <img :src="deal.image" alt="">
+
+                    <!-- Deal information -->
                     <div class="ri-text">
                         <h4>{{ deal.deal_name }}</h4>
                         <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td class="r-o1">Store:</td>
-                                    <td class="r-o2">{{ deal.uploaded_by.name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="r-o1">Address:</td>
-                                    <td class="r-o2">{{ deal.location }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
-                        <i
-                            :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
+
+                        <!-- Table with store and address information -->
+                        <div class="row">
+                            <div class="col-3 col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-3">
+                                <strong>Store:</strong>
+                            </div>
+                            <div class="col-9 col-xs-11 col-sm-10 col-md-9 col-lg-8 col-xl-9 info">
+                                {{ deal.uploaded_by.name }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 col-xs-1 col-sm-2 col-md-3 col-lg-4 col-xl-3">
+                                <strong>Address:</strong>
+                            </div>
+                            <div class="col-9 col-xs-11 col-sm-10 col-md-9 col-lg-8 col-xl-9 info">
+                                {{ deal.location }}
+                            </div>
+                        </div>
+
+                        <!-- Heart button for favorites -->
+                        <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
+                            <i
+                                :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -43,6 +56,7 @@ import { db } from '../firebase/index.js'
 import { collection, getDocs } from "firebase/firestore"
 
 export default {
+    // Component props and initialization of data
     props: {
         deal: Object,
         deals: Array,
@@ -53,19 +67,18 @@ export default {
     },
     data() {
         return {
-            loading: true, // initially show preloader
+            loading: true, // Display preloader while loading data
             favourites: [], //Initialize favorites as an empty array
-            deal_list: [], // Initialize deal_list as an empty array
-            display_list: [], // Initialize display_list as an empty array
-
+            deal_list: [], // Initialize deal_list as an empty array, stores all deals
+            display_list: [], //Initialize display_list as empty array, stores filtered or all deals based on categories
         }
     },
-    //trigger function before mounted
+    //trigger function to fetch deals when the component is created
     created() {
         this.fetchDeals()
     },
     watch: {
-        // Watch for changes in selectedCategories
+        // Watch for changes in selectedCategories and update display list accordingly
         selectedCategories: {
             handler: 'updateDisplayList',
             immediate: true, // Execute the handler immediately on component creation
@@ -73,6 +86,7 @@ export default {
         },
     },
     methods: {
+        // Toggle favorite status for a deal
         toggleHeart(dealBarcode) {
             // Toggle the favorite status for the given item barcode
             const index = this.favourites.indexOf(dealBarcode);
@@ -86,14 +100,16 @@ export default {
             }
             console.log('Updated Favourites:', this.favourites);
         },
+        // Check if a deal is in favorites
         isFavourite(dealBarcode) {
             // Check if the item is in favorites
             return this.favourites.includes(dealBarcode);
         },
+        // Fetch deals from Firestore
         async fetchDeals() {
             // show preloader before fetching data
             this.loading = true;
-            
+
             const querySnapshot = await getDocs(collection(db, "deals"));
             const deal_list = [];
 
@@ -109,7 +125,7 @@ export default {
             // Call the method to update the display list based on selected categories after fetching deals
             this.updateDisplayList();
         },
-
+        // Update display list based on selected categories
         async updateDisplayList() {
             // If no categories are selected, show all deals
             if (this.selectedCategories.length === 0) {
@@ -138,30 +154,31 @@ export default {
     text-decoration: none;
 }
 
-.room-box {
+.deal-box {
     border-radius: 15px;
     overflow: hidden;
     display: block;
     font-family: "Cabin", sans-serif;
 }
 
-.room-item {
+.deal-box .deal-item {
     margin-bottom: 30px;
     position: relative;
 }
 
-.room-item img {
+.deal-box .deal-item img {
     min-width: 100%;
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
     max-height: 290px;
-    /* Adjust the value as needed */
+    /* Adjust the value to alter img height */
     object-fit: cover;
     /* This property ensures the image retains its aspect ratio while covering the specified height */
 
 }
 
-.room-item .ri-text {
+/* Styles for deal information */
+.deal-item .ri-text {
     border: 1px solid #ebebeb;
     border-top: none;
     border-bottom-right-radius: 15px;
@@ -169,7 +186,8 @@ export default {
     padding: 24px;
 }
 
-.room-item .ri-text h4 {
+/* Styles for deal name */
+.deal-item .ri-text h4 {
     color: #19191a;
     margin-bottom: 10px;
     font-size: 20px;
@@ -177,42 +195,36 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
 }
 
-.room-item .ri-text h3 {
+/* Styles for deal price */
+.deal-item .ri-text h3 {
     font-size: 24px;
     color: #E97D2F;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-.room-item .ri-text h3 span {
+.deal-item .ri-text h3 span {
     font-size: 15px;
     font-weight: 400;
     color: #19191a;
 }
 
-.room-item .ri-text table tbody tr td {
+.deal-item .ri-text .row {
     font-size: 15px;
     color: #707079;
     line-height: 20px;
 }
 
-.room-item .ri-text table tbody tr td.r-o1 {
-    width: 80px;
-}
-
-.room-item .ri-text table tbody tr td.r-o2 {
-    max-width: 60px;
-    width: 100%;
+.deal-item .ri-text .row .info {
     overflow: hidden;
     text-overflow: ellipsis;
-    /* add an ellipsis (...) if the text overflows */
     white-space: nowrap;
-    /* prevents the text from wrapping to the next line */
 }
 
+
+/* Styles for heart button */
 .heart-button {
     position: absolute;
     top: 12px;
@@ -226,14 +238,23 @@ export default {
     background: none;
     border: none;
     cursor: pointer;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
+/* Styles for heart button on hover */
+.heart-button:hover {
+    transform: scale(1.2);
+    /* Increase the scale factor as needed */
+}
+
+/* Styles for filled heart icon */
 .fa-heart {
     -webkit-text-stroke: 0.3x rgb(212, 42, 42);
     /* Add a red outline */
     color: rgb(212, 42, 42);
 }
 
+/* Styles for outline heart icon */
 .fa-heart-o {
     color: white;
 }
