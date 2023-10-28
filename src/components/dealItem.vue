@@ -21,28 +21,20 @@
                         <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
 
                         <!-- Table with store and address information -->
-                        <div class="row">
-                            <div class="col-3 col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                                <div>Store:</div>
-                            </div>
-                            <div class="col-9 col-xs-6 col-sm-9 col-md-9 col-lg-9 col-xl-9 info">
-                                {{ deal.uploaded_by.name }}
-                            </div>
+                        <div class="store">
+                            <i class="fa fa-building-o"></i> &nbsp;
+                            {{ deal.uploaded_by.name }}
                         </div>
-                        <div class="row">
-                            <div class="col-3 col-xs-6 col-sm-3 col-md-3 col-lg-3 col-xl-3">
-                                <div>Address:</div>
-                            </div>
-                            <div class="col-9 col-xs-6 col-sm-9 col-md-9 col-lg-9 col-xl-9 info">
-                                {{ deal.location }}
-                            </div>
+                        <div class="address">
+                            <i class="fa fa-map-marker"></i> &nbsp;
+                            {{ deal.location }}
                         </div>
+                    </div>
 
-                        <!-- Heart button for favorites -->
-                        <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
-                            <i
-                                :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
-                        </div>
+                    <!-- Heart button for favorites -->
+                    <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
+                        <i
+                            :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
                     </div>
                 </div>
             </div>
@@ -284,32 +276,14 @@ export default {
 }
 
 /* Styles for store name and address */
-.deal-item .ri-text .row {
-    font-size: 15px;
-    color: #707079;
-    line-height: 20px;
-}
-
-/* Adjust store name and address fs for smaller and small screens */
-@media (max-width: 767.98px) {
-    .deal-item .ri-text .row {
-        font-size: 12px;
-        line-height: 15px;
-    }
-}
-
-/* Adjust store name and address fs for medium and large screens */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .deal-item .ri-text .row {
-        font-size: 13px;
-        line-height: 17px;
-    }
-}
-
-.deal-item .ri-text .row .info {
+.deal-item .ri-text .store,
+.deal-item .ri-text .address {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 15px;
+    color: #707079;
+    line-height: 20px;
 }
 
 /* Styles for heart button */
