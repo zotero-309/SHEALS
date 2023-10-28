@@ -120,6 +120,53 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
 
     },
 
+    async addPreference ({commit}, details){
+      const { address, categories, dealTypes} = details
+
+        try {
+          const data = doc(db, 'users', auth.currentUser.uid);
+          await setDoc(data, {
+            email: auth.currentUser.email,
+            type: 'consumer',
+            homeaddress: address,
+            catpref: categories,
+            dealpref: dealTypes,
+            like:[],
+            cart:[],
+          });
+        }
+        catch(error) {
+          console.log(error)
+        }
+      
+      commit('SET_USER', auth.currentUser)
+
+      const user_data = await getDoc(doc(db,"users",auth.currentUser.uid))
+      const user_rec = user_data.data()
+
+      if (user_rec.type === "consumer"){
+        console.log(user_rec.homeaddress)
+        console.log(user_rec.catpref)
+        console.log(user_rec.dealpref)
+        const messages = [];
+        if (user_rec.homeaddress == null) {
+          messages.push("Please enter your home address.");
+        }
+        if (user_rec.catpref == "") {
+          messages.push("Please enter product category preference.");
+        }
+        if (user_rec.dealpref == "") {
+          messages.push("Please enter preferred deals.");
+        }
+        if (messages.length === 0) {
+          router.push("/");
+        } else {
+          alert(messages.join("\n"));
+        }
+      } 
+      
+    },
+
     async logout({commit}){
       await signOut(auth)
       localStorage.removeItem('userID');
