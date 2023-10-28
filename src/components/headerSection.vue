@@ -154,6 +154,7 @@
 								<div class="profile-dropdown">
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
+										<li><span @click="PreferencePage">Preference Page</span></li>
 									</ul>
 								</div>
 							</div>
@@ -283,6 +284,9 @@ export default {
 		resetFilter() {
 			this.selectedCategories = []; // Reset selectedCategories to an empty array
 		},
+		PreferencePage() {
+			router.push("/questionaire");
+		}
 	},
 };
 </script>
