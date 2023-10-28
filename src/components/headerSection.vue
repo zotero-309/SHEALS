@@ -131,7 +131,8 @@
 						<div class="tn-right">
 							<!-- Checkout Discounts -->
 							<a href="#" class="cart" v-if="$store.state.user">
-								<span><i class="fa fa-shopping-cart"></i><router-link :to="{ name: 'Cart' }" >Checkout Discounts</router-link></span>
+								<span><i class="fa fa-shopping-cart"></i><router-link :to="{ name: 'Cart' }">Checkout
+										Discounts</router-link></span>
 							</a>
 							<router-link :to="{ name: 'Login' }" v-if="!$store.state.user" class="profile-option">
 								<span><i class="fa fa-user-o"></i>Login/Register </span>
@@ -154,7 +155,7 @@
 								<div class="profile-dropdown">
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
-										<li><span @click="PreferencePage">Preference Page</span></li>
+										<li><span @click="PreferencePage">Preferences</span></li>
 									</ul>
 								</div>
 							</div>
@@ -223,7 +224,8 @@
 									<!-- category filter -->
 									<div class="container-fluid">
 										<div class="row	">
-											<div class="categoryFilter col-md-3 mb-2 " v-for="cat in categoryList" :key="cat">
+											<div class="categoryFilter col-md-3 mb-2 " v-for="cat in categoryList"
+												:key="cat">
 												<input type="checkbox" :id="cat" :value="cat" v-model="selectedCategories">
 												<label class="btn btn-outline-dark" :for="cat">{{ cat }}</label>
 											</div>
@@ -236,9 +238,11 @@
 									  <strong>Items in chosen category(s)</strong> -->
 
 									<div>
-										<button class="btn btn-outline-dark my-3 custom-btn-width-L" @click="applyFilter">Apply
+										<button class="btn btn-outline-dark my-3 custom-btn-width-L"
+											@click="applyFilter">Apply
 											Filter</button>
-										<button class="btn btn-outline-dark my-3 custom-btn-width-R" @click="resetFilter">Clear
+										<button class="btn btn-outline-dark my-3 custom-btn-width-R"
+											@click="resetFilter">Clear
 											Selection</button>
 									</div>
 								</div>
@@ -292,8 +296,8 @@ export default {
 </script>
   
 <style scoped>
-
-a, a:hover {
+a,
+a:hover {
 	text-decoration-line: none;
 	color: #393939;
 }
@@ -303,13 +307,13 @@ a, a:hover {
 .header-section {
 	font-family: "Cabin", sans-serif;
 }
+
 .header-section .header-normal .menu-item {
 	-webkit-box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	box-shadow: 0px 12px 15px rgba(36, 11, 12, 0.05);
 	z-index: 1000;
 	display: flex;
 	display: block;
-
 }
 
 .top-nav {
@@ -451,12 +455,13 @@ a, a:hover {
 }
 
 .profile-option .profile-dropdown ul {
-	padding-left: 15px;
+	padding: 0;
+	/* Remove default padding */
 }
 
 .profile-option .profile-dropdown ul li {
 	list-style: none;
-	text-align: left;
+	text-align: center;
 }
 
 .profile-option .profile-dropdown ul li a {
@@ -469,12 +474,9 @@ a, a:hover {
 	-o-transition: all 0.3s;
 	transition: all 0.3s;
 }
-
-/* orange font colour when hover */
-.profile-option .profile-dropdown ul li a:hover {
-	color: #E97D2F;
+.profile-option .profile-dropdown ul li:hover {
+    color: #E97D2F 
 }
-
 /* Menu Section */
 .menu-item {
 	display: flex;
@@ -810,6 +812,7 @@ a, a:hover {
 	border-width: 1.5px;
 
 }
+
 .categoryFilter .btn {
 	transition: background-color 0.3s, color 0.3s;
 	width: 130px;
