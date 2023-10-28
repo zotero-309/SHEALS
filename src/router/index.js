@@ -8,6 +8,7 @@ import AddDealStore from "../views/AddDealStore.vue"
 import DealListStore from "../views/DealListStore.vue"
 import UpdateDeal from "../views/UpdateDeal.vue"
 import Cart from "../views/Cart.vue"
+import PreferencePage from "../views/PreferencePage.vue"
 
 
 const routes = [
@@ -26,6 +27,11 @@ const routes = [
     path: '/cart',
     name: 'Cart',
     component: Cart
+  },
+  {
+    path: '/questionaire',
+    name: 'PreferencePage',
+    component: PreferencePage
   },
   {
     path: "/item/:id/", // Assuming you have a route parameter for the item ID
