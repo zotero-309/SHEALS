@@ -57,10 +57,11 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       localStorage.setItem('homeAddress', user_rec.homeaddress)
 
       if (user_rec.type === "consumer"){
-        // if (user_rec.address == "" || user_rec.catpref == "" || user_rec.dealpref ==""){
-        //   router.push('/questionaire')
-        // } else {
-          router.push("/")
+        if (user_rec.address == "" || user_rec.catpref == "" || user_rec.dealpref ==""){
+          router.push('/questionaire')
+        } else {
+          router.push("/") 
+        }
       } else {
         localStorage.setItem('storeName', user_rec.storename)
         router.push("/storehome")
