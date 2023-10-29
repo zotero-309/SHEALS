@@ -112,12 +112,12 @@
 											<input type="search" placeholder="Search" aria-describedby="button-addon1"
 												class="form-control border-0 bg-light">
 											<div class="input-group-append">
-												<span class="input-group-text border-0 bg-light">
+												<!-- <span class="input-group-text border-0 bg-light">
 													<button id="button-addon1" type="submit"
 														class="btn btn-link text-primary">
 														<i class="fa fa-search"></i>
 													</button>
-												</span>
+												</span> -->
 											</div>
 										</div>
 									</div>
@@ -211,13 +211,14 @@
 							<div v-if="showModal" class="modal-container">
 								<div class="modal-background" @click="closeModal"></div>
 								<div class="modal-content">
+									
 									<div class="modal-header">
 										<h4 class="modal-title">Filters</h4>
 										<button type="button" class="close" @click="closeModal">
 											<span aria-hidden="true">&times;</span>
 										</button>
 									</div>
-
+									<div class="scrollable-content">
 									<!-- price slider -->
 									<div class="modal-body fs-5 py-3"> Select your categories: </div>
 
@@ -231,7 +232,7 @@
 											</div>
 										</div>
 									</div>
-
+								</div>
 									<!-- below codes are for checking selected categories are captured -->
 									<!-- <br>
 									  <strong>You have chosen: </strong> {{ selectedCategories }}
@@ -245,7 +246,8 @@
 											@click="resetFilter">Clear
 											Selection</button>
 									</div>
-								</div>
+								
+							</div>
 							</div>
 						</div>
 					</div>
@@ -296,6 +298,29 @@ export default {
 </script>
   
 <style scoped>
+.scrollable-content {
+  max-height: 60vh; /* Adjust the height as per your needs */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 2px; /* Create space for the scrollbar */
+}
+
+/* Track styles */
+.scrollable-content::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+/* Handle styles */
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: lightgray;
+  border-radius: 5px;
+}
+
+.input-group .btn {
+    position: relative;
+    z-index: 0;
+}
+
 a,
 a:hover {
 	text-decoration-line: none;
@@ -747,10 +772,11 @@ a:hover {
 	background-color: #fff;
 	padding: 10px 30px 15px 30px;
 	max-width: 600px;
-	overflow-y: auto;
+	overflow-y:auto;
 	max-height: 100%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	z-index: 1000;
+	scroll-behavior: smooth;
 	/* Ensure it's above other elements */
 }
 
