@@ -26,7 +26,7 @@
 
 <script>
  import  { db } from '../firebase/index.js'
- import {doc, updateDoc, increment, arrayRemove, getDoc} from "firebase/firestore"
+ import {doc, updateDoc, increment, arrayRemove, getDoc, setDoc} from "firebase/firestore"
 import { QrcodeStream } from 'vue3-qrcode-reader'
 export default {
     components: {
@@ -44,6 +44,7 @@ export default {
             let resArr = decodedString.split("+")
             let userId = resArr[1]
             let cartArr = JSON.parse(resArr[0])
+            const monthnames =  ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July" , "Aug", "Sep", "Oct" , "Nov", "Dec"]
 
             //check if redeem store is correct
             const storeRef = doc(db, "users", localStorage.getItem("userID"))
@@ -51,11 +52,12 @@ export default {
             if (store_name != cartArr[0].storename){
                 this.redeemItems = [{errmsg:"Incorrect store", pdtname:"None", qty:0}]
                 this.resultmodal = true
+
                 return
             }
 
             //get user reference
-            const userRef = doc(db, "users", userId)
+            const userRef = doc(db, "users", userId);
 
             //get deal list and update
             for (const element of cartArr) {
@@ -69,6 +71,36 @@ export default {
                     errmsg = "Quantity redeemed exceeds available"
                 }
                 if (errmsg === "Success"){
+                    //reference to sales document
+                    const salesDocRef = doc(db, "users", localStorage.getItem("userID"), "data", "sales")
+                    let salesnap = (await getDoc(salesDocRef)).data()
+
+                    //reference to sales sales qty document
+                    const salesqtyDocRef = doc(db, "users", localStorage.getItem("userID"), "data", "sales_qty")
+                    let salesqtysnap = (await getDoc(salesqtyDocRef)).data()
+
+                    //getting the year and month of today
+                    const curryear = new Date().getFullYear()
+                    const currmonth = monthnames[new Date().getMonth()]
+
+                    //check if month already recorded
+                    if (!salesnap.hasOwnProperty(curryear)) {
+                        salesnap[curryear] = {};
+                        salesqtysnap[curryear] = {};
+                    }
+
+                    if (!salesnap[curryear].hasOwnProperty(currmonth)) {
+                        salesnap[curryear][currmonth] = 0;
+                        salesqtysnap[curryear][currmonth] = 0;
+                    }
+
+                    salesnap[curryear][currmonth] += element.qty * deal_rec.deal_price;
+                    salesqtysnap[curryear][currmonth] += element.qty;
+
+                    await setDoc(salesDocRef, { ...salesnap }, { merge: true });
+                    await setDoc(salesqtyDocRef, { ...salesqtysnap }, { merge: true });
+
+
                     // Remove from user cart
                     await updateDoc(userRef, {
                         cart: arrayRemove(element),
@@ -82,6 +114,7 @@ export default {
                         deal_quantity: increment(-element.qty),
                         })
                     }
+
                 }
 
                 element["pdtname"] = deal_rec.product_name;

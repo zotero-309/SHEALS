@@ -48,6 +48,7 @@
                         <option>Rice, Noodles & Cooking Ingredients</option>
                         <option>Meat & Seafood</option>
                         <option>Food Cupboard</option>
+                        <option>Pet Supplies</option>
                 </select>                   
             </div>         
         </div>
@@ -78,7 +79,11 @@
                     <label for="dealprice" class="py-2">Price</label>
                     <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
                     <label for="dealqty" class="py-2">Quantity</label>
-                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                   
+                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                
+                </div>
+                <div class="col-lg-2 col-sm-4">
+                    <label for="dealexpiry" class="py-2">Expiry Date</label>
+                    <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>  
                 </div>
 
             </div>
@@ -131,6 +136,7 @@ export default {
                 deal_type: this.$refs.dealtype.value,
                 deal_name: this.$refs.dealname.value,
                 deal_description: this.$refs.dealdescr.value,
+                deal_expiry: this.$refs.dealexpiry.value,
                 deal_price: parseFloat(this.$refs.dealprice.value),
                 deal_quantity: parseInt(this.$refs.dealqty.value),
                 uploaded_by: {email: userEmail, type:userType, name:storename},

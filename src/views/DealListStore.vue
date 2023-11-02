@@ -33,6 +33,7 @@
                 <th scope="col">Qty</th>
                 <th scope="col">Food</th>
                 <th scope="col">Categories</th>
+                <th scope="col">Expiry Date</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -46,6 +47,7 @@
             <td scope="col">{{ deal.deal_quantity }}</td>
             <td scope="col">{{ deal.product_name }}</td>
             <td scope="col" class="col-2">{{ deal.product_category }}</td>
+            <td scope="col" class="col-2">{{ deal.deal_expiry }}</td>
             <td scope="col" class="col-1">
                 <router-link :to="{name:'UpdateDeal', params: {id: deal.id}}"><img src="../assets/icons/edit.svg" alt="img" class="p-2"></router-link>
                 <img src="../assets/icons/delete.svg" alt="img" class="p-2" @click="closeDeleteModal(deal.id)">

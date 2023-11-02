@@ -61,6 +61,10 @@
                     <label for="dealqty" class="py-2">Quantity</label>
                     <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                   
                 </div>
+                <div class="col-lg-2 col-sm-4">
+                    <label for="dealexpiry" class="py-2">Expiry Date</label>
+                    <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>  
+                </div>
 
             </div>
             <div class="row">
@@ -86,11 +90,11 @@ export default {
         }
     },
     mounted (){
-        this.populateDealIndo()
+        this.populateDealInfo()
     },
     methods: {
         //async because need to wait for getDoc, function to 
-        async populateDealIndo() {
+        async populateDealInfo() {
             const docRef = doc(db, "deals", this.$route.params.id)
             const docSnap = await getDoc(docRef)
 
@@ -100,6 +104,7 @@ export default {
                 this.$refs.productname.value = deal_rec.product_name
                 this.$refs.foodcategory.value = deal_rec.product_category
                 this.$refs.dealtype.value = deal_rec.deal_type
+                this.$refs.dealexpiry.value = deal_rec.deal_expiry
                 this.$refs.dealname.value = deal_rec.deal_name
                 this.$refs.dealdescr.value = deal_rec.deal_description
                 this.$refs.dealprice.value = deal_rec.deal_price
@@ -150,6 +155,7 @@ export default {
                 deal_description: this.$refs.dealdescr.value,
                 deal_price: parseFloat(this.$refs.dealprice.value),
                 deal_quantity: parseInt(this.$refs.dealqty.value),
+                deal_expiry: this.$refs.dealexpiry.value,
                 product_category: this.$refs.foodcategory.value,
                 image_name: dealImage
             });
