@@ -21,7 +21,7 @@
     <section class="deals-section">
         <div class="container">
             <div class="row">
-                <dealItem :deals="display_list" :selectedCategories="selectedCategories" />
+                <dealItem :selectedCategories="selectedCategories" />
             </div>
         </div>
     </section>

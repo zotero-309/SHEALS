@@ -45,7 +45,7 @@
 <script>
 //import router from '../router/index.js';  // Import router instance
 import { db } from '../firebase/index.js'
-import { collection, getDocs } from "firebase/firestore"
+import { doc, updateDoc, collection, getDocs, getDoc } from "firebase/firestore"
 
 export default {
     // Component props and initialization of data
@@ -67,7 +67,10 @@ export default {
     },
     //trigger function to fetch deals when the component is created
     created() {
+        // Load user favorites before fetching deals
+        this.loadFavoritesFromDatabase();
         this.fetchDeals()
+
     },
     watch: {
         // Watch for changes in selectedCategories and update display list accordingly
@@ -79,24 +82,67 @@ export default {
     },
     methods: {
         // Toggle favorite status for a deal
-        toggleHeart(dealBarcode) {
-            // Toggle the favorite status for the given item barcode
-            const index = this.favourites.indexOf(dealBarcode);
-            console.log('Toggle Heart - dealBarcode:', dealBarcode, 'Index:', index);
+        // Toggle favorite status for a deal
+        async toggleHeart(dealId) {
+            // Ensure that this.favourites is an array before calling indexOf
+            if (!Array.isArray(this.favourites)) {
+                this.favourites = [];
+            }
+
+            const index = this.favourites.indexOf(dealId);
+            console.log('Toggle Heart - dealId:', dealId, 'Index:', index);
+
             if (index === -1) {
                 // Add to favorites
-                this.favourites.push(dealBarcode);
+                this.favourites.push(dealId);
             } else {
                 // Remove from favorites
                 this.favourites.splice(index, 1);
             }
-            console.log('Updated Favourites:', this.favourites);
+
+            // Save the favorites to Firebase
+            await this.updateFavoritesInDatabase();
         },
-        // Check if a deal is in favorites
-        isFavourite(dealBarcode) {
-            // Check if the item is in favorites
-            return this.favourites.includes(dealBarcode);
+
+        async updateFavoritesInDatabase() {
+            // Update favorites in the Firebase user document
+            const userId = localStorage.getItem("userID");
+            const userDocRef = doc(db, 'users', userId);
+
+            await updateDoc(userDocRef, {
+                favorites: this.favourites,
+            });
         },
+        async loadFavoritesFromDatabase() {
+            try {
+                const userId = localStorage.getItem("userID");
+
+                if (!userId) {
+                    console.error('User ID not found.');
+                    return;
+                }
+
+                const userDocRef = doc(db, 'users', userId);
+                const userDocSnapshot = await getDoc(userDocRef);
+
+                if (userDocSnapshot.exists()) {
+                    const userData = userDocSnapshot.data();
+
+                    // Add these console logs for debugging
+                    console.log('userData:', userData);
+                    console.log('userData.favorites:', userData.favorites);
+
+                    // Ensure that userData.favorites is defined before assigning it
+                    this.favourites = userData.favorites || [];
+                } else {
+                    // If the user document doesn't exist, initialize this.favourites with an empty array
+                    this.favourites = [];
+                }
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+            }
+        },
+
         // Fetch deals from Firestore
         async fetchDeals() {
             // show preloader before fetching data
@@ -109,6 +155,10 @@ export default {
                 const obj = doc.data();
                 obj['id'] = doc.id;
                 deal_list.push(obj);
+                // Check if the deal is a favorite and add its id to the favourites array
+                if (obj.isFavorite) {
+                    this.favourites.push(obj.id);
+                }
             }
             this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
             this.display_list = deal_list; // initially set display_list to all deals
@@ -117,10 +167,9 @@ export default {
             // Call the method to update the display list based on selected categories after fetching deals
             this.updateDisplayList();
         },
-        // Update display list based on selected categories
         async updateDisplayList() {
             // If no categories are selected, show all deals
-            if (this.selectedCategories.length === 0) {
+            if (this.deal_list && this.deal_list.length > 0) {
                 this.display_list = this.deal_list;
             } else {
                 // Filter deals based on selected categories
@@ -132,9 +181,28 @@ export default {
             console.log('Display List:', this.display_list);
         },
 
-    },
-    mounted() {
-        console.log(this.deal);
+        // Check if a deal is in favorites
+        isFavourite(dealId) {
+            // Check if this.favourites is an array and not null or undefined
+            if (Array.isArray(this.favourites) && this.favourites.length > 0) {
+                // Check if the item is in favourites
+                return this.favourites.includes(dealId);
+            } else {
+                // If this.favourites is not an array or is empty, return false
+                return false;
+            }
+        },
+        // Handle the filter-applied event
+        handleFilterApplied(deal) {
+            const categories = ['selectedCategories', 'selectedDiscountTypes']; // Define your categories array
+            this.filteredDeals = this.deal_list.filter((deal) =>
+                categories.includes(deal.product_category) &&
+                discountTypes.includes(deal.discount_type)
+            );
+        },
+        mounted() {
+            console.log(this.deal);
+        }
     }
 }
 
