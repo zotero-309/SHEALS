@@ -285,7 +285,8 @@
   
 <script>
 import router from '../router'
-import gsap from "gsap";
+import gsap from 'gsap';
+
 
 
 export default {

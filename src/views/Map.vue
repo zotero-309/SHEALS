@@ -79,7 +79,7 @@
                     <section class="deals-section">
                         <div class="container">
                             <div class="row">
-                                <DealItem  :selectedCategories="selectedCategories" @display-list="getDisplayList" />
+                                <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" />
                             </div>
                         </div>
                     </section>
@@ -126,7 +126,12 @@
                 // markerOptions: { position: { lat: 0, lng: 0 }, label: "L", title: "LADY LIBERTY" },
                 
 
-                selectedCategories: [],
+                
+                selectedFilters: {
+                    selectedCategories: [],
+                    selectedDiscounts: [],
+                },
+
                 address: '',
                 error: '',
                 spinner: false,
@@ -157,13 +162,13 @@
 
 
         methods: {
-            handleFilterApplied(selectedCategories) {
+            handleFilterApplied(selectedFilters) {
                 // console.log('Selected Categories in AboutView:', selectedCategories);
-                this.selectedCategories = selectedCategories;
+                this.selectedFilters = selectedFilters;
                 // this.getDisplayList(this.display_list); // Wait for display_list to be updated
                 this.reRender = 0
                 this.locatorButtonPressed()
-                console.log("map receives", this.selectedCategories);
+                console.log("map receives", this.selectedFilters);
 
             },
             async getDisplayList (value) {
