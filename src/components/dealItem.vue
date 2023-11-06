@@ -6,7 +6,8 @@
     </div>
 
     <!-- Deal items section -->
-    <div v-for="deal in display_list" :key="deal.id" class="col-6 col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+    <div v-for="deal in display_list" :key="deal.id"
+        class="displayDeals col-6 col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
         <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
         <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
             <!-- deal box for each deal -->
@@ -75,9 +76,9 @@ export default {
             handler: 'updateDisplayList',
             immediate: true, // Execute the handler immediately on component creation
             deep: true, // Watch for changes in the array's elements
-            
+
         },
-        
+
     },
     methods: {
         // Toggle favorite status for a deal
@@ -175,7 +176,7 @@ export default {
             if (this.selectedFilters.selectedCategories.length === 0 &&
                 this.selectedFilters.selectedDiscounts.length === 0) {
                 this.display_list = this.deal_list;
-                
+
             } else {
                 // Filter deals based on selected categories or discounts
                 const filteredDeals = this.deal_list.filter(deal =>
@@ -186,7 +187,7 @@ export default {
                 // display_list now contains dealobjs that falls within selectedproduct cat / discount type
             }
             console.log('Updated Filtered Display List:', this.display_list);
-            
+
             this.$emit('display-list', this.display_list);
         },
         // Check if a deal is in favorites
@@ -208,24 +209,57 @@ export default {
 
 
 </script>
-  
+
 <style scoped>
 ::v-deep a {
     text-decoration: none;
 }
 
+/* Adjust spacing between dealitems for smaller and small screens */
+@media (max-width: 767.98px) {
+    .displayDeals {
+        padding: 4px;
+    }
+}
+
+/* Adjust spacing between dealitems for medium and large screens */
+@media (min-width: 767px) and (max-width: 1199.98px) {
+    .displayDeals {
+        padding: 8px;
+    }
+}
+
+/* STYLE FOR DEALITEM BOX */
 .deal-box {
     border-radius: 15px;
     overflow: hidden;
     display: block;
     font-family: "Cabin", sans-serif;
+    margin-bottom: 20px;
+
+}
+
+/* Adjust dealitemb box for small and smaller screens */
+@media (max-width: 767.98px) {
+    .deal-box {
+        border-radius: 2px;
+        margin-bottom: 0px;
+    }
+}
+
+/* Adjust dealitemb box for medium and large screens */
+@media (min-width: 767px) and (max-width: 1199.98px) {
+    .deal-box {
+        border-radius: 10px;
+        margin-bottom: 0px;
+    }
 }
 
 .deal-box .deal-item {
-    margin-bottom: 30px;
     position: relative;
 }
 
+/* STYLE FOR DEALITEM IMG */
 .deal-box .deal-item img {
     min-width: 100%;
     border-top-right-radius: 15px;
@@ -239,22 +273,22 @@ export default {
 /* Adjust img styling for smaller and small screens */
 @media (max-width: 767.98px) {
     .deal-box .deal-item img {
-        max-height: 210px;
+        max-height: 220px;
         border-top-right-radius: 10px;
         border-top-left-radius: 10px;
     }
 }
 
 /* Adjust img styling for medium and large screens */
-@media (min-width: 767) and (max-width: 1199.98px) {
+@media (min-width: 767px) and (max-width: 1199.98px) {
     .deal-box .deal-item img {
         max-height: 250px;
-        border-top-right-radius: 15px;
-        border-top-left-radius: 15px;
+        border-top-right-radius: 13px;
+        border-top-left-radius: 13px;
     }
 }
 
-/* Styles for deal information */
+/* STYLE FOR DEAL INFORMATION */
 .deal-item .ri-text {
     border: 1px solid #ebebeb;
     border-top: none;
@@ -270,11 +304,11 @@ export default {
     }
 }
 
-/* Styles for deal name */
+/* STYLE FOR DEALNAME */
 .deal-item .ri-text h4 {
     color: #19191a;
     margin-bottom: 10px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -297,7 +331,7 @@ export default {
     }
 }
 
-/* Styles for deal price */
+/* STYLE FOR DEAL PRICE BOX */
 .deal-item .ri-text h3 {
     font-size: 24px;
     color: #E97D2F;
@@ -322,28 +356,29 @@ export default {
 }
 
 
-/* Styling for span fs*/
+/* STYLE FOR 'perunit' TEXT */
 .deal-item .ri-text h3 span {
     font-size: 15px;
     font-weight: 400;
     color: #19191a;
+
 }
 
-/* Adjust span fs for smaller and small screens */
+/* Adjust fs for smaller and small screens */
 @media (max-width: 767.98px) {
     .deal-item .ri-text h3 span {
         font-size: 10px;
     }
 }
 
-/* Adjust span fs for large screens */
+/* Adjust fs for large screens */
 @media (min-width: 768px) and (max-width: 1199.98px) {
     .deal-item .ri-text h3 span {
         font-size: 12px;
     }
 }
 
-/* Styles for store name and address */
+/* STYLE FOR STORE NAME, ADDRESS */
 .deal-item .ri-text .store,
 .deal-item .ri-text .address {
     overflow: hidden;
@@ -354,7 +389,25 @@ export default {
     line-height: 20px;
 }
 
-/* Styles for heart button */
+/* Adjust for store name, address for smaller and small screens */
+@media (max-width: 767.98px) {
+
+    .deal-item .ri-text .store,
+    .deal-item .ri-text .address {
+        font-size: 12px;
+    }
+}
+
+/* Adjust store name, address fs for large screens */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+
+    .deal-item .ri-text .store,
+    .deal-item .ri-text .address {
+        font-size: 14px;
+    }
+}
+
+/* STYLE FOR HEART BUTTON */
 .heart-button {
     position: absolute;
     top: 12px;
@@ -371,7 +424,7 @@ export default {
     transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* Adjust for hear button e for smaller, small screens */
+/* Adjust heart button for smaller, small screens */
 @media (max-width: 575.98px) {
     .heart-button {
         top: 10px;
@@ -380,28 +433,29 @@ export default {
     }
 }
 
-/* Adjust for hear button e for medium, large screens */
+/* Adjust for heart button for medium, large screens */
 @media (min-width: 576px) and (max-width: 1199.98px) {
     .heart-button {
         font-size: 25px;
     }
 }
 
-/* Styles for heart button on hover */
+/* STYLE FOR HEARTBUTTON HOVER */
 .heart-button:hover {
     transform: scale(1.2);
 }
 
-/* Styles for filled heart icon */
+/* STYLE FOR FILLED HEART ICON */
 .fa-heart {
     -webkit-text-stroke: 0.3x rgb(212, 42, 42);
     /* Add a red outline */
     color: rgb(212, 42, 42);
 }
 
-/* Styles for outline heart icon */
+/* STYLE FOR HEART ICON OUTLINE */
 .fa-heart-o {
     color: white;
 }
 </style>
 
+  
