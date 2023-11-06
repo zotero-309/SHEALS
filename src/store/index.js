@@ -150,7 +150,7 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
         console.log(user_rec.catpref)
         console.log(user_rec.dealpref)
         const messages = [];
-        if (user_rec.homeaddress == null) {
+        if (user_rec.homeaddress == "") {
           messages.push("Please enter your home address.");
         }
         if (user_rec.catpref == "") {
@@ -161,7 +161,8 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
         }
         if (messages.length === 0) {
           router.push("/");
-        } else {
+        } 
+        else {
           alert(messages.join("\n"));
         }
       } 
