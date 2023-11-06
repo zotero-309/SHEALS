@@ -23,6 +23,7 @@
                                             <input type='text' placeholder='Your address' v-model='address' ref='autocomplete'/>
                                             <i class='dot circle link icon' @click='locatorButtonPressed'></i>
                                             <!-- type of icon & how it should be displayed -->
+                                        
                                         </div>
                                     </div> 
                                     <!-- <button class='ui button'>Go</button> -->
