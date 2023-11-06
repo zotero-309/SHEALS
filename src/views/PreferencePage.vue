@@ -105,8 +105,18 @@
               // Only update if the user document exists
               item.value.email = userDoc.data().email;
               item.value.address = userDoc.data().homeaddress;
-              item.value.catpref = userDoc.data().catpref;
-              item.value.dealpref = userDoc.data().dealpref;
+              if (Array.isArray(userDoc.data().catpref)) {
+                item.value.catpref = userDoc.data().catpref;
+              }
+              else {
+                item.value.catpref = [];
+              }
+              if (Array.isArray(userDoc.data().dealpref)) {
+                item.value.dealpref = userDoc.data().dealpref;
+              }
+              else {
+                item.value.dealpref = [];
+              }
               selectedCategories.value = item.value.catpref;
               selectedDealTypes.value = item.value.dealpref;
               document.getElementById("address").value = item.value.address;
