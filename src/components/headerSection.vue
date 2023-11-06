@@ -210,7 +210,7 @@
 
 							<!-- map button (jn) -->
 							<router-link to="/map">
-								<button class="filter-button" @click='locatorButtonPressed'>Map</button>
+								<button class="filter-button">Map</button>
 							</router-link>
 
 							<!-- Filter Modal Open -->

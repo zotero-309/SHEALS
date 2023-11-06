@@ -327,7 +327,10 @@ export default {
       // Retrieve the user's email from localStorage
       const userEmail = localStorage.getItem("userEmail");
       if (!userEmail) {
-        alert("User email not found. Please log in.");
+        // alert("User email not found. Please log in.");
+        if (confirm("Please log in first to post comment.")) {
+            this.$router.push('/login')
+        }    
         return;
       }
 

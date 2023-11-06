@@ -84,7 +84,10 @@ export default {
         async toggleHeart(dealId) {
             // Check if the user is logged in
             if (!this.$store.state.user) {
-                alert("Please log in first to add to favorites.");
+                // alert("Please log in first to add to favorites.");
+                if (confirm("Please log in first to add to favorites.")) {
+                    this.$router.push('/login')
+                }          
                 return;
             }
             // Ensure that this.favourites is an array before calling indexOf
