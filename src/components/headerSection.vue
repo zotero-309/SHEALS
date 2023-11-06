@@ -62,6 +62,7 @@
 					<ul>
 						<li><a href="#">Login</a></li>
 						<li><a href="#">Register</a></li>
+						<li><span @click="PreferencePage">Preferences</span></li>
 					</ul>
 				</div>
 			</div>
@@ -166,7 +167,7 @@
 		</div>
 
 		<!-- Menu Item Section -->
-		<div class="menu-item" v-if="$route.name !== 'Login'">
+		<div class="menu-item" v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
