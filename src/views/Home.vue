@@ -3,6 +3,7 @@
     <!-- listen for filter-applied event and calling updateDeal method -->
     <HeaderSection @filter-applied="updateDeals" />
     <!-- Header Section End -->
+    
     <!-- Breadcrumb Section Begin -->
     <div class="breadcrumb-section">
         <div class="container">

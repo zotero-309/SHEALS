@@ -10,6 +10,7 @@ import UpdateDeal from "../views/UpdateDeal.vue"
 import Cart from "../views/Cart.vue"
 import PreferencePage from "../views/PreferencePage.vue"
 import DealRedeem from "../views/DealRedeem.vue"
+import Map from "../views/Map.vue"
 
 
 const routes = [
@@ -40,6 +41,12 @@ const routes = [
     component: ItemDetails,
 
   },
+  {
+    path: "/map",
+    name: "map",
+    component: Map
+  },
+
 
   {
     path: "/storehome",

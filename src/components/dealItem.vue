@@ -49,6 +49,7 @@ import { doc, updateDoc, collection, getDocs, getDoc } from "firebase/firestore"
 
 export default {
     // Component props and initialization of data
+    emits: ['display-list'],
     props: {
         deal: Object,
         deals: Array,
@@ -74,7 +75,9 @@ export default {
             handler: 'updateDisplayList',
             immediate: true, // Execute the handler immediately on component creation
             deep: true, // Watch for changes in the array's elements
+            
         },
+        
     },
     methods: {
         // Toggle favorite status for a deal
@@ -172,6 +175,7 @@ export default {
             if (this.selectedFilters.selectedCategories.length === 0 &&
                 this.selectedFilters.selectedDiscounts.length === 0) {
                 this.display_list = this.deal_list;
+                
             } else {
                 // Filter deals based on selected categories or discounts
                 const filteredDeals = this.deal_list.filter(deal =>
@@ -182,6 +186,8 @@ export default {
                 // display_list now contains dealobjs that falls within selectedproduct cat / discount type
             }
             console.log('Updated Filtered Display List:', this.display_list);
+            
+            this.$emit('display-list', this.display_list);
         },
         // Check if a deal is in favorites
         isFavourite(dealId) {
@@ -399,4 +405,3 @@ export default {
 }
 </style>
 
-  

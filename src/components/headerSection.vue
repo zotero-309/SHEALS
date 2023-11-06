@@ -208,6 +208,11 @@
 								<span>Filter</span>
 							</button>
 
+							<!-- map button (jn) -->
+							<router-link to="/map">
+								<button class="filter-button" @click='locatorButtonPressed'>Map</button>
+							</router-link>
+
 							<!-- Filter Modal Open -->
 							<div v-if="showModal" class="modal-container"
 								:class="{ 'fade-enter-active': showAnimation, 'fade-leave-active': showAnimation }">
