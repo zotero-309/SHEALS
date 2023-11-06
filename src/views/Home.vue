@@ -1,7 +1,7 @@
 <template>
     <!-- Header Section Begin -->
     <!-- listen for filter-applied event and calling updateDeal method -->
-    <HeaderSection @filter-applied="updateDeals"/>
+    <HeaderSection @filter-applied="updateDeals" />
     <!-- Header Section End -->
     <!-- Breadcrumb Section Begin -->
     <div class="breadcrumb-section">
@@ -21,7 +21,7 @@
     <section class="deals-section">
         <div class="container">
             <div class="row">
-                <dealItem :selectedCategories="selectedCategories" />
+                <dealItem :selectedFilters="selectedFilters" />
             </div>
         </div>
     </section>
@@ -40,15 +40,41 @@ export default {
     },
     data() {
         return {
-            selectedCategories: [], // store selected categories
-        };
+            selectedFilters: {
+                selectedCategories: [],
+                selectedDiscounts: [],
+            }
+        }
     },
+    // computed: {
+    //     selectedFilters() {
+    //         // Use a computed property to avoid conflicts
+    //         return this.selectedFilters;
+    //     }
+    // },
     methods: {
-        updateDeals(selectedCategories) {
-            // Handle the selected categories, you can update data or trigger other actions
-            this.selectedCategories = selectedCategories;
-        },
-    },
-}
+        updateDeals(selectedFilters) {
+            // Handle the selected categories and discounts, and update the filtered deals
+            this.selectedFilters = selectedFilters;
 
+            // console.log(this.selectedFilters)
+
+            // this.updateFilteredDeals();
+        },
+        // updateFilteredDeals() {
+        //     // Check if necessary data is defined before filtering deals
+        //     if (this.deal_list && this.selectedCategories && this.selectedDiscounts) {
+        //         this.filteredDeals = this.deal_list.filter(
+        //             (deal) =>
+        //                 this.selectedCategories.includes(deal.product_category) &&
+        //                 this.selectedDiscounts.includes(deal.discount_type)
+        //         );
+        //     } else {
+        //         // Handle the case where data is undefined
+        //         console.error('Some necessary data is undefined.');
+        //         this.filteredDeals = []; // Set filteredDeals to an empty array or handle it as appropriate
+        //     }
+        // }
+    }
+}
 </script>

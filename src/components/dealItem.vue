@@ -52,10 +52,7 @@ export default {
     props: {
         deal: Object,
         deals: Array,
-        selectedCategories: {
-            type: Array,
-            default: () => [],
-        },
+        selectedFilters: Object,
     },
     data() {
         return {
@@ -70,18 +67,16 @@ export default {
         // Load user favorites before fetching deals
         this.loadFavoritesFromDatabase();
         this.fetchDeals()
-
     },
     watch: {
-        // Watch for changes in selectedCategories and update display list accordingly
-        selectedCategories: {
+        // Watch for changes in selectedFilters
+        selectedFilters: {
             handler: 'updateDisplayList',
             immediate: true, // Execute the handler immediately on component creation
             deep: true, // Watch for changes in the array's elements
         },
     },
     methods: {
-        // Toggle favorite status for a deal
         // Toggle favorite status for a deal
         async toggleHeart(dealId) {
             // Ensure that this.favourites is an array before calling indexOf
@@ -168,19 +163,21 @@ export default {
             this.updateDisplayList();
         },
         async updateDisplayList() {
-            // If no categories are selected, show all deals
-            if (this.deal_list && this.deal_list.length > 0) {
+            // If no categories and discounts are selected, show all deals
+            if (this.selectedFilters.selectedCategories.length === 0 && 
+                this.selectedFilters.selectedDiscounts.length === 0) {
                 this.display_list = this.deal_list;
             } else {
-                // Filter deals based on selected categories
+                // Filter deals based on selected categories or discounts
                 const filteredDeals = this.deal_list.filter(deal =>
-                    this.selectedCategories.includes(deal.product_category)
+                    this.selectedFilters.selectedCategories.includes(deal.product_category) ||
+                    this.selectedFilters.selectedDiscounts.includes(deal.deal_type) //deal type is the field name of discount type in firebase
                 );
                 this.display_list = filteredDeals;
+                // display_list now contains dealobjs that falls within selectedproduct cat / discount type
             }
-            console.log('Display List:', this.display_list);
+            console.log('Updated Filtered Display List:', this.display_list);
         },
-
         // Check if a deal is in favorites
         isFavourite(dealId) {
             // Check if this.favourites is an array and not null or undefined
@@ -191,14 +188,6 @@ export default {
                 // If this.favourites is not an array or is empty, return false
                 return false;
             }
-        },
-        // Handle the filter-applied event
-        handleFilterApplied(deal) {
-            const categories = ['selectedCategories', 'selectedDiscountTypes']; // Define your categories array
-            this.filteredDeals = this.deal_list.filter((deal) =>
-                categories.includes(deal.product_category) &&
-                discountTypes.includes(deal.discount_type)
-            );
         },
         mounted() {
             console.log(this.deal);

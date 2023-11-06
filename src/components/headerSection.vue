@@ -202,43 +202,63 @@
 							</nav>
 
 							<!-- Filter Modal Component -->
-							<button @click="openModal" class="filter-button">
+							<button @click="toggleModal" class="filter-button">
 								<i class="fa fa-sliders custom-size-icon"></i>
 								<span>Filter</span>
 							</button>
 
 							<!-- Filter Modal Open -->
-							<div v-if="showModal" class="modal-container">
+							<div v-if="showModal" class="modal-container"
+								:class="{ 'fade-enter-active': showAnimation, 'fade-leave-active': showAnimation }">
 								<div class="modal-background" @click="closeModal"></div>
-								<div class="modal-content">
-									
+								<div class="modal-content"
+									:class="{ 'fade-enter-active': showAnimation, 'fade-leave-active': showAnimation }">
 									<div class="modal-header">
 										<h4 class="modal-title">Filters</h4>
 										<button type="button" class="close" @click="closeModal">
 											<span aria-hidden="true">&times;</span>
 										</button>
 									</div>
-									<div class="scrollable-content">
-									<!-- price slider -->
-									<div class="modal-body fs-5 py-3"> Select your categories: </div>
 
-									<!-- category filter -->
-									<div class="container-fluid">
-										<div class="row	">
-											<div class="categoryFilter col-md-3 mb-2 " v-for="cat in categoryList"
-												:key="cat">
-												<input type="checkbox" :id="cat" :value="cat" v-model="selectedCategories">
-												<label class="btn btn-outline-dark" :for="cat">{{ cat }}</label>
+									<div class="scrollable-content">
+										<!-- price slider -->
+										<div class="modal-body fs-5 py-3"> Select your categories: </div>
+
+										<!-- category filter -->
+										<div class="container-fluid">
+											<div class="row">
+												<div v-for="cat in categoryList" :key="cat"
+													class="categoryFilter col-md-3 my-2">
+													<input type="checkbox" :id="cat" :value="cat"
+														v-model="selectedCategories">
+													<label :class="{ 'checked': selectedCategories.includes(cat) }"
+														class="categoryBox" :for="cat"
+														:style="{ backgroundImage: 'url(' + getImageUrl(cat) + ')' }">
+														<span class="categoryLabel">{{ cat }}</span>
+													</label>
+												</div>
 											</div>
 										</div>
-									</div>
-								</div>
-									<!-- below codes are for checking selected categories are captured -->
-									<!-- <br>
-									  <strong>You have chosen: </strong> {{ selectedCategories }}
-									  <strong>Items in chosen category(s)</strong> -->
 
-									<div>
+										<div class="modal-body fs-5 py-3"> Select your discount types: </div>
+										<!-- discount filter -->
+										<div class="container-fluid">
+											<div class="row">
+												<div v-for="discount in discountList" :key="discount" class="col-md-4 mb-2">
+													<div class="discountFilter">
+														<input type="checkbox" :id="discount" :value="discount"
+															v-model="selectedDiscounts">
+
+														<label class="btn btn-outline-dark" :for="discount">
+															<i
+																:class="{ 'fa fa-plus': !selectedDiscounts.includes(discount), 'fa fa-check': selectedDiscounts.includes(discount) }"></i>
+															<span class="discount-label"> {{ discount }} </span>
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+
 										<button class="btn btn-outline-dark my-3 custom-btn-width-L"
 											@click="applyFilter">Apply
 											Filter</button>
@@ -246,8 +266,7 @@
 											@click="resetFilter">Clear
 											Selection</button>
 									</div>
-								
-							</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -256,39 +275,100 @@
 		</div>
 	</header>
 </template>
+
   
 <script>
 import router from '../router'
+import gsap from "gsap";
+
+
 export default {
 	emits: ['filter-applied'],
 	data() {
 		return {
 			isMenuOpen: false,
 			showModal: false,
+			showAnimation: false,
 			selectedCategories: [],
-			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
+			selectedDiscounts: [],
+			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Dairy, Chilled & Eggs', 'Drinks',
 				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
 				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
-				'Snacks & Confectionery', 'Vegetables']
+				'Snacks & Confectionery', 'Vegetables'],
+			discountList: ['1 For 1', 'Discounts', 'Bundle Deals'],
 		};
 	},
 	methods: {
-		toggleMenu() {
-			this.isMenuOpen = !this.isMenuOpen;
-		},
-		openModal() {
-			this.showModal = true;
+		// toggleMenu() {
+		// 	this.isMenuOpen = !this.isMenuOpen;
+		// },
+		// openModal() {
+		// 	console.log('openModal method is called');
+		// 	this.showModal = true;
+		// 	this.showAnimation = true;
+
+		// 	setTimeout(() => {
+		// 		const modalContainer = document.querySelector('.modal-container');
+		// 		console.log('Modal Container:', modalContainer);
+		// 		if (modalContainer) {
+		// 			gsap.to(modalContainer, { opacity: 1, duration: 0.3 });
+		// 		}
+		// 	}, 0);
+		// },
+		toggleModal() {
+			this.showModal = !this.showModal;
+			this.showAnimation = true;
+
+			// Toggle GSAP animation class
+			if (this.showModal) {
+				this.$nextTick(() => {
+					const modalContainer = document.querySelector('.modal-container');
+					if (modalContainer) {
+						gsap.to(modalContainer, { opacity: 1, duration: 0.3 });
+					}
+				})
+			} else {
+				gsap.to('.modal-container', { opacity: 0, duration: 0.3 });
+				gsap.to('.modal-content', { opacity: 0, duration: 0.3 });
+			}
 		},
 		closeModal() {
 			this.showModal = false;
 		},
 		applyFilter() {
-			console.log('Applying filter with categories:', this.selectedCategories);
-			this.$emit('filter-applied', this.selectedCategories);
-			this.closeModal();
+			try {
+				console.log('Selected Categories:', this.selectedCategories);
+				console.log('Selected Discounts:', this.selectedDiscounts);
+
+				// Ensure that selectedCategories and selectedDiscounts are defined
+				if (!this.selectedCategories || !this.selectedDiscounts) {
+					console.error('Selected categories or discounts are undefined.');
+					return;
+				}
+
+				this.selectedFilters = {
+					selectedCategories: this.selectedCategories.slice(),
+					selectedDiscounts: this.selectedDiscounts.slice(),
+				};
+
+				console.log('Captured filter in HeaderSection:', this.selectedFilters);
+
+				// Emit the event with the captured filter data
+				this.$emit('filter-applied', this.selectedFilters);
+				this.closeModal();
+			} catch (error) {
+				console.error('Error in applyFilter:', error);
+			}
 		},
 		resetFilter() {
 			this.selectedCategories = []; // Reset selectedCategories to an empty array
+			this.selectedDiscounts = []; // Reset selectedDiscounts to an empty array
+		},
+		getImageUrl(category) {
+			// Remove spaces, commas, and ampersands from the category name
+			const sanitizedCategory = category.replace(/[\s, &]+/g, '');
+			// Assuming your images are stored in the /img/ directory
+			return `/img/${sanitizedCategory}.jpg`;
 		},
 		PreferencePage() {
 			router.push("/questionaire");
@@ -299,26 +379,28 @@ export default {
   
 <style scoped>
 .scrollable-content {
-  max-height: 60vh; /* Adjust the height as per your needs */
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding-right: 2px; /* Create space for the scrollbar */
+	max-height: 75vh;
+	/* Adjust the height as per your needs */
+	overflow-y: auto;
+	/* Enable vertical scrolling */
+	padding-right: 2px;
+	/* Create space for the scrollbar */
 }
 
 /* Track styles */
 .scrollable-content::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
+	width: 8px;
 }
 
 /* Handle styles */
 .scrollable-content::-webkit-scrollbar-thumb {
-  background: lightgray;
-  border-radius: 5px;
+	background: #e0e0e0;
+	border-radius: 5px;
 }
 
 .input-group .btn {
-    position: relative;
-    z-index: 0;
+	position: relative;
+	z-index: 0;
 }
 
 a,
@@ -499,9 +581,11 @@ a:hover {
 	-o-transition: all 0.3s;
 	transition: all 0.3s;
 }
+
 .profile-option .profile-dropdown ul li:hover {
-    color: #E97D2F 
+	color: #E97D2F
 }
+
 /* Menu Section */
 .menu-item {
 	display: flex;
@@ -748,6 +832,18 @@ a:hover {
 /*---------------------
     Modal
     -----------------------*/
+
+/* Add GSAP animation classes
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+} */
+
 .modal-container {
 	position: fixed;
 	top: 0;
@@ -755,6 +851,7 @@ a:hover {
 	width: 100%;
 	height: 100%;
 	font-family: "Cabin", sans-serif;
+	transition: opacity 0.3s
 }
 
 .modal-background {
@@ -772,7 +869,7 @@ a:hover {
 	background-color: #fff;
 	padding: 10px 30px 15px 30px;
 	max-width: 600px;
-	overflow-y:auto;
+	overflow-y: auto;
 	max-height: 100%;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	z-index: 1000;
@@ -786,7 +883,6 @@ a:hover {
 }
 
 .close {
-	/* display: flex; */
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -800,51 +896,138 @@ a:hover {
 .modal-body {
 	display: block;
 	width: 100%;
+	
 }
 
 .modal-body .row {
 	margin-bottom: 10px;
-	/* display: flex; */
 }
 
 .categoryFilter {
-	padding: 0px;
-	margin: 0px;
+	margin: 0;
+	padding: 0;
 }
 
-.categoryFilter input {
+.categoryFilter input,
+.discountFilter input {
 	display: none;
-	/* Hide the actual checkboxes */
+}
+.categoryFilter .categoryBox:hover {
+    transform: scale(1.05);
 }
 
-.categoryFilter label {
-	/* border: 1.5px solid #e5e5e5; */
+.categoryFilter .categoryBox {
+	transition: transform 0.3s ease;
 	display: flex;
+	position: relative;
 	align-items: center;
 	justify-content: center;
+	border-radius: 10px;
+	height: 120px;
+	background-size: cover;
+	background-position: center;
+	text-align: center;
+	line-height: 1;
+	margin: 0 5px;
 	cursor: pointer;
+	overflow: hidden;
+	/* Hide overflow to make sure overlay doesn't extend beyond the box */
+
 }
 
-/* Style for checked checkboxes */
-.categoryFilter input:checked+label {
+.categoryFilter .categoryLabel {
+	cursor: pointer;
+	color: white;
+	font-size: 19px;
+	font-weight: 900;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+	display: block;
+	position: relative;
+	/* Ensure z-index works correctly */
+	z-index: 1;
+	/* Ensure text appears above the overlay */
+	transition: color 0.3s ease;
+	/* Add color transition */
+}
+
+
+.categoryFilter .categoryBox.checked .categoryLabel {
+	/* hide text when checked */
+	display: none;
+}
+
+.categoryFilter .categoryBox.checked::after {
+	/* Styles for the tick */
+	content: '✔';
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 50px;
+	color: white;
+	position: absolute;
+}
+
+.categoryFilter {
+	content: '✔';
+}
+
+.discountFilter {
+	display: inline-block;
+}
+
+.container-fluid {
+	display: flex;
+	flex-wrap: wrap;
+	/* Allow wrapping to the next line if there's not enough space */
+	justify-content: flex-start;
+}
+
+.discountFilter label {
+	white-space: nowrap;
+	/* Prevent text wrapping */
+}
+
+.discountFilter .discount-label {
+	margin: 10px;
+}
+
+.discountFilter label .fa::before {
+	font-size: 18px;
+	margin-left: 7px;
+	/* spcae between icon and discount text */
+	color: #393939;
+	/* color of +  */
+	display: inline-block;
+	/* Ensure inline-block for consistent sizing */
+}
+
+/* plus sign to change to white when hover */
+.discountFilter label:hover .fa::before {
+    color: white;
+}
+
+
+/* style discount button and text after checked */
+.discountFilter input:checked+label {
 	background-color: rgb(40, 40, 40);
 	color: white;
 }
 
-.btn {
-	font-weight: 500;
-	border-radius: 25px;
-	cursor: pointer;
-	border-width: 1.5px;
-
+/* style tick to be white */
+.discountFilter input:checked+label i.fa::before {
+	color: white;
 }
 
-.categoryFilter .btn {
-	transition: background-color 0.3s, color 0.3s;
-	width: 130px;
-	/* Set a fixed width for the button */
-	height: 120px;
-	/*Set a fixed height for the button  */
+.custom-btn-width-R,
+.custom-btn-width-L {
+	transition: transform 0.3s ease;
+	/* Add a smooth transition on hover */
+}
+
+.custom-btn-width-R:hover,
+.custom-btn-width-L:hover {
+	transform: scale(1.05);
+	/* Increase size on hover for a subtle effect */
 }
 
 .custom-btn-width-R {
