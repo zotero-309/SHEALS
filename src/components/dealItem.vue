@@ -79,6 +79,11 @@ export default {
     methods: {
         // Toggle favorite status for a deal
         async toggleHeart(dealId) {
+            // Check if the user is logged in
+            if (!this.$store.state.user) {
+                alert("Please log in first to add to favorites.");
+                return;
+            }
             // Ensure that this.favourites is an array before calling indexOf
             if (!Array.isArray(this.favourites)) {
                 this.favourites = [];
@@ -164,7 +169,7 @@ export default {
         },
         async updateDisplayList() {
             // If no categories and discounts are selected, show all deals
-            if (this.selectedFilters.selectedCategories.length === 0 && 
+            if (this.selectedFilters.selectedCategories.length === 0 &&
                 this.selectedFilters.selectedDiscounts.length === 0) {
                 this.display_list = this.deal_list;
             } else {
