@@ -39,134 +39,124 @@
 </template>
 
 <script>
-  import { useStore } from 'vuex';
-  import { ref, onMounted } from 'vue';
-  import HeaderSection from '../components/headerSection.vue';
-  import { doc, getDoc } from "firebase/firestore"
-  import { auth, db } from '../firebase'
+ import { useStore } from 'vuex';
+import { ref, onMounted } from 'vue';
+import HeaderSection from '../components/headerSection.vue';
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from '../firebase';
 
-  export default {
-    components: { HeaderSection },
-    data() {
-        return {
-            home_address: "",
-            food_categories: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
+export default {
+  components: { HeaderSection },
+  data() {
+    return {
+      home_address: "",
+      food_categories: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
                 'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood', 'Pet Supplies',
                 'Rice, Noodles & Cooking Ingredients', 'Snacks & Confectionery', 'Vegetables'],
-            deal_types: ['Percentage discounts', 'Price discounts',
+      deal_types: ['Percentage discounts', 'Price discounts',
                 '1 for 1 deals', '"X for $Y" deals'],
-            addressInput: "",
-        };
-    },
-    setup() {
-        const store = useStore();
-        const addressInput = ref(null);
-        const selectedCategories = ref([]);
-        const selectedDealTypes = ref([]);
-        const item = ref({});
+      addressInput: "",
+    };
+  },
+  setup() {
+    const store = useStore();
+    const addressInput = ref(null);
+    const selectedCategories = ref([]);
+    const selectedDealTypes = ref([]);
 
-        const updateSelectedCategories = (category) => {
-            if (!selectedCategories.value.includes(category)) {
-                selectedCategories.value.push(category);
-            }
-            else {
-              selectedCategories.value = selectedCategories.value.filter((c) => c !== category);
-            }
-        };
-        const updateSelectedDealTypes = (dealType) => {
-            if (!selectedDealTypes.value.includes(dealType)) {
-              selectedDealTypes.value.push(dealType);
-            }
-            else {
-              selectedDealTypes.value = selectedDealTypes.value.filter((d) => d !== dealType);
-            }
-        };
+    const updateSelectedCategories = (category) => {
+      if (!selectedCategories.value.includes(category)) {
+        selectedCategories.value.push(category);
+      } else {
+        selectedCategories.value = selectedCategories.value.filter((c) => c !== category);
+      }
+    };
+    const updateSelectedDealTypes = (dealType) => {
+      if (!selectedDealTypes.value.includes(dealType)) {
+        selectedDealTypes.value.push(dealType);
+      } else {
+        selectedDealTypes.value = selectedDealTypes.value.filter((d) => d !== dealType);
+      }
+    };
 
-        onMounted(() => {
-            // Access the DOM element with the id "address"
-            var autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"));
-            autocomplete.setComponentRestrictions({
-                country: ["sg"]
-            });
-            autocomplete.addListener("place_changed", () => {
-                addressInput.value = document.getElementById("address").value;
-            });
-            document.getElementById("address").addEventListener("input", () => {
-                if (document.getElementById("address").value === '') {
-                    addressInput.value = null;
-                }
-            });
-        });
+    // Fetch and update preferences from Firebase
+    onMounted(async () => {
+      try {
+        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        if (userDoc.exists()) {
+          // Update user preferences
+          item.value.email = userDoc.data().email;
+          item.value.address = userDoc.data().homeaddress;
+          item.value.catpref = Array.isArray(userDoc.data().catpref) ? userDoc.data().catpref : [];
+          item.value.dealpref = Array.isArray(userDoc.data().dealpref) ? userDoc.data().dealpref : [];
+          selectedCategories.value = item.value.catpref;
+          selectedDealTypes.value = item.value.dealpref;
+          addressInput.value = item.value.address;
+          localStorage.setItem('userPreferences', JSON.stringify({
+            address: addressInput.value,
+            selectedCategories: selectedCategories.value,
+            selectedDealTypes: selectedDealTypes.value,
+          }));
+          
+        }
+      } catch (error) {
+        console.error('Error retrieving data from Firebase:', error);
+      }
+      var autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"));
+        autocomplete.setComponentRestrictions({
+            country: ["sg"]
+      });
+      autocomplete.addListener("place_changed", () => {
+          addressInput.value = document.getElementById("address").value;
+      });
+      // Save preferences in local storage
+      const storedPreferences = localStorage.getItem('userPreferences');
+      if (storedPreferences) {
+        const parsedPreferences = JSON.parse(storedPreferences);
+        addressInput.value = parsedPreferences.address
+        selectedCategories.value = parsedPreferences.selectedCategories;
+        selectedDealTypes.value = parsedPreferences.selectedDealTypes;
+        document.getElementById("address").value = addressInput.value;
+      }
+    });
 
-        onMounted(async () => {
-          try {
-            const userDoc = await getDoc(doc(db,"users",auth.currentUser.uid));
-            if (userDoc.exists()) {
-              // Only update if the user document exists
-              item.value.email = userDoc.data().email;
-              item.value.address = userDoc.data().homeaddress;
-              if (Array.isArray(userDoc.data().catpref)) {
-                item.value.catpref = userDoc.data().catpref;
-              }
-              else {
-                item.value.catpref = [];
-              }
-              if (Array.isArray(userDoc.data().dealpref)) {
-                item.value.dealpref = userDoc.data().dealpref;
-              }
-              else {
-                item.value.dealpref = [];
-              }
-              selectedCategories.value = item.value.catpref;
-              selectedDealTypes.value = item.value.dealpref;
-              document.getElementById("address").value = item.value.address;
-            }
-          } catch (error) {
-            console.error('Error retrieving data from Firebase:', error);
-          }
-        });
+    const addPreference = () => {
+      addressInput.value = document.getElementById("address").value;
+      const data = {
+        address: addressInput.value,
+        categories: selectedCategories.value,
+        dealTypes: selectedDealTypes.value,
+      };
+      store.dispatch('addPreference', data);
+    };
 
-        const addPreference = () => {
-            addressInput.value = document.getElementById("address").value
-            const data = {
-                address: addressInput.value,
-                categories: selectedCategories.value,
-                dealTypes: selectedDealTypes.value,
-            };
-            store.dispatch('addPreference', data);
-            console.log(addressInput.value);
-            console.log(selectedCategories.value);
-            console.log(selectedDealTypes.value);
-        };
+    const isCategoryChecked = (cat) => {
+        if (selectedCategories.value && selectedCategories.value.includes(cat)) {
+            return true
+        }
+        else {
+            return false
+        }
+    };
+    const isDealChecked = (deal) =>  {
+      if (selectedDealTypes.value && selectedDealTypes.value.includes(deal)) {
+          return true
+      }
+      else {
+          return false
+      }
+    };
 
-        const isCategoryChecked = (cat) => {
-            if (item.value.catpref && item.value.catpref.includes(cat)) {
-                return true
-            }
-            else {
-                return false
-            }
-        };
-        const isDealChecked = (deal) =>  {
-          if (item.value.dealpref && item.value.dealpref.includes(deal)) {
-              return true
-          }
-          else {
-              return false
-          }
-        };
-        
-        return {
-            addPreference,
-            updateSelectedCategories,
-            updateSelectedDealTypes,
-            isCategoryChecked,
-            isDealChecked,
-        };
+    return {
+      addPreference,
+      updateSelectedCategories,
+      updateSelectedDealTypes,
+      isCategoryChecked,
+      isDealChecked,
+    };
+  },
+};
 
-    },
-    
-}
 
 </script>
 
