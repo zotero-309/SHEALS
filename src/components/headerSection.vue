@@ -157,7 +157,9 @@
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="PreferencePage">Preferences</span></li>
-										<router-link :to="{name:'CommunityCreate'}"><li><span>Add Deal</span></li></router-link>
+										<router-link :to="{name:'CommunityCreate'}"><li><span>Upload Deal</span></li></router-link>
+										<router-link :to="{name:'PersonalUploads'}"><li><span>Deal List</span></li></router-link>
+
 									</ul>
 								</div>
 							</div>
@@ -168,7 +170,7 @@
 		</div>
 
 		<!-- Menu Item Section -->
-		<div class="menu-item" v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage'">
+		<div class="menu-item" v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' && $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads'&& $route.name !== 'CommunityUpdate'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
