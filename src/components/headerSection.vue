@@ -157,6 +157,7 @@
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="PreferencePage">Preferences</span></li>
+										<router-link :to="{name:'CommunityCreate'}"><li><span>Add Deal</span></li></router-link>
 									</ul>
 								</div>
 							</div>
@@ -379,7 +380,7 @@ export default {
 		},
 		PreferencePage() {
 			router.push("/questionaire");
-		}
+		},
 	},
 };
 </script>
