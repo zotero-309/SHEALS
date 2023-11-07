@@ -167,8 +167,18 @@
             //event listener
             autocomplete.addListener("place_changed", () => {
                 let place = autocomplete.getPlace();
-                console.log(place);
-                this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
+                // console.log(place);
+                let newUlocation = []
+                newUlocation.push({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+                for (let autoaddr of this.locations) {
+                    if (JSON.stringify(this.center) !== JSON.stringify(autoaddr)) {
+                        newUlocation.push(autoaddr)
+                    }
+                }
+                this.locations = newUlocation
+                
+                
+                // this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
             });
             this.locatorButtonPressed();
         },
@@ -231,91 +241,34 @@
                 let newlocations = []
  
                 for (let addr of this.orilocations) {
-                    if (addr != this.center) {
-                        // console.log(addr)
-                        let position = new google.maps.LatLng(addr.lat, addr.lng)
-                        try {
-                            let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
-                            console.log(cdistance)
-                            if (cdistance <= this.uDistance) {
-                                // console.log(newlocations)
-                                // let index = newlocations.indexOf(addr)
-                                // let todelete = newlocations.splice(index,1)
-                                // console.log(todelete)
-                                newlocations.push(addr)
-                                console.log(newlocations.length)
-                                console.log(newlocations)
-                            }
-                            // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
-                            //     newlocations.push(addr)
-                            // }
-                        } catch (error) {
-                            // Handle any potential errors here...
-                            console.error('Error calculating distance:', error);
+                    
+                    // console.log(addr)
+                    let position = new google.maps.LatLng(addr.lat, addr.lng)
+                    try {
+                        let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
+                        console.log(cdistance)
+                        if (cdistance <= this.uDistance) {
+                            // console.log(newlocations)
+                            // let index = newlocations.indexOf(addr)
+                            // let todelete = newlocations.splice(index,1)
+                            // console.log(todelete)
+                            newlocations.push(addr)
+                            console.log(newlocations.length)
+                            console.log(newlocations)
                         }
+                        // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
+                        //     newlocations.push(addr)
+                        // }
+                    } catch (error) {
+                        // Handle any potential errors here...
+                        console.error('Error calculating distance:', error);
                     }
+                    
                     this.locations = newlocations
                 }
                 
                 
             },
-
-            // getStores() {
-
-            //     this.markers = {};
-                
-            //     console.log(this.display_list)
-            //     for (let i = 0; i < this.display_list.length; i++) {
-            //         let store = this.display_list[i].uploaded_by.name
-            //         console.log(store)
-            //         let deal_category = this.display_list[i].product_category
-            //         // if (this.store_list.includes(store)) {
-            //         //     let current_cat = this.markers[store][2]
-            //         //     for (let cat in deal_category) {
-            //         //         if (!current_cat.includes(cat)) {
-            //         //             this.markers[store][2].push(cat)
-            //         //         }
-            //         //     }   
-                    
-            //         // } else {
-            //         this.store_list.push(store)
-            //         // console.log(this.store_list)
-            //         let deal_address = this.display_list[i].location
-            //         this.infoWindowContent.push(
-            //             `['<div class="info_content">' +
-            //             '<h2>{{store}}</h2>' +
-            //             '<h3>{{deal_address}}</h3>' +
-            //             '<p>deal_category</p>' + 
-            //             '<a href="www.google.com" target="_blank" >link</a>'+
-            //             '</div>']`
-            //         )
-            //         // console.log(deal_address)
-            //         axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
-            //         .then(response => {
-            //             if (response.data.error_message) {
-            //                 this.error = response.data.error_message;
-            //                 console.log(response.data.error_message);
-            //             } else {
-            //                 this.deal_address_coords = response.data.results[0].geometry.location;
-            //                 // console.log(this.deal_address_coords.lat)
-            //                 this.markers[store] = [this.deal_address_coords.lat, this.deal_address_coords.lng, [deal_category]]
-            //                 console.log(this.markers)
-                            
-            //             }
-                        
-            //         })
-            //         .catch(error => {
-            //             this.error = error.message;
-            //             console.log(error.message);
-            //         })
-
-            //         // }
-
-            //     }
-
-
-                
-            // },
 
             locatorButtonPressed() {
 
