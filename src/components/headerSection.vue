@@ -16,9 +16,10 @@
 		</div>
 
 		<!-- Search Icon -->
-		<form action="" class="p-1 bg-light rounded-pill shadow-sm mb-5">
+		<form class="p-1 bg-light rounded-pill shadow-sm mb-5" @submit.prevent="">
 			<!-- Search Form -->
 			<div class="input-group">
+
 				<div class="input-group-prepend">
 					<span class="input-group-text border-0 bg-light">
 						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
@@ -26,8 +27,9 @@
 						</button>
 					</span>
 				</div>
-				<input type="search" placeholder="Search" aria-describedby="button-addon1"
-					class="form-control border-0 bg-light">
+				<input type="text" placeholder="Search" aria-describedby="button-addon1" @input="updateSearch"
+					v-model="searchQuery" class="form-control border-0 bg-light">
+
 				<div class="input-group-append">
 					<span class="input-group-text border-0 bg-light">
 						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
@@ -42,12 +44,6 @@
 		<div class="header-configure-area">
 			<a href="#" class="cart">
 				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
-			</a>
-
-			<!-- Notifications -->
-			<a href="#" class="notification">
-				<span><i class="fa fa-bell-o"></i>Notifications</span>
-				<span class="badge">3</span>
 			</a>
 
 			<!-- Profile Option -->
@@ -99,7 +95,7 @@
 
 							<!-- Search Form -->
 							<li>
-								<form action="">
+								<form action="" @submit.prevent="">
 									<div class="p-1 bg-light rounded rounded-pill shadow-sm" style="height: 40px">
 										<div class="input-group">
 											<div class="input-group-prepend">
@@ -111,14 +107,9 @@
 												</span>
 											</div>
 											<input type="search" placeholder="Search" aria-describedby="button-addon1"
-												class="form-control border-0 bg-light">
+												class="form-control border-0 bg-light" @input="updateSearch"
+												v-model="searchQuery">
 											<div class="input-group-append">
-												<!-- <span class="input-group-text border-0 bg-light">
-													<button id="button-addon1" type="submit"
-														class="btn btn-link text-primary">
-														<i class="fa fa-search"></i>
-													</button>
-												</span> -->
 											</div>
 										</div>
 									</div>
@@ -139,12 +130,6 @@
 								<span><i class="fa fa-user-o"></i>Login/Register </span>
 							</router-link>
 
-							<!-- Notifications -->
-							<!-- <a href="#" class="notification">
-						<span><i class="fa fa-bell-o"></i>Notifications</span>
-						<span class="badge">3</span>
-					</a> -->
-
 							<!-- Profile Option -->
 							<div class="profile-option" v-if="$store.state.user">
 								<span>
@@ -157,9 +142,7 @@
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="PreferencePage">Preferences</span></li>
-										<router-link :to="{name:'CommunityCreate'}"><li><span>Upload Deal</span></li></router-link>
-										<router-link :to="{name:'PersonalUploads'}"><li><span>Deal List</span></li></router-link>
-
+										<router-link :to="{name:'CommunityCreate'}"><li><span>Add Deal</span></li></router-link>
 									</ul>
 								</div>
 							</div>
@@ -180,25 +163,25 @@
 								<ul>
 									<li class="active">
 										<router-link :to="{ name: 'Home' }">
-											<i class="fa fa-money custom-size-icon"></i>
+											<i class="fa fa-money menu-icon"></i>
 											<span>Best Deals</span>
 										</router-link>
 									</li>
 									<li>
 										<a href="./bySupermarkets.html">
-											<i class="fa fa-shopping-basket custom-size-icon"></i>
+											<i class="fa fa-shopping-basket menu-icon"></i>
 											<span>By Supermarkets</span>
 										</a>
 									</li>
 									<li>
 										<a href="./byCommunity.html">
-											<i class="fa fa-users custom-size-icon"></i>
+											<i class="fa fa-users menu-icon"></i>
 											<span>By Community</span>
 										</a>
 									</li>
 									<li>
 										<a href="./byCommunity.html">
-											<i class="fa fa-heart custom-size-icon"></i>
+											<i class="fa fa-heart menu-icon"></i>
 											<span>Favourites</span>
 										</a>
 									</li>
@@ -207,13 +190,15 @@
 
 							<!-- Filter Modal Component -->
 							<button @click="toggleModal" class="filter-button">
-								<i class="fa fa-sliders custom-size-icon"></i>
+								<i class="fa fa-sliders filter-icon"></i> &nbsp;
 								<span>Filter</span>
 							</button>
 
 							<!-- map button (jn) -->
 							<router-link to="/map">
-								<button class="filter-button">Map</button>
+								<button class="filter-button">
+									<i class="fa fa-map-o map-icon"></i> &nbsp;
+									<span>Map</span></button>
 							</router-link>
 
 							<!-- Filter Modal Open -->
@@ -291,9 +276,9 @@ import router from '../router'
 import gsap from 'gsap';
 
 
-
 export default {
-	emits: ['filter-applied'],
+	emits: ['filter-applied', 'update-search'],
+
 	data() {
 		return {
 			isMenuOpen: false,
@@ -301,6 +286,7 @@ export default {
 			showAnimation: false,
 			selectedCategories: [],
 			selectedDiscounts: [],
+			searchQuery: '',
 			categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Dairy, Chilled & Eggs', 'Drinks',
 				'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
 				'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
@@ -325,6 +311,23 @@ export default {
 		// 		}
 		// 	}, 0);
 		// },
+		//on input triggers from search bar
+
+		updateSearch() {
+			try {
+				// Ensure that selectedCategories and selectedDiscounts are defined
+				if (!this.searchQuery) {
+					console.error('Search Query are undefined.');
+					return;
+				}
+				// Emit the event with the captured filter data
+				this.$emit('update-search', this.searchQuery);
+
+			} catch (error) {
+				console.error('Error in applyFilter:', error);
+			}
+		},
+
 		toggleModal() {
 			this.showModal = !this.showModal;
 			this.showAnimation = true;
@@ -365,6 +368,7 @@ export default {
 
 				// Emit the event with the captured filter data
 				this.$emit('filter-applied', this.selectedFilters);
+
 				this.closeModal();
 			} catch (error) {
 				console.error('Error in applyFilter:', error);
@@ -383,8 +387,8 @@ export default {
 		PreferencePage() {
 			router.push("/questionaire");
 		},
-	},
-};
+	}
+}
 </script>
   
 <style scoped>
@@ -423,6 +427,7 @@ a:hover {
 
 .header-section {
 	font-family: "Cabin", sans-serif;
+	font-size: 16px;
 }
 
 .header-section .header-normal .menu-item {
@@ -488,7 +493,7 @@ a:hover {
 }
 
 .cart {
-	padding: 20px 16px;
+	padding: 22px 16px;
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
@@ -505,34 +510,8 @@ a:hover {
 	margin-right: 5px;
 }
 
-.notification {
-	padding: 20px 25px 20px 16px;
-	position: relative;
-	display: inline-block;
-	cursor: pointer;
-	text-decoration: none;
-	color: #393939;
-}
-
-.notification:hover {
-	background: rgb(229, 229, 229);
-}
-
-.notification i {
-	font-size: large;
-	margin-right: 5px;
-}
-
-.notification .badge {
-	position: absolute;
-	top: 5px;
-	border-radius: 50%;
-	background: red;
-	color: white;
-}
-
 .profile-option {
-	padding: 20px 16px;
+	padding: 22px 16px;
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
@@ -549,7 +528,7 @@ a:hover {
 }
 
 .profile-option:hover .profile-dropdown {
-	top: 65px;
+	top: 70px;
 	opacity: 1;
 	visibility: visible;
 }
@@ -557,7 +536,7 @@ a:hover {
 .profile-option .profile-dropdown {
 	position: absolute;
 	left: 0;
-	width: 95px;
+	width: 96px;
 	background: #ffffff;
 	display: block;
 	padding: 10px;
@@ -697,10 +676,20 @@ a:hover {
 	cursor: pointer;
 }
 
-.menu-item .nav-menu .custom-size-icon {
+.menu-item .nav-menu .menu-icon {
 	font-size: 1.4em;
-	color: #808080;
-	/* Grey color for inactive state */
+	color: #393939;
+}
+
+
+.menu-item .nav-menu .filter-icon {
+	font-size: 1.2em;
+	color: #393939;
+}
+
+.menu-item .nav-menu .map-icon {
+	font-size: 1em;
+	color: #393939;
 }
 
 /* End of Menu Section: nav menu (left) */
@@ -818,6 +807,7 @@ a:hover {
 	align-items: center;
 	cursor: pointer;
 	background-color: #ffffff;
+	margin: 10px 10px 0 0;
 	margin-left: auto;
 	/* Push the filter button to the right */
 	border: 1.5px solid #e5e5e5;
@@ -825,10 +815,7 @@ a:hover {
 	border-radius: 25px;
 	/* Rounded corners */
 	height: 50px;
-	/* Set a maximum height for the content */
 	padding: 15px;
-	/* Adjust padding as needed */
-	margin-top: 10px;
 
 }
 
@@ -906,7 +893,7 @@ a:hover {
 .modal-body {
 	display: block;
 	width: 100%;
-	
+
 }
 
 .modal-body .row {
@@ -922,8 +909,9 @@ a:hover {
 .discountFilter input {
 	display: none;
 }
+
 .categoryFilter .categoryBox:hover {
-    transform: scale(1.05);
+	transform: scale(1.05);
 }
 
 .categoryFilter .categoryBox {
@@ -1013,7 +1001,7 @@ a:hover {
 
 /* plus sign to change to white when hover */
 .discountFilter label:hover .fa::before {
-    color: white;
+	color: white;
 }
 
 
@@ -1050,5 +1038,6 @@ a:hover {
 	color: white;
 	width: 48%;
 	margin-right: 1%;
-}</style>
+}
+</style>
   
