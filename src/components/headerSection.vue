@@ -142,7 +142,9 @@
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="PreferencePage">Preferences</span></li>
-										<router-link :to="{name:'CommunityCreate'}"><li><span>Add Deal</span></li></router-link>
+										<router-link :to="{name:'CommunityCreate'}"><li><span>Upload Deal</span></li></router-link>
+										<router-link :to="{name:'PersonalUploads'}"><li><span>Deal List</span></li></router-link>
+
 									</ul>
 								</div>
 							</div>
@@ -511,7 +513,7 @@ a:hover {
 }
 
 .profile-option {
-	padding: 22px 16px;
+	padding: 22px 27px;
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
@@ -536,7 +538,7 @@ a:hover {
 .profile-option .profile-dropdown {
 	position: absolute;
 	left: 0;
-	width: 96px;
+	width: 119px;
 	background: #ffffff;
 	display: block;
 	padding: 10px;
