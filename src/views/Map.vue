@@ -158,6 +158,18 @@
             }
         },
         mounted() {
+            // autocomplete function
+            let autocomplete = new google.maps.places.Autocomplete(this.$refs['autocomplete'], {
+                bounds: new google.maps.LatLngBounds(
+                    new google.maps.LatLng(1.352083, 103.819836)
+                )
+            });
+            //event listener
+            autocomplete.addListener("place_changed", () => {
+                let place = autocomplete.getPlace();
+                console.log(place);
+                this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
+            });
             this.locatorButtonPressed();
         },
 

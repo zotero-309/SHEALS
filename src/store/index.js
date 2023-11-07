@@ -125,17 +125,17 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       const { address, categories, dealTypes} = details
 
         try {
-          const data = doc(db, 'users', auth.currentUser.uid);
-          await setDoc(data, {
-            email: auth.currentUser.email,
-            type: 'consumer',
-            homeaddress: address,
-            catpref: categories,
-            dealpref: dealTypes,
-            like:[],
-            cart:[],
-          });
-        }
+          const userDoc = doc(db, 'users', auth.currentUser.uid);
+          const userData = await getDoc(userDoc);
+      
+          if (userData.exists()) {
+            // User document already exists, update it
+            await setDoc(userDoc, {
+              homeaddress: address,
+              catpref: categories,
+              dealpref: dealTypes,
+            }, { merge: true }); // Use merge to update only specified fields
+          }}
         catch(error) {
           console.log(error)
         }
