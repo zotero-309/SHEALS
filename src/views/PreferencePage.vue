@@ -72,6 +72,7 @@ export default {
         selectedCategories.value = selectedCategories.value.filter((c) => c !== category);
       }
     };
+    
     const updateSelectedDealTypes = (dealType) => {
       if (!selectedDealTypes.value.includes(dealType)) {
         selectedDealTypes.value.push(dealType);
@@ -79,7 +80,6 @@ export default {
         selectedDealTypes.value = selectedDealTypes.value.filter((d) => d !== dealType);
       }
     };
-
 
     // Fetch and update preferences from Firebase
     onMounted(async () => {
@@ -94,7 +94,7 @@ export default {
           selectedCategories.value = item.value.catpref;
           selectedDealTypes.value = item.value.dealpref;
           addressInput.value = item.value.address;
-          // document.getElementById("address").value = addressInput.value;
+          
           localStorage.setItem('userPreferences', JSON.stringify({
             item: item.value,
             address: addressInput.value,
@@ -102,13 +102,11 @@ export default {
             selectedDealTypes: selectedDealTypes.value,
           }));
           
-          console.log(addressInput.value)
-          console.log(selectedCategories.value)
-          console.log(selectedDealTypes.value)
         }
       } catch (error) {
         console.error('Error retrieving data from Firebase:', error);
       }
+      
       var autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"));
         autocomplete.setComponentRestrictions({
             country: ["sg"]
@@ -116,6 +114,7 @@ export default {
       autocomplete.addListener("place_changed", () => {
           addressInput.value = document.getElementById("address").value;
       });
+      
       // Save preferences in local storage
       const storedPreferences = localStorage.getItem('userPreferences');
       if (storedPreferences) {
@@ -127,7 +126,6 @@ export default {
         document.getElementById("address").value = addressInput.value;
       }
     });
-
     
     const addPreference = () => {
       addressInput.value = document.getElementById("address").value;
@@ -140,17 +138,17 @@ export default {
     };
 
     const isCategoryChecked = (cat) => {
-            if (selectedCategories.value && selectedCategories.value.includes(cat)) {
-                return true
-            }
-            else {
-                return false
-            }
-        };
+        if (selectedCategories.value && selectedCategories.value.includes(cat)) {
+            return true
+        }
+        else {
+            return false
+        }
+    };
     const isDealChecked = (deal) =>  {
-          if (selectedDealTypes.value && selectedDealTypes.value.includes(deal)) {
-              return true
-          }
+      if (selectedDealTypes.value && selectedDealTypes.value.includes(deal)) {
+          return true
+        }
           else {
               return false
           }
