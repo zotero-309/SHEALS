@@ -23,7 +23,7 @@
 
                         <!-- Table with store and address information -->
                         <div class="store">
-                            <i class="fa fa-building-o"></i> &nbsp;
+                            Uploader:&nbsp;
                             {{ deal.uploaded_by.name }}
                         </div>
                         <div class="address">
@@ -55,6 +55,10 @@ export default {
         deal: Object,
         deals: Array,
         selectedFilters: Object,
+        searchQuery: {
+            type: String,
+            default: ''
+        },
     },
     data() {
         return {
@@ -71,15 +75,17 @@ export default {
         this.fetchDeals()
     },
     watch: {
+        searchQuery: {
+            handler: 'updateDisplayList',
+        },
         // Watch for changes in selectedFilters
         selectedFilters: {
             handler: 'updateDisplayList',
             immediate: true, // Execute the handler immediately on component creation
             deep: true, // Watch for changes in the array's elements
-
         },
-
     },
+
     methods: {
         // Toggle favorite status for a deal
         async toggleHeart(dealId) {
@@ -88,7 +94,7 @@ export default {
                 // alert("Please log in first to add to favorites.");
                 if (confirm("Please log in first to add to favorites.")) {
                     this.$router.push('/login')
-                }          
+                }
                 return;
             }
             // Ensure that this.favourites is an array before calling indexOf
@@ -135,10 +141,6 @@ export default {
                 if (userDocSnapshot.exists()) {
                     const userData = userDocSnapshot.data();
 
-                    // Add these console logs for debugging
-                    console.log('userData:', userData);
-                    console.log('userData.favorites:', userData.favorites);
-
                     // Ensure that userData.favorites is defined before assigning it
                     this.favourites = userData.favorites || [];
                 } else {
@@ -175,21 +177,33 @@ export default {
             this.updateDisplayList();
         },
         async updateDisplayList() {
-            // If no categories and discounts are selected, show all deals
-            if (this.selectedFilters.selectedCategories.length === 0 &&
-                this.selectedFilters.selectedDiscounts.length === 0) {
-                this.display_list = this.deal_list;
+            // Update deals displayed based on both filters and search query
+            let results = this.deal_list;
 
-            } else {
-                // Filter deals based on selected categories or discounts
-                const filteredDeals = this.deal_list.filter(deal =>
-                    this.selectedFilters.selectedCategories.includes(deal.product_category) ||
-                    this.selectedFilters.selectedDiscounts.includes(deal.deal_type) //deal type is the field name of discount type in firebase
+            // Filter based on selected filters
+            if (this.selectedFilters.selectedCategories.length > 0 ||
+                this.selectedFilters.selectedDiscounts.length > 0) {
+                results = results.filter(deal =>
+                    (this.selectedFilters.selectedCategories.length === 0 || this.selectedFilters.selectedCategories.includes(deal.product_category)) &&
+                    (this.selectedFilters.selectedDiscounts.length === 0 || this.selectedFilters.selectedDiscounts.includes(deal.deal_type))
                 );
-                this.display_list = filteredDeals;
-                // display_list now contains dealobjs that falls within selectedproduct cat / discount type
             }
-            console.log('Updated Filtered Display List:', this.display_list);
+
+            // Further filter based on search query
+            console.log('receieved in update display list', this.searchQuery)
+            if (this.searchQuery !== "") {
+                results = results.filter((deal) =>
+                    //ensure case insensitive
+                    deal.deal_description.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    deal.deal_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    deal.deal_type.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    deal.product_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    deal.product_category.toLowerCase().includes(this.searchQuery.toLowerCase())
+                );
+            }
+
+            this.display_list = results;
+            console.log('Updated Filtered and Searched Display List:', this.display_list);
 
             this.$emit('display-list', this.display_list);
         },
@@ -204,10 +218,10 @@ export default {
                 return false;
             }
         },
-        mounted() {
-            console.log(this.deal);
-        }
-    }
+    },
+    mounted() {
+        console.log(this.deal);
+    },
 }
 
 
