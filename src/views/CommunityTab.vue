@@ -41,7 +41,7 @@ export default {
     },
     data() {
         return {
-            tab: 'all',
+            tab: 'community',
             searchQuery: '',
             selectedFilters: {
                 selectedCategories: [],

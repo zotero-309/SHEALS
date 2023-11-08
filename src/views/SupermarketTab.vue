@@ -41,7 +41,7 @@ export default {
     },
     data() {
         return {
-            tab: 'all',
+            tab: 'supermarket',
             searchQuery: '',
             selectedFilters: {
                 selectedCategories: [],
