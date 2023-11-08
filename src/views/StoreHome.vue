@@ -56,23 +56,19 @@
 </svg>
 
 <!-- Dark Header -->
-<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <router-link :to="{name:'Dashboard'}" class="navbar-brand col-md-3 col-lg-2 me-0 p-3 fs-6 text-white">SHEALS</router-link>
-
-  <ul class="navbar-nav flex-row d-md-none">
-    <li class="nav-item text-nowrap">
-      <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
-        <svg class="bi"><use xlink:href="#search"/></svg>
-      </button>
-    </li>
-    <li class="nav-item text-nowrap">
-      <button class="nav-link px-3 text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+<header class="navbar bg-dark p-0 shadow" data-bs-theme="dark">
+  <div class="container-fluid">
+    <div class="row flex justify-content-end">
+      <router-link :to="{name:'Dashboard'}" class="navbar-brand me-0 p-3 fs-6 text-white">SHEALS</router-link>
+    </div>
+    <div class="navbar-nav d-md-none">
+      <button class="text-white border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <svg class="bi"><use xlink:href="#list"/></svg>
       </button>
-    </li>
-  </ul>
-
+    </div>
+  </div>
 </header>
+
 
 <!-- Container containing navbar and selected nav-item (in <Main>) -->
 <div class="container-fluid">
