@@ -2,7 +2,7 @@
     <HeaderSection/>
     <div class="container">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Add Deal</h1>
+        <h1 class="h2">Update Deal</h1>
     </div>
 
     <button @click="scanmodal(); startscan();" class="btn btn-warning">
@@ -25,7 +25,7 @@
     </div>
 
 
-    <form @submit.prevent="upload_deal()">
+    <form @submit.prevent="UpdateDealInfo()">
         
         <div class="row">
             <div class="col-lg-4 col-12">
@@ -112,31 +112,26 @@
 </template>
 
 <script>
- 
+import { db, storage } from "../firebase/index.js"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+import {ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage"
 import HeaderSection from '../components/headerSection.vue'
-import  Quagga  from '../assets/quagga.min.js'
-import axios from 'axios'
-import  { storage, db } from '../firebase/index.js'
-import {addDoc, updateDoc, collection, doc} from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL} from 'firebase/storage'
-
-
 
 export default {
     components: {
         HeaderSection
     },
-    data () {
-        return {
-            //var if the modal pops up or not
-            scan: false,
-            addressInput: "",
-            autocomplete: null, 
-        }
-    },
-
-    methods: {
-        initialiseAutocomplete(){
+data(){
+    return{
+        imageURL: null
+    }
+},
+mounted (){
+    this.populateDealInfo()
+    this.initialiseAutocomplete()
+},
+methods: {
+    initialiseAutocomplete(){
             // Ensure this method is called after the Google Maps API has loaded
             if (window.google && window.google.maps && window.google.maps.places) {
                 this.autocomplete = new google.maps.places.Autocomplete(this.$refs.dealplace);
@@ -144,182 +139,94 @@ export default {
 
                 // Listen for the 'place_changed' event
                 this.autocomplete.addListener("place_changed", () => {
-                    let place = this.autocomplete.getPlace().name;
+                    let place = this.autocomplete.getPlace();
                     this.addressInput = place.formatted_address || place.name;
+                    console.log(this.addressInput);
                 });
             } else {
                 console.error("Google Maps API is not loaded yet.");
             }
         },
-        async upload_deal () {
+    //async because need to wait for getDoc, function to 
+    async populateDealInfo() {
+        const docRef = doc(db, "deals", this.$route.params.id)
+        const docSnap = await getDoc(docRef)
 
-            //extracting image
-            let dealImgName = this.$refs.dealimg.files[0].name
-
-            //extracting acc details for store from localstorage
-            let userEmail = localStorage.getItem('userEmail')
-            let userType = localStorage.getItem('userType')
-            let userAddr = localStorage.getItem('homeAddress')
-            let storename = localStorage.getItem('storeName')
-
-            // add document to products collection (with extracting photo)
-            await addDoc(collection(db, "deals"),{
-                barcode: this.$refs.barcodeid.value,
-                product_name: this.$refs.productname.value,
-                product_category: this.$refs.foodcategory.value,
-                product_tags: this.$refs.foodtag.value,
-                deal_type: this.$refs.dealtype.value,
-                deal_name: this.$refs.dealname.value,
-                deal_description: this.$refs.dealdescr.value,
-                deal_expiry: this.$refs.dealexpiry.value,
-                deal_price: parseFloat(this.$refs.dealprice.value),
-                deal_quantity: parseInt(this.$refs.dealqty.value),
-                uploaded_by: {email: userEmail, type:userType, name: userEmail.split("@")[0]},
-                location: this.$refs.dealplace.value,
-                image_name:dealImgName
-            }).then(docRef => {
-                const storageRef = ref(storage, `deals/${userEmail}/${docRef.id}/${dealImgName}`)
-                uploadBytes(storageRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
-                    let dealImgURL = await getDownloadURL(snapshot.ref)
-                    console.log(dealImgURL)
-                    await updateDoc(doc(db,"deals",docRef.id),{image:dealImgURL})
-                })
-            })
-
-            this.$router.push({name:'Home'})
-
-        },
-        scanmodal () {
-            //func if the modal pops up or not
-            this.scan = !this.scan
-        },
-        startscan(){
-            // Upon clicking on 'scan now', quagga lib triggers
-            //Initialize Quagga
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: this.$refs.pdtscan  //camera to dom using ref
-                },
-                decoder: {
-                    readers: ["ean_reader"] //removed most of the other readers to avoid conflict with ean13
-                }
-            }, function (err) {
-                if (err) {
-                    console.log(err);
-                    return
-                }
-            console.log("Initialization finished. Ready to start");
-            Quagga.start();
-            });
+        if (docSnap.exists()) {
+            const deal_rec = docSnap.data()
+            this.$refs.barcodeid.value = deal_rec.barcode
+            this.$refs.productname.value = deal_rec.product_name
+            this.$refs.foodcategory.value = deal_rec.product_category
+            this.$refs.dealtype.value = deal_rec.deal_type
+            this.$refs.dealexpiry.value = deal_rec.deal_expiry
+            this.$refs.dealname.value = deal_rec.deal_name
+            this.$refs.dealdescr.value = deal_rec.deal_description
+            this.$refs.dealprice.value = deal_rec.deal_price
+            this.$refs.dealqty.value = deal_rec.deal_quantity
+            this.$refs.dealplace.value = deal_rec.location
+            this.imageURL = deal_rec.image
+        } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
         }
-        
+
     },
-     mounted(){
-        // Initialise autocomplete func
-        this.initialiseAutocomplete()
+    async UpdateDealInfo(){
+        const deal_doc = doc(db, "deals", this.$route.params.id)
 
-        // arrow function used to refer to correct 'this' aka this vue. Using Normal function 'this' refers to quagga lib
-        Quagga.onDetected((data) => {
-        var barcodeValue = data.codeResult.code;
-        this.$refs.barcodeid.value = barcodeValue;
-        
-        // Stop Quagga after a barcode is detected
-        Quagga.stop();
+        //checking image
+        const dDoc = await getDoc(deal_doc)
+        const doc_rec = dDoc.data()
+        let dealImage = "" // initialise image name
+        if(this.$refs.dealimg.files[0]){//check if there is any new image uploaded
+            dealImage = this.$refs.dealimg.files[0].name
 
+            //upload image if there is an image uploaded
+            const newRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${dealImage}`)
+            uploadBytes(newRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
+                let dealImgURL = await getDownloadURL(snapshot.ref)
+                await updateDoc(deal_doc,{image:dealImgURL})
+                console.log('reuploaded a blob or file!');
+            });
 
-        // Close the modal after a barcode is detected
-        if (this.scan) {
-            this.scanmodal();
- 
+            //remove delete old image
+            // Create a reference to the file to delete
+            const desertRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${doc_rec.image_name}`);
+
+            // Delete the file
+            deleteObject(desertRef).then(() => {
+            // File deleted successfully
+            }).catch((error) => {
+            // Uh-oh, an error occurred!
+            })
+        } else {
+            dealImage = doc_rec.image_name
         }
 
-        //using axios to get pdt name and cat
-        axios.get(`https://world.openfoodfacts.org/api/v2/product/${barcodeValue}.json`)
-            .then(response => {
-                console.log(response.data.product.categories);
-                let fooditem = response.data.product
-                let foodcat = response.data.product.categories
-                fooditem = fooditem.product_name
+        //updating doc
+        await updateDoc(deal_doc, {
+            deal_name: this.$refs.dealname.value,
+            deal_type: this.$refs.dealtype.value,
+            deal_description: this.$refs.dealdescr.value,
+            deal_price: parseFloat(this.$refs.dealprice.value),
+            deal_quantity: parseInt(this.$refs.dealqty.value),
+            deal_expiry: this.$refs.dealexpiry.value,
+            product_category: this.$refs.foodcategory.value,
+            image_name: dealImage
+        });
 
-                this.$refs.productname.value = fooditem
-                this.$refs.foodtag.value = foodcat
-                
-
-            })
-            .catch( error => {
-                console.error(error);
-            });
-  });
+        this.$router.push({ name: 'Home'})
     }
+}
 
-
-};
+}
 </script>
 
-
-<style>
-video  {
-    width: 300px;
-    height: 300px;
-    margin: auto;
+<style scoped>
+.extractedpic{
+width: 200px;
+border-radius: 50%;
+margin: auto;
 }
-
-.drawingBuffer {
-    display: none;
-}
-
-.scanner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/*---------------------
-    Modal
-    -----------------------*/
-.modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-background {
-    background-color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent black background */
-}
-
-.modal-content {
-
-    background-color: white !important;
-    padding: 20px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    /* Ensure it's above other elements */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e0e0e0;
-}
-
 
 </style>

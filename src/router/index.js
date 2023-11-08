@@ -11,7 +11,9 @@ import Cart from "../views/Cart.vue"
 import PreferencePage from "../views/PreferencePage.vue"
 import DealRedeem from "../views/DealRedeem.vue"
 import Map from "../views/Map.vue"
-import CommunityCreate from "../views/CommunityCreate"
+import CommunityCreate from "../views/CommunityCreate.vue"
+import PersonalUploads from "../views/PersonalUploads.vue"
+import CommunityUpdate from "../views/CommunityUpdate.vue"
 
 
 const routes = [
@@ -43,6 +45,12 @@ const routes = [
 
   },
   {
+    path: "/communityupdate/:id/", 
+    name: "CommunityUpdate",
+    component: CommunityUpdate,
+
+  },
+  {
     path: "/map",
     name: "map",
     component: Map
@@ -52,7 +60,11 @@ const routes = [
     name: "CommunityCreate",
     component: CommunityCreate
   },
-
+  {
+    path: "/personaluploads",
+    name: "PersonalUploads",
+    component: PersonalUploads
+  },
 
   {
     path: "/storehome",
