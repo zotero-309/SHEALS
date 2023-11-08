@@ -260,7 +260,9 @@
   
 <script>
 import router from '../router'
-import gsap from 'gsap';
+import gsap from 'gsap'
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../firebase';
 
 
 export default {
@@ -287,8 +289,34 @@ export default {
 	},
 	created(){
 		this.changeActive()
+		this.fetchcategories()
 	},
 	methods: {
+		async fetchcategories(){
+			console.log("fetch user preference",this.selectedCategories)
+
+			if (localStorage.getItem("userID")){
+				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
+				//check if user doc exist
+				if (userDoc.exists()){
+					var user_rec = userDoc.data()
+
+					//check if there is category array first
+					if (user_rec.catpref){
+						for (var cat of user_rec.catpref){
+							this.selectedCategories.push(cat)
+						}
+					}
+
+					if (user_rec.dealpref){
+						for (var deal of user_rec.dealpref){
+							this.selectedDiscounts.push(deal)	
+					}
+
+					}
+				}
+			}
+		},
 		changeActive(){
 			if(this.$route.name==="Home"){
 				this.homeActive = "active"
