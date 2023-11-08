@@ -41,28 +41,183 @@
 						<div class="canvas-open" @click="toggleMenu">
 							<i class="icon_menu"></i>
 						</div>
-						<!-- Offcanvas Menu Overlay -->
-						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
-						</div>
 
 
-						<!-- Offcanvas Menu Overlay -->
-						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
-						</div>
-
-						<!-- Offcanvas Menu Wrapper -->
-						<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+						<!-- Offcanvas Menu Section -->
 						<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
 							<!-- Canvas Close Button -->
 							<div class="canvas-close" @click="toggleMenu">
 								<i class="icon_close"></i>
 							</div>
 
-							<div id="mobile-menu-wrap"></div>
+							<!-- Offcanvas Menu Content -->
+							<div id="mobile-menu-wrap" class="menu-right">
+								<ul class="offcanvas-menu">
+
+									<!-- Profile Option -->
+									<!-- <li v-if="$store.state.user">
+										<i class="fa fa-user-o"></i>
+										<span>Profile</span>
+									</li> -->
+
+									<li @click="toggleProfileDropdown">
+										<i class="fa fa-user-o"></i>
+										<span>Profile </span>
+										<i class="fa fa-angle-down" :class="{ 'active': isProfileDropdownOpen }"></i>
+									</li>
+									<ul v-if="isProfileDropdownOpen">
+
+										<!-- Login/register Tab -->
+										<router-link :to="{ name: 'Login' }">
+											<li v-if="!$store.state.user">
+												<span>Login/Register</span>
+											</li>
+										</router-link>
+
+										<!-- Preferences -->
+										<li>
+											<span @click="PreferencePage">Preferences</span>
+										</li>
+
+										<!-- Upload Deal -->
+										<router-link :to="{ name: 'CommunityCreate' }">
+											<li>Upload Deal</li>
+										</router-link>
+										<!-- Uploaded Deals History -->
+										<router-link :to="{ name: 'PersonalUploads' }">
+											<li>Deal List</li>
+										</router-link>
+									</ul>
+
+									<!-- Cart -->
+									<li v-if="$store.state.user">
+										<router-link :to="{ name: 'Cart' }">
+											<!-- Checkout Discounts -->
+											<i class="fa fa-shopping-cart"></i>Checkout
+											<span>Discounts</span>
+										</router-link>
+									</li>
+
+									<!-- Home Tab -->
+									<li :class="homeActive">
+										<router-link :to="{ name: 'Home' }">
+											<i class="fa fa-money menu-icon"></i>
+											<span>Best Deals</span>
+										</router-link>
+									</li>
+
+									<!-- Supermarket Tab -->
+									<li :class="supermarketActive">
+										<router-link :to="{ name: 'SupermarketTab' }">
+											<i class="fa fa-shopping-basket menu-icon"></i>
+											<span>Supermarkets</span>
+										</router-link>
+									</li>
+
+									<!-- Community Tab -->
+									<li :class="communityActive">
+										<router-link :to="{ name: 'CommunityTab' }">
+											<i class="fa fa-users menu-icon"></i>
+											<span>Community</span>
+										</router-link>
+									</li>
+
+									<!-- Favourites Tab -->
+									<li :class="favActive">
+										<router-link :to="{ name: 'FavouritesTab' }">
+											<i class="fa fa-heart menu-icon"></i>
+											<span>Favourites</span>
+										</router-link>
+									</li>
+
+									<!-- Logout -->
+									<li @click="$store.dispatch('logout')">
+										<i class="fa fa-sign-out"></i>
+										<span>Logout</span>
+									</li>
+
+
+									<!-- Filter Modal Open -->
+									<li>
+										<button @click="toggleModal" class="filter-button">
+											<i class="fa fa-sliders filter-icon"></i> &nbsp;
+											<span>Filter</span>
+										</button>
+										<div v-if="showModal" class="modal-container"
+											:class="{ 'fade-enter-active': showAnimation, 'fade-leave-active': showAnimation }">
+											<div class="modal-background" @click="closeModal"></div>
+											<div class="modal-content"
+												:class="{ 'fade-enter-active': showAnimation, 'fade-leave-active': showAnimation }">
+												<div class="modal-header">
+													<h4 class="modal-title">Filters</h4>
+													<button type="button" class="close" @click="closeModal">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+
+												<div class="scrollable-content">
+													<!-- price slider -->
+													<div class="modal-body fs-5 py-3"> Select your categories:
+													</div>
+
+													<!-- category filter -->
+													<div class="container-fluid">
+														<div class="row">
+															<div v-for="cat in categoryList" :key="cat"
+																class="categoryFilter col-md-3 my-2">
+																<input type="checkbox" :id="cat" :value="cat"
+																	v-model="selectedCategories">
+																<label
+																	:class="{ 'checked': selectedCategories.includes(cat) }"
+																	class="categoryBox" :for="cat"
+																	:style="{ backgroundImage: 'url(' + getImageUrl(cat) + ')' }">
+																	<span class="categoryLabel">{{ cat }}</span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="modal-body fs-5 py-3"> Select your discount types:
+													</div>
+													<!-- discount filter -->
+													<div class="container-fluid">
+														<div class="row">
+															<div v-for="discount in discountList" :key="discount"
+																class="col-md-4 mb-2">
+																<div class="discountFilter">
+																	<input type="checkbox" :id="discount" :value="discount"
+																		v-model="selectedDiscounts">
+
+																	<label class="btn btn-outline-dark" :for="discount">
+																		<i
+																			:class="{ 'fa fa-plus': !selectedDiscounts.includes(discount), 'fa fa-check': selectedDiscounts.includes(discount) }"></i>
+																		<span class="discount-label"> {{ discount }}
+																		</span>
+																	</label>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<button class="btn btn-outline-dark my-3 custom-btn-width-L"
+														@click="applyFilter">Apply
+														Filter</button>
+													<button class="btn btn-outline-dark my-3 custom-btn-width-R"
+														@click="resetFilter">Clear
+														Selection</button>
+												</div>
+											</div>
+										</div>
+									</li>
+
+								</ul>
+							</div>
 						</div>
-						<!-- Offcanvas Menu Section End -->
 					</div>
 				</div>
+				<!-- End of Offcanvas Menu Section -->
+				<!-- Off-canvas Menu Overlay -->
+				<div class="offcanvas-menu-overlay" :class="{ active: isMenuOpen }" @click="toggleMenu"></div>
 			</div>
 		</div>
 	</header>
@@ -128,8 +283,12 @@
 									<ul>
 										<li><span @click="$store.dispatch('logout')">Logout</span></li>
 										<li><span @click="PreferencePage">Preferences</span></li>
-										<router-link :to="{name:'CommunityCreate'}"><li><span>Upload Deal</span></li></router-link>
-										<router-link :to="{name:'PersonalUploads'}"><li><span>Deal List</span></li></router-link>
+										<router-link :to="{ name: 'CommunityCreate' }">
+											<li><span>Upload Deal</span></li>
+										</router-link>
+										<router-link :to="{ name: 'PersonalUploads' }">
+											<li><span>Deal List</span></li>
+										</router-link>
 
 									</ul>
 								</div>
@@ -141,7 +300,8 @@
 		</div>
 
 		<!-- Menu Item Section -->
-		<div class="menu-item" v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' && $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads'&& $route.name !== 'CommunityUpdate'">
+		<div class="menu-item"
+			v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' && $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads' && $route.name !== 'CommunityUpdate'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
@@ -155,19 +315,20 @@
 											<span>Best Deals</span>
 										</router-link>
 									</li>
-									<li :class="supermarketActive" >
-										<router-link :to="{name: 'SupermarketTab'}">
+									<li :class="supermarketActive">
+										<router-link :to="{ name: 'SupermarketTab' }">
 											<i class="fa fa-shopping-basket menu-icon"></i>
 											<span>By Supermarkets</span>
-										</router-link>									</li>
-									<li :class="communityActive" >
-										<router-link :to="{name: 'CommunityTab'}">
+										</router-link>
+									</li>
+									<li :class="communityActive">
+										<router-link :to="{ name: 'CommunityTab' }">
 											<i class="fa fa-users menu-icon"></i>
 											<span>By Community</span>
 										</router-link>
 									</li>
 									<li :class="favActive">
-										<router-link :to="{name: 'FavouritesTab'}">
+										<router-link :to="{ name: 'FavouritesTab' }">
 											<i class="fa fa-heart menu-icon"></i>
 											<span>Favourites</span>
 										</router-link>
@@ -203,7 +364,8 @@
 
 									<div class="scrollable-content">
 										<!-- price slider -->
-										<div class="modal-body fs-5 py-3"> Select your categories: </div>
+										<div class="modal-body fs-5 py-3"> Select your categories:
+										</div>
 
 										<!-- category filter -->
 										<div class="container-fluid">
@@ -221,7 +383,8 @@
 											</div>
 										</div>
 
-										<div class="modal-body fs-5 py-3"> Select your discount types: </div>
+										<div class="modal-body fs-5 py-3"> Select your discount types:
+										</div>
 										<!-- discount filter -->
 										<div class="container-fluid">
 											<div class="row">
@@ -233,7 +396,8 @@
 														<label class="btn btn-outline-dark" :for="discount">
 															<i
 																:class="{ 'fa fa-plus': !selectedDiscounts.includes(discount), 'fa fa-check': selectedDiscounts.includes(discount) }"></i>
-															<span class="discount-label"> {{ discount }} </span>
+															<span class="discount-label"> {{ discount }}
+															</span>
 														</label>
 													</div>
 												</div>
@@ -269,9 +433,10 @@ export default {
 	data() {
 		return {
 			supermarketActive: "",
-			communityActive:"",
-			favActive:"",
+			communityActive: "",
+			favActive: "",
 			homeActive: "",
+			isProfileDropdownOpen: false,
 			isMenuOpen: false,
 			showModal: false,
 			showAnimation: false,
@@ -285,16 +450,16 @@ export default {
 			discountList: ['1 For 1', 'Discounts', 'Bundle Deals'],
 		};
 	},
-	created(){
+	created() {
 		this.changeActive()
 	},
 	methods: {
-		changeActive(){
-			if(this.$route.name==="Home"){
+		changeActive() {
+			if (this.$route.name === "Home") {
 				this.homeActive = "active"
-			} else if (this.$route.name==="SupermarketTab"){
+			} else if (this.$route.name === "SupermarketTab") {
 				this.supermarketActive = "active"
-			} else if(this.$route.name==="CommunityTab"){
+			} else if (this.$route.name === "CommunityTab") {
 				this.communityActive = "active"
 			} else {
 				this.favActive = "active"
@@ -319,6 +484,9 @@ export default {
 		//on input triggers from search bar
 		toggleMenu() {
 			this.isMenuOpen = !this.isMenuOpen;
+		},
+		toggleProfileDropdown() {
+			this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
 		},
 
 		updateSearch() {
@@ -418,15 +586,102 @@ export default {
 		display: none;
 	}
 
+
+	.offcanvas-menu {
+		padding: 20px;
+		list-style: none;
+	}
+
+
+	.offcanvas-menu li {
+		padding: 10px;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+		transition: background-color 0.3s ease;
+		/* Add a smooth background color transition */
+	}
+
+	.offcanvas-menu i,
+	.offcanvas-menu li {
+		font-size: 18px;
+		color: #393939;
+	}
+
+
+	/* Style your menu items as needed */
+	.offcanvas-menu {
+		text-decoration: none;
+		color: #393939;
+		/* Menu item text color */
+		font-size: 16px;
+		transition: color 0.3s;
+		position: relative;
+		transition: color 0.3s, background-color 0.3s;
+	}
+
+	.offcanvas-menu a::before {
+		content: "";
+		/* Create a pseudo-element for the underline */
+		position: absolute;
+		bottom: -5px;
+		/* Adjust the distance of the underline from the text */
+		left: 0;
+		width: 0;
+		/* Initially, the underline has no width */
+		height: 2px;
+		/* Set the height of the underline */
+		background-color: #E97D2F;
+		/* Color of the underline */
+		transition: width 0.3s;
+		/* Add a transition for the underline width */
+	}
+
+
+	.offcanvas-menu a:hover::before {
+		width: 100%;
+		/* Increase the width of the underline on hover */
+	}
+
+	.offcanvas-menu a.active {
+		background-color: #E97D2F;
+		/* Background color for the active menu item */
+		color: #ffffff;
+		/* Text color for the active menu item */
+	}
+
+	.offcanvas-menu a.active::before {
+		width: 100%;
+		/* Make the underline full width for the active item */
+	}
+
+
+	/* Style for the active off-canvas menu overlay */
+	.offcanvas-menu-overlay.active {
+		visibility: visible;
+	}
+
+	/* Add animation for the off-canvas menu content */
+	.offcanvas-menu-wrapper .modal-content {
+		opacity: 10;
+		transition: opacity 0.3s;
+	}
+
+	.menu-icon {
+		margin-right: 10px;
+	}
+
 	.offcanvas-menu-overlay {
 		background: rgba(0, 0, 0, 0.7);
 		z-index: 98;
 		height: 100%;
 		width: 100%;
 		visibility: hidden;
-		-webkit-transition: 0.3s;
-		-o-transition: 0.3s;
-		transition: 0.3s;
+		position: fixed;
+		top: 0;
+		left: 0;
+		transition: visibility 0.3s, opacity 0.3s;
 	}
 
 	.offcanvas-menu-overlay.active {
@@ -456,7 +711,7 @@ export default {
 		position: fixed;
 		left: -300px;
 		top: 0;
-		width: 300px;
+		width: 250px;
 		z-index: 999;
 		background: #ffffff;
 		text-align: center;
@@ -471,10 +726,12 @@ export default {
 		display: block;
 		z-index: 99;
 		/* Updated z-index to be higher when open */
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		/* Add a subtle box shadow */
 	}
 
 	.offcanvas-menu-wrapper .canvas-close {
-		font-size: 30px;
+		font-size: 20px;
 		border-radius: 50%;
 		text-align: center;
 		line-height: 30px;
@@ -493,6 +750,19 @@ export default {
 		opacity: 1;
 		visibility: visible;
 	}
+
+	/* filtermodal */
+
+	.modal-content {
+		position: fixed;
+		max-width: 100%;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		margin: 0;
+		border-radius: 0;
+	}
+
 }
 
 /* mobile view header */
@@ -739,7 +1009,8 @@ a:hover {
 }
 
 .nav-menu {
-	display: flex; /* Align menu items in the same row */
+	display: flex;
+	/* Align menu items in the same row */
 }
 
 .mainmenu {
@@ -897,8 +1168,13 @@ a:hover {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	font-family: "Cabin", sans-serif;
-	transition: opacity 0.3s
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(0, 0, 0, 0.3);
+	/* Add a semi-transparent background overlay */
+	z-index: 999;
+	/* Adjust as needed */
 }
 
 .modal-background {
@@ -912,16 +1188,19 @@ a:hover {
 }
 
 .modal-content {
-	border-radius: 35px;
+	position: fixed;
+	max-width: 100%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	border-radius: 0;
 	background-color: #fff;
-	padding: 10px 30px 15px 30px;
-	max-width: 600px;
-	overflow-y: auto;
-	max-height: 100%;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-	z-index: 1000;
-	scroll-behavior: smooth;
-	/* Ensure it's above other elements */
+	/* Background color for the modal */
+	padding: 30px;
+	border-radius: 40px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	max-width: 700px;
 }
 
 .modal-header {
@@ -934,7 +1213,7 @@ a:hover {
 	border: none;
 	cursor: pointer;
 	font-size: 40px;
-	color: #333;
+	color: #393939;
 }
 
 /*---------------------
@@ -943,6 +1222,7 @@ a:hover {
 .modal-body {
 	display: block;
 	width: 100%;
+
 
 }
 
@@ -997,7 +1277,6 @@ a:hover {
 	transition: color 0.3s ease;
 	/* Add color transition */
 }
-
 
 .categoryFilter .categoryBox.checked .categoryLabel {
 	/* hide text when checked */
@@ -1088,5 +1367,6 @@ a:hover {
 	color: white;
 	width: 48%;
 	margin-right: 1%;
-}</style>
+}
+</style>
   

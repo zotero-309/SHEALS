@@ -469,7 +469,7 @@ img {
     font-size: 12px;
   }
 
-  .comment-section .form-control {
+  .comment-section form-control {
     font-size: 12px;
   }
 
