@@ -53,8 +53,8 @@ export default {
       food_categories: ['Bakery', 'Beer, Wine & Spirits', 'Diary, Chilled & Eggs', 'Drinks',
                 'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood', 'Pet Supplies',
                 'Rice, Noodles & Cooking Ingredients', 'Snacks & Confectionery', 'Vegetables'],
-      deal_types: ['Percentage discounts', 'Price discounts',
-                '1 for 1 deals', '"X for $Y" deals'],
+      deal_types: ['Discounts', 'Bundle Deals',
+                '1 for 1 deals'],
       addressInput: "",
     };
   },
