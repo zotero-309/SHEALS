@@ -12,7 +12,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="breadcrumb-text">
-                                <h2>Our Deals</h2>
+                                <h2>Deals for You</h2>
                             </div>
                         </div>
                     </div>
