@@ -1,126 +1,149 @@
 <template>
-    <HeaderSection/>
+    <HeaderSection />
 
     <!-- Modal to show compiled QR code -->
-    <div v-if="qrModal" class="modal-container">
-        <div class="modal-background" @click="qrModal=false"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Let Cashier Staff Scan</h5>
-                    <button type="button" class="close" @click="qrModal=false">
+    <div v-if="qrModal" class="modal-container padding-bottom-3x mb-1">
+        <div class="modal-background" @click="qrModal = false"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Let Cashier Staff Scan</h5>
+                <button type="button" class="close" @click="qrModal = false">
                     <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-        <div class="modal-body">
-            <div class="qrcode"><qrcode-vue :value="qrValue"  v-if="qrValue"></qrcode-vue></div>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="qrcode"><qrcode-vue :value="qrValue" v-if="qrValue"></qrcode-vue></div>
+            </div>
         </div>
-    </div>
     </div>
 
     <div class="container padding-bottom-3x mb-1 cartcontent">
 
-    <!-- Drop down list to select store -->
-    <select class="form-select my-4" ref="storeChosen" @change="filterByStore">
-        <option v-for="store in store_list" :key="store">{{store}}</option>
-    </select>
-    
-    <!-- Shopping Cart-->
-    <div class="table-responsive shopping-cart">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center col-5">Deal and Product Information</th>
-                    <th class="text-center">Type</th>
-                    <th class="text-center">Quantity</th>
-                    <th class="text-center">Price/Unit</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="deal in display_list" :key="deal.id">
-                    <td>
-                        <div class="product-item" >
-                            <a class="product-thumb" href="#"><img :src="deal.url" alt="Product"></a>
-                            <h4 class="product-title"><a href="#">{{ deal.deal_name }}</a></h4>
-                            <span><em>Product: {{ deal.product_name }}</em></span>
-                        </div>
-                    </td>
-                    <td>{{ deal.type }}</td>
-                    <td class="qtycol">
+
+
+
+
+        <!-- Shopping Cart-->
+        <div class="table-responsive shopping-cart">
+            <div class="container m-40">&nbsp;</div>
+            <div class="container m-40">&nbsp;</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center col-5">Deal and Product Information</th>
+                        <th class="text-center">Type</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Price/Unit</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="deal in display_list" :key="deal.id">
+                        <td>
+                            <div class="product-item">
+                                <a class="product-thumb" href="#"><img :src="deal.url" alt="Product"></a>
+                                <h4 class="product-title"><a href="#">{{ deal.deal_name }}</a></h4>
+                                <span><em>Product: {{ deal.product_name }}</em></span>
+                            </div>
+                        </td>
+                        <td>{{ deal.type }}</td>
+                        <td class="qtycol">
                             <div class="row justify-content-center">
-                            <div class="col-6 qtyalign">{{ deal.cart_qty}}</div>
-                            <div class="col-6">
-                                <input class="btn bg-secondary increment col-12 my-1"  value="+" @click="changeQty('+', deal.id)" readonly>
-                                <input class="btn btn-secondary increment col-12 my-1"  value="-" @click="changeQty('-', deal.id)" readonly>
+                                <div class="col-6 qtyalign">{{ deal.cart_qty }}</div>
+                                <div class="col-6">
+                                    <input class="btn bg-secondary increment col-12 my-1" value="+"
+                                        @click="changeQty('+', deal.id)" readonly>
+                                    <input class="btn btn-secondary increment col-12 my-1" value="-"
+                                        @click="changeQty('-', deal.id)" readonly>
+                                </div>
                             </div>
-                            </div>
-                    </td>
-                           
-                    <td class="text-center text-lg text-medium">${{ deal.perunit }}</td>
-                    <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip" @click="deleteCartItem(deal.id)"><i class="fa fa-trash"></i></a></td>
-                </tr>
+                        </td>
+
+                        <td class="text-center text-lg text-medium">${{ deal.perunit }}</td>
+                        <td class="text-center"><a class="remove-from-cart" href="#" data-toggle="tooltip"
+                                @click="deleteCartItem(deal.id)"><i class="fa fa-trash"></i></a></td>
+                    </tr>
 
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="shopping-cart-footer">
+            <div class="row justify-content-between align-items-center">
+                <!-- Back To Home -->
+                <div class="col-auto">
+                    <router-link :to="{ name: 'Home' }">
+                        <span class="btn btn-secondary">Back To Home</span>
+                    </router-link>
+                </div>
+
+                <!-- Select Store List -->
+                <div class="col-auto">
+                    <select class="form-select " ref="storeChosen" @change="filterByStore">
+                        <option v-for="store in store_list" :key="store">{{ store }}</option>
+                    </select>
+                </div>
+
+                <!-- Redeem Deals -->
+                <div class="col-auto">
+                    <a class="btn btn-success" href="#" @click="qrGenerate()">Redeem Deals</a>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
-    <!-- <div class="shopping-cart-footer">
-        <div class="column text-lg">Subtotal: <span class="text-medium">$289.68</span></div>
-    </div> -->
-    <div class="shopping-cart-footer">
-        <router-link :to="{name:'Home'}"><div class="homeleft"><span class="btn btn-secondary">Back To Home</span></div></router-link>
-        <div class="redeemright"><a class="btn btn-success" href="#" @click="qrGenerate()">Reedem Deals</a></div>
-    </div>
-</div>
 </template>
 
 <script>
- import QrcodeVue from 'qrcode.vue'
- import HeaderSection from '../components/headerSection.vue'
- import  { db } from '../firebase/index.js'
- import {doc, getDoc, updateDoc} from "firebase/firestore"
- 
+import QrcodeVue from 'qrcode.vue'
+import HeaderSection from '../components/headerSection.vue'
+import { db } from '../firebase/index.js'
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+
 export default {
     components: {
         QrcodeVue, HeaderSection
     },
-    data(){
+    data() {
         return {
             qrModal: false,
             qrValue: null,
             cart_arr: null, //imitates cart arr in firebase (to update)
-            store_list:[], //used for drop down to track
-            cart_list:[], //used for mainset to filter
-            display_list:[] //usde for the result of filter
+            store_list: [], //used for drop down to track
+            cart_list: [], //used for mainset to filter
+            display_list: [] //usde for the result of filter
         }
     },
     created() {
         this.fetchCart()
     },
     methods: {
-        async fetchCart(){
+        async fetchCart() {
             //fetch all cart items, localstorage used over vue store due to loading of store
-            const userRef = doc(db,"users",localStorage.getItem("userID"))
+            const userRef = doc(db, "users", localStorage.getItem("userID"))
 
             //retrieve cart array
             const userDoc = (await getDoc(userRef)).data() //retrieve fields
             this.cart_arr = userDoc.cart
 
             //remove cart deals which no longer exist
-            this.cart_arr = this.cart_arr.filter(async(item)=>{
+            this.cart_arr = this.cart_arr.filter(async (item) => {
                 let dealdoc = doc(db, "deals", item.pdt)
                 let docsnap = await getDoc(dealdoc)
-                if(!docsnap.exists()){
-                    await updateDoc(userRef,{
-                        cart: arrayRemove(item)     
+                if (!docsnap.exists()) {
+                    await updateDoc(userRef, {
+                        cart: arrayRemove(item)
                     })
                 }
             })
 
             //packing pdt id in the list to use as condition later
-            for (var item of this.cart_arr){
+            for (var item of this.cart_arr) {
                 //populate store list for drop down selection
-                if(this.store_list.indexOf(item.storename) == -1){
+                if (this.store_list.indexOf(item.storename) == -1) {
                     this.store_list.push(item.storename)
                 }
 
@@ -129,14 +152,15 @@ export default {
                 let deal_rec = (await getDoc(dealRef)).data()
 
                 this.cart_list.push({ //main copy
-                    id:item.pdt,
+                    id: item.pdt,
                     cart_qty: item.qty,
                     store: item.storename,
                     deal_name: deal_rec.deal_name,
                     product_name: deal_rec.product_name,
                     url: deal_rec.image,
                     perunit: deal_rec.deal_price,
-                    type: deal_rec.deal_type })
+                    type: deal_rec.deal_type
+                })
             }
 
             this.display_list = this.cart_list.filter((item) => {
@@ -147,15 +171,15 @@ export default {
 
 
         },
-        filterByStore(){
+        filterByStore() {
             this.display_list = this.cart_list.filter((item) => {
                 return item.store == this.$refs.storeChosen.value
             })
 
         },
-        async deleteCartItem(id){
+        async deleteCartItem(id) {
             //fetch all cart items, localstorage used over vue store due to loading of store
-            const userRef = doc(db,"users",localStorage.getItem("userID"))
+            const userRef = doc(db, "users", localStorage.getItem("userID"))
 
             //update in car_list since it is permanent deletion instead of filtering
             this.cart_list = this.cart_list.filter((item) => {
@@ -166,45 +190,45 @@ export default {
             this.filterByStore()
 
             //arrow functions to remove cart_arr items (identical copy in db) and update in firebase
-            this.cart_arr = this.cart_arr.filter((item)=>!(item.pdt == id))
+            this.cart_arr = this.cart_arr.filter((item) => !(item.pdt == id))
 
-            await updateDoc(userRef,{cart:this.cart_arr})
+            await updateDoc(userRef, { cart: this.cart_arr })
 
             alert("Item Removed!")
         },
 
-        async changeQty(operation,dealid){
+        async changeQty(operation, dealid) {
 
-            for(var item of this.cart_list){
-                if (item.id === dealid){
+            for (var item of this.cart_list) {
+                if (item.id === dealid) {
                     item.cart_qty = eval(item.cart_qty + operation + 1)
-                    if(item.cart_qty === 0){
+                    if (item.cart_qty === 0) {
                         this.deleteCartItem(item.id)
                     }
                 }
             }
 
-            for(var deal of this.cart_arr){
-                if (deal.pdt === dealid){
+            for (var deal of this.cart_arr) {
+                if (deal.pdt === dealid) {
                     deal.qty = eval(deal.qty + operation + 1)
-                    if(deal.qty === 0){
+                    if (deal.qty === 0) {
                         this.cart_arr.pop(deal)
                     }
                 }
             }
 
             const userRef = doc(db, "users", localStorage.getItem("userID"))
-            await updateDoc(userRef,{
+            await updateDoc(userRef, {
                 cart: this.cart_arr
             })
 
         },
-        qrGenerate(){
+        qrGenerate() {
             //open up the modal
             this.qrModal = true
             var selectedCart = []
             //cart_arr is all cart from user cart field
-            selectedCart = this.cart_arr.filter((element)=>{
+            selectedCart = this.cart_arr.filter((element) => {
                 return (element.storename == this.$refs.storeChosen.value)
             })
             //assign items in cart to qrValue
@@ -215,28 +239,28 @@ export default {
 </script>
 
 <style scoped>
-
 .modal-container {
     z-index: 1000;
 }
+
 .qtyalign {
     display: flex;
     align-items: center;
 }
 
 .qtycol {
-    width:20px
+    width: 20px
 }
 
-.cartcontent{
+.cartcontent {
     margin-top: 100px;
 }
 
-.homeleft{
+.homeleft {
     float: left;
 }
 
-.redeemright{
+.redeemright {
     float: right;
 }
 
@@ -280,8 +304,10 @@ export default {
 .order-table>table>tbody>tr>th,
 .order-table>table>tbody>tr>td {
     vertical-align: middle !important;
-    border-left: none; /* Remove left border */
-    border-right: none; /* Remove right border */
+    border-left: none;
+    /* Remove left border */
+    border-right: none;
+    /* Remove right border */
 }
 
 .shopping-cart>table thead th,
@@ -336,6 +362,7 @@ export default {
 }
 
 @media screen and (max-width: 860px) {
+
     .shopping-cart .product-item .product-thumb,
     .order-table .product-item .product-thumb {
         display: none
@@ -410,15 +437,62 @@ export default {
         display: block;
         width: 100%
     }
+
     .shopping-cart-footer>.column:last-child {
         text-align: center
     }
+
     .shopping-cart-footer>.column .btn {
         width: 100%;
         margin: 12px 0 !important
     }
 }
 
+.modal-container {
+    position: fixed;
+    /* Use fixed positioning */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    /* Ensure it's above other items */
+}
 
+.modal-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    z-index: -1;
+    /* Behind the modal content */
+}
 
+.modal-content {
+    position: relative;
+    z-index: 1;
+    /* Above the semi-transparent background */
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    /* Adjust as per your requirement */
+    width: 100%;
+}
+
+.modal-header,
+.modal-body {
+    padding: 15px;
+}
+
+.close {
+    cursor: pointer;
+}
 </style>
