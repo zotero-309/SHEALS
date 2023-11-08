@@ -3,7 +3,7 @@
         <h1 class="h2">SCAN QR CODE</h1>
     </div>
     <div class="qrscanner">
-        <qrcode-stream @decode="onDecode" ></qrcode-stream>
+        <qrcode-stream @decode="onDecode" @error="onError"></qrcode-stream>
         
 <div v-if="resultmodal" class="modal-container">
     <div class="modal-background" @click="resultmodal=false"></div>
@@ -125,6 +125,10 @@ export default {
             this.resultmodal = true
 
             
+        },
+        onError(error) {
+            // Handle the error and prevent run time error
+            console.error('QR Code scanning error:', error);
         }
     }
 }
