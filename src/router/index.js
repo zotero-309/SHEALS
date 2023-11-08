@@ -14,6 +14,11 @@ import Map from "../views/Map.vue"
 import CommunityCreate from "../views/CommunityCreate.vue"
 import PersonalUploads from "../views/PersonalUploads.vue"
 import CommunityUpdate from "../views/CommunityUpdate.vue"
+import SupermarketTab from "../views/SupermarketTab.vue"
+import CommunityTab from "../views/CommunityTab.vue"
+import FavouritesTab from "../views/FavouritesTab.vue"
+
+
 
 
 const routes = [
@@ -64,6 +69,21 @@ const routes = [
     path: "/personaluploads",
     name: "PersonalUploads",
     component: PersonalUploads
+  },
+  {
+    path: "/supermarket",
+    name: "SupermarketTab",
+    component: SupermarketTab
+  },
+  {
+    path: "/community",
+    name: "CommunityTab",
+    component: CommunityTab
+  },
+  {
+    path: "/favourites",
+    name: "FavouritesTab",
+    component: FavouritesTab
   },
 
   {
