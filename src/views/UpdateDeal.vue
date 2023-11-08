@@ -1,14 +1,14 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <h1 class="h2 text-center">Update Deal</h1>
-            </div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Update Deal</h1>
+    </div>
         </div>
         <form @submit.prevent="UpdateDealInfo()">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 col-lg-4">
-                    <img :src="imageURL" alt="" class="extractedpic img-fluid">
+                    <img :src="imageURL" alt="" class="extractedpic img-fluid w-50">
                 </div>
             </div>
 
@@ -25,7 +25,16 @@
                     <label for="pdtcat" class="py-2">Product Category</label>
                     <select id="pdtcat" ref="foodcategory" class="form-control mb-2" required="required">
                         <option>Bakery</option>
-                        <!-- ... other options ... -->
+                        <option>Diary, Chilled & Eggs</option>
+                        <option>Drinks</option>
+                        <option>Beer, Wine & Spirits</option>
+                        <option>Snacks & Confectionery</option>
+                        <option>Frozen</option>
+                        <option>Fruits and Vegetables</option>
+                        <option>Rice, Noodles & Cooking Ingredients</option>
+                        <option>Meat & Seafood</option>
+                        <option>Food Cupboard</option>
+                        <option>Pet Supplies</option>
                     </select>
                 </div>
             </div>
@@ -40,7 +49,8 @@
                     <label for="deal_type" class="py-2">Select Deal Type</label>
                     <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
                         <option>Discounts</option>
-                        <!-- ... other options ... -->
+                        <option>Bundle Deals</option>
+                        <option>1 For 1</option>
                     </select>
                 </div>
             </div>
