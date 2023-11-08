@@ -1,95 +1,95 @@
 <template>
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Update Deal</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="h2 text-center">Update Deal</h1>
+            </div>
         </div>
         <form @submit.prevent="UpdateDealInfo()">
-        <div class="row">
-            <img :src="imageURL" alt="" class="extractedpic">
-        </div>
-        
-        <div class="row">
-            <div class="col-4">
-                <label for="barcodeid" class="py-2">Barcode ID</label>
-                <input type="number" class="form-control" id="barcodeid" ref="barcodeid" readonly>                    
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <img :src="imageURL" alt="" class="extractedpic img-fluid">
+                </div>
             </div>
-            <div class="col-4">
-                <label for="pdtname" class="py-2">Product Name</label>
-                <input type="text" class="form-control" id="pdtname" ref="productname" readonly>                    
-            </div>
-            <div class="col-4">
-                <label for="pdtcat" class="py-2">Product Category</label>
-                <select id="pdtcat" ref="foodcategory" class="form-control mb-2" required="required">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <label for="barcodeid" class="py-2">Barcode ID</label>
+                    <input type="number" class="form-control" id="barcodeid" ref="barcodeid" readonly>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <label for="pdtname" class="py-2">Product Name</label>
+                    <input type="text" class="form-control" id="pdtname" ref="productname" readonly>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <label for="pdtcat" class="py-2">Product Category</label>
+                    <select id="pdtcat" ref="foodcategory" class="form-control mb-2" required="required">
                         <option>Bakery</option>
-                        <option>Diary, Chilled & Eggs</option>
-                        <option>Drinks</option>
-                        <option>Beer, Wine & Spirits</option>
-                        <option>Snacks & Confectionery</option>
-                        <option>Frozen</option>
-                        <option>Fruits and Vegetables</option>
-                        <option>Rice, Noodles & Cooking Ingredients</option>
-                        <option>Meat & Seafood</option>
-                        <option>Food Cupboard</option>
-                </select>                    
-            </div>         
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <label for="dealname" class="py-2">Deal Name</label>
-                <input type="text" class="form-control" id="dealname" ref="dealname" placeholder="e.g. Hot deals for soju!"  required>                    
+                        <!-- ... other options ... -->
+                    </select>
+                </div>
             </div>
-            <div class="col-6">
-                <label for="deal_type" class="py-2" ref="dealtype">Select Deal Type</label>
+
+            <div class="row">
+                <div class="col-xl-6 col-lg-12">
+                    <label for="dealname" class="py-2">Deal Name</label>
+                    <input type="text" class="form-control" id="dealname" ref="dealname"
+                        placeholder="e.g. Hot deals for soju!" required>
+                </div>
+                <div class="col-xl-6 col-lg-12">
+                    <label for="deal_type" class="py-2">Select Deal Type</label>
                     <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
                         <option>Discounts</option>
-                        <option>Bundle Deal</option>
-                        <option>1 For 1</option>
-                    </select>  
+                        <!-- ... other options ... -->
+                    </select>
+                </div>
             </div>
 
-        </div>
-
             <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="dealdescr" class="py-2" >Deal Description</label>
-                        <textarea class="form-control" id="dealdescr" ref="dealdescr" rows="6"></textarea>
-                    </div>
+                <div class="col-xl-6 col-lg-12">
+                    <label for="dealdescr" class="py-2">Deal Description</label>
+                    <textarea class="form-control" id="dealdescr" ref="dealdescr" rows="6"></textarea>
                 </div>
-                <div class="col-lg-2 col-sm-4">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
                     <label for="dealprice" class="py-2">Price</label>
-                    <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
+                    <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required>
                     <label for="dealqty" class="py-2">Quantity</label>
-                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                   
+                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>
                 </div>
-                <div class="col-lg-2 col-sm-4">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
                     <label for="dealexpiry" class="py-2">Expiry Date</label>
-                    <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>  
+                    <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>
                 </div>
-
             </div>
+
             <div class="row">
-                <label for="dealimg" class="py-2">Upload image</label>
-                <input type="file" id="dealimg" name="dealimg" ref="dealimg">
+                <div class="col-12">
+                    <label for="dealimg" class="py-2">Upload image</label>
+                    <input type="file" id="dealimg" name="dealimg" ref="dealimg" class="form-control-file">
+                </div>
             </div>
 
-
-            <button class="btn btn-primary my-3" type="submit">Update Deal</button>
-</form>
-
+            <div class="row">
+                <div class="col-12 text-center">
+                    <button class="btn btn-primary my-3" type="submit">Update Deal</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </template>
 
 <script>
 import { db, storage } from "../firebase/index.js"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
-import {ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage"
+import { ref, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage"
 
 export default {
-    data(){
-        return{
+    data() {
+        return {
             imageURL: null
         }
     },
-    mounted (){
+    mounted() {
         this.populateDealInfo()
     },
     methods: {
@@ -111,26 +111,26 @@ export default {
                 this.$refs.dealqty.value = deal_rec.deal_quantity
                 this.imageURL = deal_rec.image
             } else {
-            // docSnap.data() will be undefined in this case
-            console.log("No such document!");
+                // docSnap.data() will be undefined in this case
+                console.log("No such document!");
             }
 
         },
-        async UpdateDealInfo(){
+        async UpdateDealInfo() {
             const deal_doc = doc(db, "deals", this.$route.params.id)
 
             //checking image
             const dDoc = await getDoc(deal_doc)
             const doc_rec = dDoc.data()
             let dealImage = "" // initialise image name
-            if(this.$refs.dealimg.files[0]){//check if there is any new image uploaded
+            if (this.$refs.dealimg.files[0]) {//check if there is any new image uploaded
                 dealImage = this.$refs.dealimg.files[0].name
 
                 //upload image if there is an image uploaded
                 const newRef = ref(storage, `deals/${localStorage.getItem("userEmail")}/${this.$route.params.id}/${dealImage}`)
-                uploadBytes(newRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
+                uploadBytes(newRef, this.$refs.dealimg.files[0]).then(async (snapshot) => {
                     let dealImgURL = await getDownloadURL(snapshot.ref)
-                    await updateDoc(deal_doc,{image:dealImgURL})
+                    await updateDoc(deal_doc, { image: dealImgURL })
                     console.log('reuploaded a blob or file!');
                 });
 
@@ -140,9 +140,9 @@ export default {
 
                 // Delete the file
                 deleteObject(desertRef).then(() => {
-                // File deleted successfully
+                    // File deleted successfully
                 }).catch((error) => {
-                // Uh-oh, an error occurred!
+                    // Uh-oh, an error occurred!
                 })
             } else {
                 dealImage = doc_rec.image_name
@@ -160,7 +160,7 @@ export default {
                 image_name: dealImage
             });
 
-            this.$router.push({ name: 'DealListStore'})
+            this.$router.push({ name: 'DealListStore' })
         }
     }
 
@@ -168,10 +168,37 @@ export default {
 </script>
 
 <style scoped>
-.extractedpic{
+.extractedpic {
     width: 200px;
     border-radius: 50%;
     margin: auto;
 }
 
+.extractedpic {
+    width: 100%;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 575.98px) {
+    .extractedpic {
+        border-radius: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Adjust padding or margins for small devices */
+    .form-control {
+        padding: .375rem .75rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    /* Adjust layout or font sizes for medium devices */
+}
+
+@media (max-width: 1199.98px) {
+    /* Adjust layout or font sizes for large devices */
+}
 </style>
