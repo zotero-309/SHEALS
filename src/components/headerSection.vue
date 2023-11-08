@@ -293,7 +293,6 @@ export default {
 	},
 	methods: {
 		async fetchcategories(){
-			console.log("fetch user preference",this.selectedCategories)
 
 			if (localStorage.getItem("userID")){
 				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
