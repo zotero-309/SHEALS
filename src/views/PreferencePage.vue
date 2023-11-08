@@ -17,7 +17,8 @@
           <div class="row justify-content-center mt-3">
             <div class="category pl-3 pb-3 col-12 col-md-6">
               <span>Product Category:</span>
-              <div v-for="category in food_categories" :key="category" class="form-check">
+              <div v-for="category in food_categories" :key="category" class="form-check" 
+                @change="updateSelectedCategories(category)">
                 <input type="checkbox" class="form-check-input" :value="category" :id="category"
                   :checked="isCategoryChecked(category)">
                 <label class="form-check-label" :for="category">{{ category }}</label>
@@ -26,7 +27,8 @@
 
             <div class="deals pl-3 pb-3 col-12 col-md-6 justify-content-center">
               <span>Preferred Deals:</span>
-              <div v-for="deal_type in deal_types" :key="deal_type" class="form-check">
+              <div v-for="deal_type in deal_types" :key="deal_type" class="form-check" 
+                @change="updateSelectedDealTypes(deal_type)">
                 <input type="checkbox" class="form-check-input" :value="deal_type" :id="deal_type"
                   :checked="isDealChecked(deal_type)">
                 <label class="form-check-label" :for="deal_type">{{ deal_type }}</label>
