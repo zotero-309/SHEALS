@@ -18,7 +18,9 @@
                     </div>
                 </div>
             </div>
+        </div>
             <!-- Breadcrumb Section End -->
+    </section>
 
     <!-- deals Section Begin -->
     <section class="deals-section">
