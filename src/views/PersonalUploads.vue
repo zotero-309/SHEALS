@@ -43,14 +43,14 @@
         <tr v-for="deal in display_list" :key="deal.id">
             <td scope="col"><img :src="deal.image" alt="" class="dealimg"></td>
             <td scope="col">{{ deal.deal_name }}</td>
-            <td scope="col" class="col-1">{{ deal.deal_type }}</td>
-            <td scope="col" class="col-2">{{ deal.deal_description }}</td>
+            <td scope="col">{{ deal.deal_type }}</td>
+            <td scope="col">{{ deal.deal_description }}</td>
             <td scope="col">{{ deal.deal_price }}</td>
             <td scope="col">{{ deal.deal_quantity }}</td>
             <td scope="col">{{ deal.product_name }}</td>
-            <td scope="col" class="col-2">{{ deal.product_category }}</td>
-            <td scope="col" class="col-2">{{ deal.deal_expiry }}</td>
-            <td scope="col" class="col-1">
+            <td scope="col">{{ deal.product_category }}</td>
+            <td scope="col">{{ deal.deal_expiry }}</td>
+            <td scope="col">
                 <router-link :to="{name:'CommunityUpdate', params: {id: deal.id}}"><img src="../assets/icons/edit.svg" alt="img" class="p-2"></router-link>
                 <img src="../assets/icons/delete.svg" alt="img" class="p-2" @click="closeDeleteModal(deal.id)">
             </td>
@@ -168,65 +168,77 @@ export default {
 </script>
 
 <style scoped>
-table, th, tr {
+/* Default view for larger screens */
+.table td,
+.table th {
     text-align: center;
-}
-
-img.dealimg {
-    width: 150px;
-    border-radius: 50%;
-}
-
-td {
+    /* Center align text for all table cells and headers */
     vertical-align: middle;
-    height: 50px;
+    /* Align the content vertically in the middle */
+}
+
+/* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+        /* Hide table headers on small screens */
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        /* Make table elements stack vertically */
+        width: 100%;
+        box-sizing: border-box;
+        /* Include padding in the element's width */
+    }
+
+    .table tr {
+        margin-bottom: 0.625rem;
+        /* Add some space between what will now look like rows */
+        border-bottom: 1px solid #e9ecef;
+        /* Add a border to separate the 'rows' */
+    }
+
+    .table td {
+        text-align: center;
+        /* Center align text for all table cells */
+        border: none;
+        /* Remove the border from the cells */
+        padding: 8px 10px;
+        /* Add some padding */
+        position: relative;
+        /* Needed for absolute positioning of the pseudo-element */
+    }
+
+    .table td img.dealimg {
+        width: 50px;
+        /* Set a fixed width for the image */
+        height: auto;
+        /* Maintain aspect ratio */
+        display: block;
+        /* Block display to allow margin auto to work */
+        margin: 0 auto;
+        /* Center the image horizontally */
+        padding: 5px 0;
+        /* Add some padding above and below the image */
+    }
+
 
 }
 
-.modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-background {
-    background-color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent black background */
-}
-
-.modal-content {
-
-    background-color: white !important;
-    padding: 20px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    /* Ensure it's above other elements */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.btnsize {
-    width:100px;
+/* Larger default view for images */
+.table td img.dealimg {
+    width: 200px;
+    /* Larger default width */
+    height: auto;
+    /* Maintain aspect ratio */
+    display: block;
+    /* Ensure the image is a block element to center it */
+    margin: 0 auto;
+    /* Center the image horizontally */
 }
 
 
