@@ -320,7 +320,11 @@ export default {
 					}
 
 					}
+
 				}
+			}
+			if (this.$route.name=="Home"){
+				this.applyFilter()
 			}
 		},
 		changeActive(){
