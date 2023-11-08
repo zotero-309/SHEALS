@@ -99,7 +99,6 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
         homeaddress: '',
         catpref: '',
         dealpref: '',
-        like:[],
         cart:[]
       })
       commit('SET_USER', auth.currentUser)
@@ -107,7 +106,10 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       const user_data = await getDoc(doc(db,"users",auth.currentUser.uid))
       const user_rec = user_data.data()
 
-      localStorage.setItem('user', JSON.stringify(user_rec.type));
+      localStorage.setItem('userID', auth.currentUser.uid)
+      localStorage.setItem('userType', user_rec.type)
+      localStorage.setItem('userEmail', user_rec.email)
+      localStorage.setItem('homeAddress', user_rec.homeaddress)
 
       if (user_rec.type === "consumer"){
         if (user_rec.address == "" || user_rec.catpref == "" || user_rec.dealpref ==""){

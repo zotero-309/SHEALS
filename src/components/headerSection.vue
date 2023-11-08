@@ -333,6 +333,12 @@
 											<span>Favourites</span>
 										</router-link>
 									</li>
+									<li :class="mapActive">
+										<router-link :to="{name: 'map'}">
+											<i class="fa fa-map-o map-icon"></i>
+											<span>Map</span>
+										</router-link>
+									</li>
 								</ul>
 							</nav>
 
@@ -343,11 +349,11 @@
 							</button>
 
 							<!-- map button (jn) -->
-							<router-link to="/map">
+							<!-- <router-link to="/map">
 								<button class="filter-button">
 									<i class="fa fa-map-o map-icon"></i> &nbsp;
 									<span>Map</span></button>
-							</router-link>
+							</router-link> -->
 
 							<!-- Filter Modal Open -->
 							<div v-if="showModal" class="modal-container"
@@ -424,7 +430,9 @@
   
 <script>
 import router from '../router'
-import gsap from 'gsap';
+import gsap from 'gsap'
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../firebase';
 
 
 export default {
@@ -436,6 +444,7 @@ export default {
 			communityActive: "",
 			favActive: "",
 			homeActive: "",
+			mapActive:"",
 			isProfileDropdownOpen: false,
 			isMenuOpen: false,
 			showModal: false,
@@ -452,15 +461,47 @@ export default {
 	},
 	created() {
 		this.changeActive()
+		this.fetchcategories()
 	},
 	methods: {
-		changeActive() {
-			if (this.$route.name === "Home") {
+		async fetchcategories(){
+
+			if (localStorage.getItem("userID")){
+				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
+				//check if user doc exist
+				if (userDoc.exists()){
+					var user_rec = userDoc.data()
+
+					//check if there is category array first
+					if (user_rec.catpref){
+						for (var cat of user_rec.catpref){
+							this.selectedCategories.push(cat)
+						}
+					}
+
+					if (user_rec.dealpref){
+						for (var deal of user_rec.dealpref){
+							this.selectedDiscounts.push(deal)	
+					}
+
+					}
+
+				}
+			}
+			if (this.$route.name=="Home"){
+				this.applyFilter()
+			}
+		},
+		changeActive(){
+			if(this.$route.name==="Home"){
 				this.homeActive = "active"
 			} else if (this.$route.name === "SupermarketTab") {
 				this.supermarketActive = "active"
 			} else if (this.$route.name === "CommunityTab") {
 				this.communityActive = "active"
+
+			} else if(this.$route.name==="map"){
+				this.mapActive = "active"
 			} else {
 				this.favActive = "active"
 			}

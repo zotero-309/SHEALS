@@ -3,35 +3,6 @@
     <h1 class="h2">Dashboard</h1>
   </div>
 
-  <!---------------------------------------------------------- Stats Counters --------------------------------------------------------->
-  <div class="row my-3">
-    <div class="col-6 ">
-      <div class="dash-widget d-flex justify-content-center align-items-center ">
-        <div class="dash-widgetimg">
-          <svg class="bi">
-            <use xlink:href="#shop" />
-          </svg>
-        </div>
-        <div class="dash-widgetcontent">
-          <h5><span class="counters" data-count="43">438</span></h5>
-          <h6>Items Sold Today</h6>
-        </div>
-      </div>
-    </div>
-    <div class="col-6">
-      <div class="dash-widget dash1 d-flex justify-content-center align-items-center ">
-        <div class="dash-widgetimg">
-          <svg class="bi">
-            <use xlink:href="#cash-coin" />
-          </svg>
-        </div>
-        <div class="dash-widgetcontent">
-          <h5>$<span class="counters" data-count="2380.00">2380.00</span></h5>
-          <h6>Today's Sales</h6>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="page-wrapper">
     <div class="content">
@@ -43,7 +14,7 @@
               <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                 <h5 class="card-title m-2 mx-auto">Purchase & Sales</h5>
               </div>
-              <div class="card-body"><apexchart /><div>
+              <div class="card-body overflow-scroll"><apexchart /><div>
             </div>
           </div>
         </div>
