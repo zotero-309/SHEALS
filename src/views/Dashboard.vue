@@ -184,7 +184,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .bi {
   width: 25px;
   height: 25px;

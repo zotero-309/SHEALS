@@ -21,7 +21,7 @@
                                                     <h4 class="mb-4 pb-3">Log In</h4>
                                                     <form class="login" @submit.prevent="login">
                                                         <div class="form-group">
-                                                            <input type="email" class="form-style" placeholder="Your Eemail" v-model="login_form.email" />
+                                                            <input type="email" class="form-style" placeholder="Your Email" v-model="login_form.email" />
                                                             <i class="input-icon uil uil-at"></i>
                                                         </div>
                                                         <div class="form-group mt-2">
@@ -59,8 +59,6 @@
                     </div>
                 </div>
             </div>
-
-
         </section>
     </main>
 </template>

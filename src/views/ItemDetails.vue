@@ -2,8 +2,6 @@
   <!-- Header Section Begin -->
   <HeaderSection />
   <!-- Header Section End -->
-
-
   <div v-if="loading" id="preloader">
     <!-- Preloader -->
     <div class="loader"></div>
@@ -11,31 +9,49 @@
 
   <div v-if="!loading">
 
-    <!-- Product section-->
-    <section class="itemDetail">
+    <!-- Deal section-->
+    <section class="deal-section">
       <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 align-items-center">
-          <div class="col-md-6">
-            <img class="card-img-top mb-5 mb-md-0" :src="item_list.image" alt="..." v-if="image_loaded" />
+
+          <!-- Left Column: Deal Image -->
+          <div class="deal-img col-md-5">
+            <img class="card-img-top md-0 mw-100" :src="item_list.image" alt="..." v-if="image_loaded" />
           </div>
-          <div class="col-md-6">
-            <h1 class="fs-2 fw-bold"> {{ item_list.deal_name }} </h1>
-            <h3 class="fs-2 mb-4 fw-bold customColour"> ${{ item_list.deal_price }}</h3>
-            <p class="fs-6 mb-4">
+
+          <!-- Right Column: Deal Details -->
+          <div class="deal-details col-md-7">
+
+            <!-- Deal Name -->
+            <h1 class="deal-name fw-bold"> {{ item_list.deal_name }} </h1>
+
+            <!-- Deal Price -->
+            <h3 class="deal-price fw-bold customColour"> ${{ item_list.deal_price }}</h3>
+
+            <!-- Deal Description -->
+            <p class="deal-description">
               {{ item_list.deal_description }}
             </p>
-            <div class="fs-6 mb-3" v-if="item_list.uploaded_by">
-              <i class="fa fa-building-o"></i>
-              Store: <br> {{ item_list.uploaded_by.name }}
+
+            <!-- Display Uploader Info -->
+            <div class="deal-uploader" v-if="item_list.uploaded_by">
+              <i class="fa fa-id-card-o"></i>
+              Uploader: <br> {{ item_list.uploaded_by.name }}
             </div>
-            <div class="fs-6 mb-4">
+
+            <!-- Display Deal Address -->
+            <div class="deal-address">
               <i class="fa fa-map-marker"></i>
               Address: <br>{{ item_list.location }}
             </div>
-            <div class="d-flex" v-if="$store.state.user && item_list.uploaded_by">
+
+            <!-- Add to Cart Section -->
+            <div class="cart-section d-flex" v-if="$store.state.user && item_list.uploaded_by">
               <input class="form-control text-center me-3" id="inputQuantity" ref="inputQuantity" type="num" value="1"
                 style="max-width: 3rem" v-if="item_list.uploaded_by.type == 'store'" />
-              <button class="btn btn-outline-dark flex-shrink-0" type="button"
+
+              <!-- Add to Cart Button (Only for store-type uploaders) -->
+              <button class="btn btn-outline-dark flex-shrink-0 cart-btn" type="button"
                 v-if="item_list.uploaded_by.type == 'store'" @click="addToCart()">
                 <i class="fa fa-shopping-cart"></i>
                 Add to cart
@@ -48,17 +64,17 @@
     </section>
 
     <!-- Comment Section -->
-    <section v-if="item_list.uploaded_by.type =='consumer'">
-      <div class="container text-dark px-4">
+    <section class="comment-section" v-if="item_list.uploaded_by.type == 'consumer'">
+      <div class="container text-dark">
         <div class="row d-flex justify-content-center">
-          <div class="col-lg-12 col-md-10">
+          <div class="col-lg-12">
 
             <!-- Write a Comment Card -->
             <div class="mb-4">
-              <div class="px-4 border-bottom border-gray">
-                <div class="d-flex flex-start w-100 mb-4">
+              <div class="border-bottom border-gray">
+                <div class="d-flex flex-start mw-100 mb-4">
                   <div class="w-100">
-                    <h5>Leave a comment!</h5>
+                    <h5 class="fw-bold">Leave a comment!</h5>
                     <div class="form-outline">
                       <textarea v-model="newComment" class="form-control" id="textAreaExample" rows="4"
                         placeholder="Did you enjoy the deal?"></textarea>
@@ -74,36 +90,36 @@
             </div>
 
             <!-- Display Comments -->
-            <div class="commentsSection">
-              <div class="px-4">
-                <h5 class="fw-bold mb-3">Comments ({{ comments.length }})</h5> <!-- Title with comment count -->
-                <div v-for="(comment, index) in visibleComments" :key="index">
-                  <div class="d-flex justify-content-between">
-                    <div>
-                      <p class="fs-6 mb-2">{{ comment.user }}:</p>
-                      <p class="fs-6 mb-0">{{ comment.text }}</p>
-                    </div>
-                    <small class="text-muted">{{ formatTimestamp(comment.timestamp) }}</small>
+            <div class="displayed-comments">
+              <h5 class="displayed-comments-header fw-bold">Comments ({{ comments.length }})</h5>
+              <!-- Title with comment count -->
+              <div v-for="(comment, index) in visibleComments" :key="index">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <p class="fs-6 mb-2">{{ comment.user }}:</p>
+                    <p class="fs-6 mb-0">{{ comment.text }}</p>
                   </div>
-                  <!-- horizontal grey line between each comment -->
-                  <hr class="horizontalLine my-2">
+                  <small class="text-muted">{{ formatTimestamp(comment.timestamp) }}</small>
                 </div>
+                <!-- horizontal grey line between each comment -->
+                <hr class="horizontalLine">
+              </div>
 
-                <!-- View More Comments Button -->
-                <div class="card-footer">
-                  <div class="d-flex justify-content-center mt-3">
-                    <button type="button" class="btn btn-outline-dark mb-3" @click="toggleComments">
-                      {{ commentsCollapsed ? 'See Older Comments' : 'Hide Older Comments' }}
-                      <i v-if="commentsCollapsed" class="fa fa-angle-down"></i>
-                      <i v-else class="fa fa-angle-up"></i>
-                    </button>
-                  </div>
+              <!-- View More Comments Button -->
+              <div class="card-footer">
+                <div class="d-flex justify-content-center mt-3">
+                  <button type="button" class="btn btn-outline-dark mb-3" @click="toggleComments">
+                    {{ commentsCollapsed ? 'See Older Comments' : 'Hide Older Comments' }}
+                    <i v-if="commentsCollapsed" class="fa fa-angle-down"></i>
+                    <i v-else class="fa fa-angle-up"></i>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </section>
 
     <!-- Related items section-->
@@ -329,8 +345,8 @@ export default {
       if (!userEmail) {
         // alert("User email not found. Please log in.");
         if (confirm("Please log in first to post comment.")) {
-            this.$router.push('/login')
-        }    
+          this.$router.push('/login')
+        }
         return;
       }
 
@@ -386,19 +402,19 @@ img {
   width: 100%;
 }
 
-.itemDetail .container {
-  margin-top: 180px;
+.deal-section .container {
+  margin-top: 170px;
   font-family: "Cabin", sans-serif;
 }
 
-.commentsSection {
+.displayed-comments {
   /* set max height of comment section */
   max-height: 450px;
   overflow-y: auto;
   font-family: "Cabin", sans-serif;
 }
 
-.commentsSection .card-footer {
+.displayed-comments .card-footer {
   position: sticky;
   bottom: 0;
   background-color: white;
@@ -406,6 +422,287 @@ img {
 
 .customColour {
   color: #E97D2F
+}
+
+
+@media (max-width: 575.98px) {
+  .deal-section .container {
+    margin-top: 75px;
+  }
+
+  .deal-name {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .deal-price {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .deal-description {
+    font-size: 0.7rem; 
+    margin-bottom: 1rem;
+    line-height: 1rem;
+  }
+
+  .deal-uploader {
+    font-size: 0.7rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .deal-address {
+    font-size: 0.7rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .cart-section input,
+  .cart-section .cart-btn {
+    font-size: 0.8rem;
+  }
+
+  hr {
+    margin-top: 20px;
+  }
+
+  .comment-section h5{
+    font-size: 12px;
+  }
+
+  .comment-section .form-control {
+    font-size: 12px;
+  }
+
+  .comment-section .container {
+    padding: 0 17px;
+  }
+
+  .displayed-comments-header {
+    font-size: 25px;
+  }
+
+  .displayed-comments {
+    padding: 0 5px 0 1px;
+  }
+}
+ 
+
+@media (min-width: 576px) and (max-width: 967.988px) {
+  .deal-section .container {
+    margin-top: 75px;
+  }
+
+  .deal-name {
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .deal-price {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .deal-description {
+    font-size: 1.1rem; 
+    margin-bottom: 1.2rem;
+    line-height: 1rem;
+  }
+
+  .deal-uploader {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .deal-address {
+    font-size: 0.9rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .cart-section input,
+  .cart-section .cart-btn {
+    font-size: 0.8rem;
+  }
+
+  hr {
+    margin-top: 20px;
+  }
+
+  .comment-section h5 {
+    font-size: 15px;
+  }
+
+  .comment-section .container {
+    padding: 0 17px;
+  }
+
+  .displayed-comments-header {
+    font-size: 25px;
+  }
+
+  .displayed-comments {
+    padding: 0 5px 0 1px;
+  }
+}
+
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .deal-section .container {
+    margin-top: 75px;
+  }
+
+  .deal-name {
+    font-size: 1.3rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .deal-price {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .deal-description {
+    font-size: 0.8rem; 
+    margin-bottom: 1rem;
+    line-height: 1.1rem;
+  }
+
+  .deal-uploader {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .deal-address {
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .cart-section input,
+  .cart-section .cart-btn {
+    font-size: 0.8rem;
+  }
+
+  hr {
+    margin-top: 20px;
+  }
+
+  .comment-section h5 {
+    font-size: 15px;
+  }
+
+  .comment-section .container {
+    padding: 0 17px;
+  }
+
+  .displayed-comments-header {
+    font-size: 25px;
+  }
+
+  .displayed-comments {
+    padding: 0 5px 0 1px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .deal-section {
+    margin: 75px 0 30px 0;
+  }
+
+  .deal-name {
+    font-size: 1.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .deal-price {
+    font-size: 2rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .deal-description {
+    font-size: 1rem;
+    margin-bottom: 1.4rem;
+    line-height: 1.4rem;
+  }
+
+  .deal-uploader {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .deal-address {
+    font-size: 0.9rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .cart-section input,
+  .cart-section .cart-btn {
+    font-size: 0.9rem;
+  }
+
+  .comment-section .container {
+    padding: 0 40px;
+  }
+
+  .displayed-comments {
+    padding: 0 5px 0 0;
+  }
+
+
+}
+
+@media (min-width: 1200px) {
+  .deal-name {
+    font-size: 2.2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .deal-price {
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+  }
+
+  .deal-description {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .deal-uploader {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .deal-address {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .cart-section input,
+  .cart-section .cart-btn {
+    font-size: 1.2rem;
+  }
+
+  hr {
+    margin-top: 30px;
+  }
+
+  .comment-section h5 {
+    padding: 5px 0;
+    font-size: 20px
+  }
+
+  .comment-section .container {
+    padding: 0 40px;
+  }
+
+  .displayed-comments-header {
+    font-size: 20px;
+  }
+
+  .displayed-comments {
+    padding: 0 5px 0 0;
+  }
+
+
+
 }
 </style>
  

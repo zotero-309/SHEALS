@@ -137,8 +137,7 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
 .extend {
     height: 100vh;
 }
