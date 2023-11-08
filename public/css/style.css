@@ -271,30 +271,29 @@ ol {
 -----------------------*/
 
 .breadcrumb-section {
-	padding-top: 160px; /* spacing for breadcrumb section to be below header section */
+	padding-top: 150px; /* spacing for breadcrumb section to be below header section */
 	padding-bottom: 10px;
 }
 .breadcrumb-text {
 	text-align: center;
 }
 .breadcrumb-text h2 {
-	font-size: 44px;
-	color: #19191a;
+	font-size: 30px;
+	color: #393939;
 	margin-bottom: 12px;
+	font-weight: 600;
 }
 
-/*---------------------
-  By Community Section
------------------------*/
-.map {
-	height: 470px;
-	-webkit-box-shadow: 0px 14px 35px rgba(0, 0, 0, 0.15);
-	box-shadow: 0px 14px 35px rgba(0, 0, 0, 0.15);
-	margin-top: 75px;
-}
-
-.map iframe {
-	width: 100%;
+@media only screen and (max-width: 991px) {
+    .breadcrumb-section {
+        padding-top: 60px; /* spacing for breadcrumb section to be below header section */
+		padding-bottom: 0px
+    }
+	.breadcrumb-text h2 {
+		font-size: 25px;
+		margin-bottom: 5px;
+		
+	}
 }
 
 /*-------------------------------- Respinsive Media Styles --------------------------------*/
@@ -302,11 +301,9 @@ ol {
 /* Large Mobile: 480px */
 
 @media only screen and (max-width: 767px) {
-
 	.footer-section .copyright-option ul li {
 		margin-right: 25px;
 	}
-
 }
 
 /* Small Mobile: 320px */
