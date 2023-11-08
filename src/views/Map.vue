@@ -1,6 +1,55 @@
-
-
 <template>
+	<!-- mobile view header -->
+	<!-- Fixed Header -->
+	<header class="mobile-fixed-header">
+		<!-- Top Navigation -->
+		<div class="container">
+			<div class="row">
+				<!-- Left Section -->
+				<div class="col-10">
+					<ul class="tn-left">
+						<!-- Logo -->
+						<li class="app-icon">
+							<router-link :to="{ name: 'Home' }">
+								<img src="/img/logo.png" alt="Logo">
+							</router-link>
+						</li>
+
+					</ul>
+				</div>
+
+				<div class="open-menu-icon col-2">
+					<div class="tn-right">
+						<!-- Open Menu Icon on the Right -->
+						<div class="canvas-open" @click="toggleMenu">
+							<i class="icon_menu"></i>
+						</div>
+						<!-- Offcanvas Menu Overlay -->
+						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+						</div>
+
+
+						<!-- Offcanvas Menu Overlay -->
+						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+						</div>
+
+						<!-- Offcanvas Menu Wrapper -->
+						<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+						<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+							<!-- Canvas Close Button -->
+							<div class="canvas-close" @click="toggleMenu">
+								<i class="icon_close"></i>
+							</div>
+
+							<div id="mobile-menu-wrap"></div>
+						</div>
+						<!-- Offcanvas Menu Section End -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
     <!-- Header Section Begin -->
     <HeaderSection @filter-applied="handleFilterApplied"/> <!-- listen for filterApplied event which is triggered from clicking apply filter button-->
     
@@ -27,12 +76,15 @@
                                         </div>
                                     </div> 
                                     <!-- <button class='ui button'>Go</button> -->
-                                    <label for="distance" class="form-label">Distance</label>
-                                    <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="49000" @change='updateMarkersByDistance'>
+                                    <label for="distance" class="form-label">Find deals within:</label> <span>{{uDistance}} m</span>
+                                    <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="49000" @change="updateMarkersByDistance" >
                                     
-                                    <span>{{uDistance}}</span>
+                                    
                                 
-                                    <button type="button" class="btn btn-info" @click="getPreferenceLocation">Saved Home Address</button>
+                                    <div>
+                                        
+                                        <button type="button" class="btn btn-outline-dark" @click="getPreferenceLocation">Use Saved Home Address</button>
+                                    </div>
                                     
                                 </div>
                             </form>
@@ -48,26 +100,13 @@
                     :zoom="14">
                         <MarkerCluster >
                             <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="i">
-                                <!-- <InfoWindow v-model="infowindow">
-                                    <div id="content">
-                                        This is the infowindow content
-                                    </div>
-                                </InfoWindow> -->
-                            </Marker>
-                        </MarkerCluster>
-                        
-                        <!-- <CustomMarker v-for="(location, i) in locations" :options="{ position: location, anchorPoint: 'BOTTOM_CENTER' }" :key="i">
-                            <div style="text-align: center"> -->
-                                <!-- <div style="font-size: 1.125rem">Vuejs Amsterdam</div> -->
-                                <!-- <img src="http://maps.gstatic.com/mapfiles/ms2/micons/convienancestore.png" width="50" height="50" style="margin-top: 8px" />
                                 <InfoWindow v-model="infowindow">
                                     <div id="content">
-                                        This is the infowindow content
+                                        {{location}}
                                     </div>
                                 </InfoWindow>
-                            </div>
-                            
-                        </CustomMarker> -->
+                            </Marker>
+                        </MarkerCluster>
                         
                     </GoogleMap>
 
@@ -82,7 +121,43 @@
                     <section class="deals-section">
                         <div class="container">
                             <div class="row">
-                                <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" />
+                                <!-- <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" /> -->
+                                <!-- Deal items section -->
+                                <div v-for="deal in display_list" :key="deal.id"
+                                    class="displayDeals col-6 col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <!-- bind each deal object in the array to the deal prop of the dealItem component. -->
+                                    <router-link :to="{ name: 'item-detail', params: { id: deal.id } }">
+                                        <!-- deal box for each deal -->
+                                        <div class="deal-box">
+                                            <div class="deal-item">
+                                                <!-- Deal image -->
+                                                <img :src="deal.image" alt="">
+
+                                                <!-- Deal information -->
+                                                <div class="ri-text">
+                                                    <h4>{{ deal.deal_name }}</h4>
+                                                    <h3>${{ deal.deal_price }}<span>/Per unit</span></h3>
+
+                                                    <!-- store/uploader and address information -->
+                                                    <div class="store">
+                                                        <i class="px-1 fa fa-id-card-o"></i>
+                                                        {{ deal.uploaded_by.name }}
+                                                    </div>
+                                                    <div class="address">
+                                                        <i class="px-2 fa fa-map-marker"></i>
+                                                        {{ deal.location }}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Heart button for favorites -->
+                                                <div class="heart-button" @click.prevent="toggleHeart(deal.id)">
+                                                    <i
+                                                        :class="{ 'fa': true, 'fa-heart': isFavourite(deal.id), 'fa-heart-o': !isFavourite(deal.id) }"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -99,17 +174,20 @@
 
 <script>
     import HeaderSection from '../components/headerSection.vue';
-    import DealItem from '../components/dealItem.vue';
+    // import DealItem from '../components/dealItem.vue';
     import { ref, watch } from 'vue'; 
-
     import { GoogleMap, Marker, MarkerCluster, CustomMarker , InfoWindow} from "vue3-google-map";
+    import { db } from '../firebase/index.js'
+    import { doc, updateDoc, collection, getDocs, getDoc, query, where, documentId } from "firebase/firestore"
+    import router from '../router'
+    import gsap from 'gsap'
 
 
     export default {
 
         components: {
             HeaderSection,
-            DealItem,
+            // DealItem,
 
             GoogleMap,
             Marker, 
@@ -120,37 +198,77 @@
 
         data() {
             return {
-         
+                //headerSection
+                supermarketActive: "",
+                communityActive:"",
+                favActive:"",
+                homeActive: "",
+                mapActive:"",
+                isMenuOpen: false,
+                showModal: false,
+                showAnimation: false,
+                selectedCategories: [],
+                selectedDiscounts: [],
+                searchQuery: '',
+                categoryList: ['Bakery', 'Beer, Wine & Spirits', 'Dairy, Chilled & Eggs', 'Drinks',
+                    'Food Cupboard', 'Frozen', 'Fruits', 'Meat & Seafood',
+                    'Pet Supplies', 'Rice, Noodles & Cooking Ingredients',
+                    'Snacks & Confectionery', 'Vegetables'],
+                discountList: ['1 For 1', 'Discounts', 'Bundle Deals'],
+
+                //deals
+                loading: true, // Display preloader while loading data
+                favourites: [], //Initialize favorites as an empty array
+                deal_list: [], // Initialize deal_list as an empty array, stores all deals
+                display_list: [], //Initialize display_list as empty array, stores filtered or all deals based on categories
                 selectedFilters: {
                     selectedCategories: [],
                     selectedDiscounts: [],
                 },
-                prefLocation: '',
 
+                //map
+                prefLocation: '',
                 address: '',
                 error: '',
                 spinner: false,
-
-                display_list:[], //filtered list based on search
-
-                // markers: {},
+                // display_list:[], //filtered list based on search
                 deal_address_coords: "",
-
                 center:{ lat: 1.3548, lng: 103.9579 },
                 reRender: 1,
                 locations:[],
-
                 ulat: '',
                 ulng: '',
                 uDistance: '',
-                
-                orilocations: '', // keep track of all or prev deals
-                count: 0, // keep track refreshed this.locations
-                keepTrack: []
-
+                orilocations: [], // keep track of all or prev deals
+                applyDistance: false
+  
             }
         },
+        //trigger function to fetch deals when the component is created
+        created() {
+            //header
+            this.changeActive()
+		    this.fetchcategories()
+
+            // Load user favorites before fetching deals
+            this.loadFavoritesFromDatabase();
+            this.fetchDeals()
+
+        },
+        watch: {
+            searchQuery: {
+                handler: 'updateDisplayList',
+            },
+            // Watch for changes in selectedFilters
+            selectedFilters: {
+                handler: 'updateDisplayList',
+                immediate: true, // Execute the handler immediately on component creation
+                deep: true, // Watch for changes in the array's elements
+            },
+        },
+
         mounted() {
+            
             // autocomplete function
             let autocomplete = new google.maps.places.Autocomplete(this.$refs['autocomplete'], {
                 bounds: new google.maps.LatLngBounds(
@@ -163,104 +281,366 @@
                 // console.log(place);
                 this.address = place.formatted_address;
                 let autolocation = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-                console.log(this.center)
+                // console.log(this.center)
                 
-                // if (this.center) {
-                //     let index = this.locations.findIndex(autoaddr => 
-                //         autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
-                //     );
-
-                //     if (index > -1) {
-                //         this.locations.splice(index, 1);
-                //     }
-                //     if (this.orilocations.includes(this.center)) {
-                //         let index = this.locations.findIndex(autoaddr => 
-                //             autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
-                //         );
-
-                //         if (index > -1) {
-                //             this.locations.splice(index, 1);
-                //         }
-                //     }
-                // }
-                // this.center = ''
                 // console.log(this.center)
                 // console.log(this.orilocations)
-                this.locations = [...this.orilocations]
                 this.removeLocator()
+                this.resetLocationsToOriginal()
                 this.locations.push(autolocation);
                 this.center = autolocation
-                console.log(this.center)
+                // console.log(this.center)
                 this.uDistance = 0
                 
                 // this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
             });
             this.locatorButtonPressed();
-        },
 
+        },
+ 
 
         methods: {
+        //headerSection
+            async fetchcategories(){
+
+                if (localStorage.getItem("userID")){
+                    const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
+                    //check if user doc exist
+                    if (userDoc.exists()){
+                        var user_rec = userDoc.data()
+
+                        //check if there is category array first
+                        if (user_rec.catpref){
+                            for (var cat of user_rec.catpref){
+                                this.selectedCategories.push(cat)
+                            }
+                        }
+
+                        if (user_rec.dealpref){
+                            for (var deal of user_rec.dealpref){
+                                this.selectedDiscounts.push(deal)	
+                        }
+
+                        }
+                    }
+                }
+                this.applyFilter()
+            },
+            changeActive(){
+                if(this.$route.name==="Home"){
+                    this.homeActive = "active"
+                } else if (this.$route.name==="SupermarketTab"){
+                    this.supermarketActive = "active"
+                } else if(this.$route.name==="CommunityTab"){
+                    this.communityActive = "active"
+
+                } else if(this.$route.name==="map"){
+                    this.mapActive = "active"
+                } else {
+                    this.favActive = "active"
+                }
+            },
+
+
+
+            toggleModal() {
+                this.showModal = !this.showModal;
+                this.showAnimation = true;
+
+                // Toggle GSAP animation class
+                if (this.showModal) {
+                    this.$nextTick(() => {
+                        const modalContainer = document.querySelector('.modal-container');
+                        if (modalContainer) {
+                            gsap.to(modalContainer, { opacity: 1, duration: 0.3 });
+                        }
+                    })
+                } else {
+                    gsap.to('.modal-container', { opacity: 0, duration: 0.3 });
+                    gsap.to('.modal-content', { opacity: 0, duration: 0.3 });
+                }
+            },
+            closeModal() {
+                this.showModal = false;
+            },
+            applyFilter() {
+                try {
+                    console.log('Selected Categories:', this.selectedCategories);
+                    console.log('Selected Discounts:', this.selectedDiscounts);
+
+                    // Ensure that selectedCategories and selectedDiscounts are defined
+                    if (!this.selectedCategories || !this.selectedDiscounts) {
+                        console.error('Selected categories or discounts are undefined.');
+                        return;
+                    }
+
+                    this.selectedFilters = {
+                        selectedCategories: this.selectedCategories.slice(),
+                        selectedDiscounts: this.selectedDiscounts.slice(),
+                    };
+
+                    console.log('Captured filter in HeaderSection:', this.selectedFilters);
+
+                    // Emit the event with the captured filter data
+                    this.$emit('filter-applied', this.selectedFilters);
+
+                    this.closeModal();
+                } catch (error) {
+                    console.error('Error in applyFilter:', error);
+                }
+            },
+            resetFilter() {
+                this.selectedCategories = []; // Reset selectedCategories to an empty array
+                this.selectedDiscounts = []; // Reset selectedDiscounts to an empty array
+            },
+            getImageUrl(category) {
+                // Remove spaces, commas, and ampersands from the category name
+                const sanitizedCategory = category.replace(/[\s, &]+/g, '');
+                // Assuming your images are stored in the /img/ directory
+                return `/img/${sanitizedCategory}.jpg`;
+            },
+            PreferencePage() {
+                router.push("/questionaire");
+            },
+
+        //deals
+
+            // Toggle favorite status for a deal
+            async toggleHeart(dealId) {
+                // Check if the user is logged in
+                if (!this.$store.state.user) {
+                    // alert("Please log in first to add to favorites.");
+                    if (confirm("Please log in first to add to favorites.")) {
+                        this.$router.push('/login')
+                    }
+                    return;
+                }
+                // Ensure that this.favourites is an array before calling indexOf
+                if (!Array.isArray(this.favourites)) {
+                    this.favourites = [];
+                }
+
+                const index = this.favourites.indexOf(dealId);
+                console.log('Toggle Heart - dealId:', dealId, 'Index:', index);
+
+                if (index === -1) {
+                    // Add to favorites
+                    this.favourites.push(dealId);
+                } else {
+                    // Remove from favorites
+                    this.favourites.splice(index, 1);
+                }
+
+                // Save the favorites to Firebase
+                await this.updateFavoritesInDatabase();
+                if (this.tab == "favourites"){ //change the display by refreshing
+                    this.$router.go()
+                }
+            },
+
+            async updateFavoritesInDatabase() {
+                // Update favorites in the Firebase user document
+                const userId = localStorage.getItem("userID");
+                const userDocRef = doc(db, 'users', userId);
+
+                await updateDoc(userDocRef, {
+                    favorites: this.favourites,
+                });
+            },
+            async loadFavoritesFromDatabase() {
+                try {
+                    const userId = localStorage.getItem("userID");
+
+                    if (!userId) {
+                        console.error('User ID not found.');
+                        return;
+                    }
+
+                    const userDocRef = doc(db, 'users', userId);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists()) {
+                        const userData = userDocSnapshot.data();
+
+                        // Ensure that userData.favorites is defined before assigning it
+                        this.favourites = userData.favorites || [];
+                    } else {
+                        // If the user document doesn't exist, initialize this.favourites with an empty array
+                        this.favourites = [];
+                    }
+                } catch (error) {
+                    console.error('Error loading favorites:', error);
+                }
+            },
+
+            // Fetch deals from Firestore
+            async fetchDeals() {
+                // show preloader before fetching data
+                this.loading = true;
+                if (this.tab =="supermarket"){
+                    var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","store")));
+                } else if ((this.tab =="community")){
+                    var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","consumer")));
+                } 
+                else if(this.tab == "favourites"){
+                    await this.loadFavoritesFromDatabase()
+                    if (!this.favourites.length == 0){
+                        var querySnapshot = await getDocs(query(collection(db, "deals"), where (documentId(),"in",this.favourites)));
+                    } else {
+                        this.loading = false; // stop preloader
+                        return
+                    }
+                }
+                else {
+                    var querySnapshot = await getDocs(collection(db, "deals"));
+                }
+
+                const deal_list = [];
+
+                for (const doc of querySnapshot.docs) {
+                    const obj = doc.data();
+                    obj['id'] = doc.id;
+                    deal_list.push(obj);
+                    // Check if the deal is a favorite and add its id to the favourites array
+                    if (obj.isFavorite) {
+                        this.favourites.push(obj.id);
+                    }
+                }
+                this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
+                this.display_list = deal_list; // initially set display_list to all deals
+                this.loading = false; // stop preloader
+
+                // Call the method to update the display list based on selected categories after fetching deals
+                this.updateDisplayList();
+            },
+            async updateDisplayList() {
+                // Update deals displayed based on both filters and search query
+                let results = this.deal_list;
+
+                // Filter based on selected filters
+                if (this.selectedFilters.selectedCategories.length > 0 ||
+                    this.selectedFilters.selectedDiscounts.length > 0) {
+                    results = results.filter(deal =>
+                        (this.selectedFilters.selectedCategories.length === 0 || this.selectedFilters.selectedCategories.includes(deal.product_category)) &&
+                        (this.selectedFilters.selectedDiscounts.length === 0 || this.selectedFilters.selectedDiscounts.includes(deal.deal_type))
+                    );
+                }
+
+                // Further filter based on search query
+                console.log('receieved in update display list', this.searchQuery)
+                if (this.searchQuery !== "") {
+                    results = results.filter((deal) =>
+                        //ensure case insensitive
+                        deal.deal_description.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        deal.deal_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        deal.deal_type.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        deal.product_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        deal.product_category.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                }
+                if(this.applyDistanceToDisplayList()) {
+                    results = results.filter((deal) =>
+                        this.locations.includes(deal.location)
+                    );
+                }
+
+                this.display_list = results;
+                this.getDisplayList (this.display_list)
+                console.log('Updated Filtered and Searched Display List:', this.display_list);
+
+                this.$emit('display-list', this.display_list);
+            },
+            // Check if a deal is in favorites
+            isFavourite(dealId) {
+                // Check if this.favourites is an array and not null or undefined
+                if (Array.isArray(this.favourites) && this.favourites.length > 0) {
+                    // Check if the item is in favourites
+                    return this.favourites.includes(dealId);
+                } else {
+                    // If this.favourites is not an array or is empty, return false
+                    return false;
+                }
+            },
+
+
+        // maps 
             handleFilterApplied(selectedFilters) {
                 // console.log('Selected Categories in AboutView:', selectedCategories);
                 this.selectedFilters = selectedFilters;
                 // this.getDisplayList(this.display_list); // Wait for display_list to be updated
                 this.reRender = 0
                 this.locatorButtonPressed()
-                console.log("map receives", this.selectedFilters);
+                // console.log("map receives", this.selectedFilters);
 
             },
             removeLocator() {
                 // If got previous locator, remove it
 
                 if (this.center) {
-                    console.log("remover reached")
                     let index = this.locations.findIndex(autoaddr => 
                         autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
                     );
 
                     if (index > -1) {
                         this.locations.splice(index, 1);
+                        // console.log('remove',this.center)
                     }
 
                 }
-                this.center = ''
+                
+            },
+            resetLocationsToOriginal() {
+                // Ensure that orilocations is a copy of the original data
+                this.locations = []
+                for (let addr of this.orilocations) {
+                    this.locations.push(addr)
+                }
+                
             },
 
             getPreferenceLocation() {
-                this.removeLocator()
                 this.prefLocation = localStorage.getItem('homeAddress')
-                console.log(this.prefLocation)
-                this.address = this.prefLocation
-                axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + this.address)
-                    .then(response => {
-                        if (response.data.error_message) {
-                            this.error = response.data.error_message;
-                            console.log(response.data.error_message);
-                        } else {
-                            let address_coords = response.data.results[0].geometry.location;
-                            this.center = { lat: address_coords.lat, lng: address_coords.lng }
-                            console.log(this.center)
-                            this.locations.push(this.center);
-                            this.uDistance = 0   
-                            this.locations = [...this.orilocations ]
-                        }
-                              
-                    })
+                if (!this.prefLocation) {
+                    if (confirm("Please log in first to access saved home address.")) {
+                        this.$router.push('/login')
+                    }                     
+
+                } else {
+                    // console.log(this.prefLocation)
+                    this.address = this.prefLocation
+                    this.resetLocationsToOriginal()
+                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + this.address)
+                        .then(response => {
+                            if (response.data.error_message) {
+                                this.error = response.data.error_message;
+                                console.log(response.data.error_message);
+                            } else {
+                                let address_coords = response.data.results[0].geometry.location;
+                                this.removeLocator()
+                                this.center = { lat: address_coords.lat, lng: address_coords.lng }
+                                console.log(this.center)
+                                this.locations.push(this.center);
+                                this.uDistance = 0                          
+                            }                             
+                        })
+                }
             },
 
-            async getDisplayList (value) {
+            getDisplayList (value) {
                 
                 this.locations = []
                 this.orilocations = []
                 this.keepTrack = []
-                this.display_list = value
-                console.log(this.display_list)
+    
+                
+                // this.display_list = value
+                // console.log(this.display_list)
 
                 //inserts the lon and lat inside displaylist
                 for (var rec of value){
                     let deal_address = rec.location
                     // console.log(deal_address)
-                    await axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
+                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
                     .then(response => {
                         if (response.data.error_message) {
                             this.error = response.data.error_message;
@@ -271,6 +651,7 @@
                             rec['lon'] = deal_address_coords.lng
                             
                             this.locations.push({ lat: rec.lat, lng: rec.lon });
+                            this.orilocations.push({ lat: rec.lat, lng: rec.lon })
                             // if (!this.keepTrack.includes(rec)) {
                             //     this.keepTrack.push({rec: { lat: rec.lat, lng: rec.lon }})
                             // }
@@ -280,106 +661,70 @@
                     })
                 }
                 console.log(this.locations)
-                this.orilocations = [...this.locations]
+                console.log(this.orilocations)
 
                 
             },
 
             // to update display_list based on distance input
-            // applyDistanceToDisplayList() {
+            applyDistanceToDisplayList() {
 
-            //     let results = this.display_list;
-            //     console.log(this.keepTrack)
-            //     for (let deal of this.keepTrack) {
-            //         if (!results.includes(deal)) {
-            //             let index = results.indexOf(deal)
-            //             if (index > -1) {
-            //                 results.splice(index, 1);
-            //             }
-            //         }
-            //     }
-            //     this.display_list = results
-            //     console.log(this.display_list)
+                // let results = this.display_list;
+                // console.log(this.keepTrack)
+                // for (let deal of this.keepTrack) {
+                //     if (!results.includes(deal)) {
+                //         let index = results.indexOf(deal)
+                //         if (index > -1) {
+                //             results.splice(index, 1);
+                //         }
+                //     }
+                // }
+                // this.display_list = results
+                // console.log(this.display_list)
+                this.applyDistance = true
 
-            // },
+            },
 
             // to update markers based on distance input
             updateMarkersByDistance () {
                 
-                console.log('start')
-                console.log(this.locations.length)
-                console.log(this.locations)
-                console.log(this.uDistance)
-                console.log(this.center)
+                // console.log('start')
+                // console.log(this.locations.length)
+                // console.log(this.locations)
+                // console.log(this.uDistance)
+                // console.log(this.center)
                 let userPosition = new google.maps.LatLng(this.center.lat,this.center.lng)
                 
                 let newlocations = []
-                
-                console.log(this.orilocations)
                 for (let addr of this.orilocations) {
-                    // if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
-                    //     console.log(addr)
-                    //     let position = new google.maps.LatLng(addr.lat, addr.lng)
-                    //     try {
-                    //         let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
-                    //         console.log(cdistance)
-                    //         if (cdistance <= this.uDistance) {
-                    //             // console.log(newlocations)
-                    //             // let index = newlocations.indexOf(addr)
-                    //             // let todelete = newlocations.splice(index,1)
-                    //             // console.log(todelete)
-                    //             newlocations.push(addr)
-                    //             console.log(newlocations.length)
-                    //             console.log(newlocations)
-                    //             // for (let deal of this.keepTrack) {
-                    //             //     if (deal.location === addr) {
-                    //             //         this.keepTrack
-                    //             //     }
-                                    
-                    //             // }
-                                
-                    //         }
-                    //         // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
-                    //         //     newlocations.push(addr)
-                    //         // }
-                    //     } catch (error) {
-                    //         // Handle any potential errors here...
-                    //         console.error('Error calculating distance:', error);
-                    //     }
-                    // }
 
-                    if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
-                        console.log(addr)
-                        let position = new google.maps.LatLng(addr.lat, addr.lng)
-                        try {
-                            let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
-                            console.log(cdistance)
-                            if (cdistance <= this.uDistance) {
-                                // console.log(newlocations)
-                                // let index = newlocations.indexOf(addr)
-                                // let todelete = newlocations.splice(index,1)
-                                // console.log(todelete)
-                                newlocations.push(addr)
-                                console.log(newlocations.length)
-                                console.log(newlocations)
-                                // for (let deal of this.keepTrack) {
-                                //     if (deal.location === addr) {
-                                //         this.keepTrack
-                                //     }
-                                    
-                                // }
+                    // console.log(addr)
+                    let position = new google.maps.LatLng(addr.lat, addr.lng)
+                    try {
+                        let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
+                        // console.log(cdistance)
+                        if (cdistance <= this.uDistance && cdistance !== 0) {
+                            newlocations.push(addr)
+                            // console.log(newlocations.length)
+                            // console.log(newlocations)
+                            // for (let deal of this.keepTrack) {
+                            //     if (deal.location === addr) {
+                            //         this.keepTrack
+                            //     }
                                 
-                            }
-                            // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
-                            //     newlocations.push(addr)
                             // }
-                        } catch (error) {
-                            // Handle any potential errors here...
-                            console.error('Error calculating distance:', error);
+                            
                         }
+                        // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
+                        //     newlocations.push(addr)
+                        // }
+                    } catch (error) {
+                        // Handle any potential errors here...
+                        console.error('Error calculating distance:', error);
                     }
+                    // }
                 }
-                // this.applyDistanceToDisplayList()
+                this.applyDistanceToDisplayList()
                 newlocations.push(this.center)
                 if (newlocations.length === 1) {
                     alert(`There is no deals within ${this.uDistance}m of your address.`);
@@ -393,8 +738,8 @@
 
                 this.spinner = true;
                 this.uDistance = 0
-                // this.orilocations = this.locations
                 
+                this.resetLocationsToOriginal()
 
                 if (navigator.geolocation) {
                     // check whether user browser supports geolocation API
@@ -410,7 +755,6 @@
                             
                             this.center = {lat: this.ulat, lng: this.ulng}
                             this.locations.push({ lat: this.ulat, lng: this.ulng });
-                            // this.orilocations = this.locations
                             
                             // if (this.uDistance > 0) {
                             //     this.updateMarkersByDistance()
@@ -519,6 +863,199 @@
 
 
 <style>
+/* <style scoped> */
+    ::v-deep a {
+        text-decoration: none;
+    }
+
+    /* STYLE FOR DEALITEM BOX */
+    .deal-box {
+        border-radius: 15px;
+        overflow: hidden;
+        display: block;
+        font-family: "Cabin", sans-serif;
+        margin-bottom: 20px;
+    }
+
+    .deal-box .deal-item {
+        position: relative;
+    }
+
+    /* STYLE FOR DEALITEM IMG */
+    .deal-box .deal-item img {
+        min-width: 100%;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+        max-height: 290px;
+        /* Adjust the value to alter img height */
+        object-fit: cover;
+        /* This property ensures the image retains its aspect ratio while covering the specified height */
+    }
+
+    /* STYLE FOR DEAL INFORMATION */
+    .deal-item .ri-text {
+        border: 1px solid #ebebeb;
+        border-top: none;
+        border-bottom-right-radius: 15px;
+        border-bottom-left-radius: 15px;
+        padding: 10px;
+    }
+
+    /* STYLE FOR DEALNAME */
+    .deal-item .ri-text h4 {
+        color: #393939;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    /* STYLE FOR DEAL PRICE BOX */
+    .deal-item .ri-text h3 {
+        font-size: 20px;
+        color: #E97D2F;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    /* STYLE FOR 'perunit' TEXT */
+    .deal-item .ri-text h3 span {
+        font-size: 14px;
+        font-weight: 400;
+        color: #19191a;
+    }
+
+    /* STYLE FOR STORE NAME, ADDRESS */
+    .deal-item .ri-text .store,
+    .deal-item .ri-text .address {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+        color: #707079;
+        line-height: 25px;
+    }/* STYLE FOR HEART BUTTON */
+    .heart-button {
+        position: absolute;
+        top: 12px;
+        /* Adjust the position as needed */
+        right: 18px;
+        /* Adjust the position as needed */
+        font-size: 30px;
+        /* Increased font size for better visibility */
+        z-index: 1;
+        /* Ensure the heart is above the image */
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    /* STYLE FOR HEARTBUTTON HOVER */
+    .heart-button:hover {
+        transform: scale(1.2);
+    }
+
+    /* STYLE FOR FILLED HEART ICON */
+    .fa-heart {
+        -webkit-text-stroke: 0.3x rgb(212, 42, 42);
+        /* Add a red outline */
+        color: rgb(212, 42, 42);
+    }
+
+    /* STYLE FOR HEART ICON OUTLINE */
+    .fa-heart-o {
+        color: white;
+    }
+
+    @media (max-width: 575.98px) {
+        .heart-button {
+            top: 10px;
+            right: 14px;
+            font-size: 22px;
+        }
+    }
+
+    @media (min-width: 576px) and (max-width: 1199.98px) {
+        .heart-button {
+            font-size: 25px;
+        }
+    }
+
+    /* Adjust spacing between dealitems for smaller and small screens */
+    @media (max-width: 767.98px) {
+        .displayDeals {
+            padding: 4px;
+        }
+        .deal-box {
+            border-radius: 2px;
+            margin-bottom: 0px;
+        }
+        .deal-box .deal-item img {
+            max-height: 220px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+        }
+        .deal-item .ri-text h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .deal-item .ri-text h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .deal-item .ri-text h3 span {
+            font-size: 12px;
+        }
+        .deal-item .ri-text .store,
+        .deal-item .ri-text .address {
+            font-size: 12px;
+            line-height: 18px;
+        }
+    }
+
+    /* Adjust spacing between dealitems for medium and large screens */
+    @media (min-width: 767px) and (max-width: 1199.98px) {
+        .displayDeals {
+            padding: 4px;
+        }
+        .deal-box {
+            border-radius: 2px;
+            margin-bottom: 0px;
+        }
+        .deal-box .deal-item img {
+            max-height: 220px;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+        }
+        .deal-item .ri-text h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .deal-item .ri-text h3 {
+            font-size: 19px;
+            margin-bottom: 5px;
+        }
+        .deal-item .ri-text h3 span {
+            font-size: 13px;
+        }
+        .deal-item .ri-text .store,
+        .deal-item .ri-text .address {
+            font-size: 13px;
+            line-height: 20px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .deal-item .ri-text h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+    }
+/* map */
     .ui.button,
     .dot.circle.link.icon {
         background-color: #ff5a5f;
