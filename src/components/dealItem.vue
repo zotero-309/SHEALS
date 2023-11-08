@@ -46,12 +46,13 @@
 <script>
 //import router from '../router/index.js';  // Import router instance
 import { db } from '../firebase/index.js'
-import { doc, updateDoc, collection, getDocs, getDoc } from "firebase/firestore"
+import { doc, updateDoc, collection, getDocs, getDoc, query, where, documentId } from "firebase/firestore"
 
 export default {
     // Component props and initialization of data
     emits: ['display-list'],
     props: {
+        tab: String,
         deal: Object,
         deals: Array,
         selectedFilters: Object,
@@ -115,6 +116,9 @@ export default {
 
             // Save the favorites to Firebase
             await this.updateFavoritesInDatabase();
+            if (this.tab == "favourites"){ //change the display by refreshing
+                this.$router.go()
+            }
         },
 
         async updateFavoritesInDatabase() {
@@ -156,8 +160,24 @@ export default {
         async fetchDeals() {
             // show preloader before fetching data
             this.loading = true;
+            if (this.tab =="supermarket"){
+                var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","store")));
+            } else if ((this.tab =="community")){
+                var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","consumer")));
+            } 
+            else if(this.tab == "favourites"){
+                await this.loadFavoritesFromDatabase()
+                if (!this.favourites.length == 0){
+                    var querySnapshot = await getDocs(query(collection(db, "deals"), where (documentId(),"in",this.favourites)));
+                } else {
+                    this.loading = false; // stop preloader
+                    return
+                }
+            }
+            else {
+                var querySnapshot = await getDocs(collection(db, "deals"));
+            }
 
-            const querySnapshot = await getDocs(collection(db, "deals"));
             const deal_list = [];
 
             for (const doc of querySnapshot.docs) {
