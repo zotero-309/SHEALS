@@ -252,6 +252,7 @@ export default {
     text-decoration: none;
 }
 
+
 /* Adjust spacing between dealitems for smaller and small screens */
 @media (max-width: 767.98px) {
     .displayDeals {

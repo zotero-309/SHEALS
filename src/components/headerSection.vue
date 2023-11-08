@@ -1,79 +1,71 @@
 <template>
-	<!-- Offcanvas Menu Overlay -->
-	<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }"></div>
+	<!-- mobile view header -->
+	<!-- Fixed Header -->
+	<header class="mobile-fixed-header">
+		<!-- Top Navigation -->
+		<div class="container">
+			<div class="row">
+				<!-- Left Section -->
+				<div class="col-10">
+					<ul class="tn-left">
+						<!-- Logo -->
+						<li class="app-icon">
+							<router-link :to="{ name: 'Home' }">
+								<img src="/img/logo.png" alt="Logo">
+							</router-link>
+						</li>
 
-	<!-- Canvas Open Button -->
-	<div class="canvas-open" @click="toggleMenu">
-		<i class="icon_menu"></i>
-	</div>
-
-	<!-- Offcanvas Menu Wrapper -->
-	<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
-	<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
-		<!-- Canvas Close Button -->
-		<div class="canvas-close" @click="toggleMenu">
-			<i class="icon_close"></i>
-		</div>
-
-		<!-- Search Icon -->
-		<form class="p-1 bg-light rounded-pill shadow-sm mb-5" @submit.prevent="">
-			<!-- Search Form -->
-			<div class="input-group">
-
-				<div class="input-group-prepend">
-					<span class="input-group-text border-0 bg-light">
-						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
-							<i class="fa fa-search"></i>
-						</button>
-					</span>
-				</div>
-				<input type="text" placeholder="Search" aria-describedby="button-addon1" @input="updateSearch"
-					v-model="searchQuery" class="form-control border-0 bg-light">
-
-				<div class="input-group-append">
-					<span class="input-group-text border-0 bg-light">
-						<button id="button-addon1" type="submit" class="btn btn-link text-primary">
-							<i class="fa fa-search"></i>
-						</button>
-					</span>
-				</div>
-			</div>
-		</form>
-
-		<!-- Header Configure Area -->
-		<div class="header-configure-area">
-			<a href="#" class="cart">
-				<span><i class="fa fa-shopping-cart"></i>Checkout Discounts</span>
-			</a>
-
-			<!-- Profile Option -->
-			<div class="profile-option">
-				<span>
-					<i class="fa fa-user-o"></i>
-					Profile
-				</span>
-
-				<!-- Profile Dropdown -->
-				<div class="profile-dropdown">
-					<ul>
-						<li><a href="#">Login</a></li>
-						<li><a href="#">Register</a></li>
-						<li><span @click="PreferencePage">Preferences</span></li>
+						<!-- Search Form -->
+						<li>
+							<form action="" @submit.prevent="">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text border-0 bg-light">
+											<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>
+									</div>
+									<input type="search" placeholder="Search" aria-describedby="button-addon1"
+										class="form-control border-0 bg-light custom-search-input" @input="updateSearch"
+										v-model="searchQuery">
+								</div>
+							</form>
+						</li>
 					</ul>
 				</div>
+
+				<div class="open-menu-icon col-2">
+					<div class="tn-right">
+						<!-- Open Menu Icon on the Right -->
+						<div class="canvas-open" @click="toggleMenu">
+							<i class="icon_menu"></i>
+						</div>
+						<!-- Offcanvas Menu Overlay -->
+						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+						</div>
+
+
+						<!-- Offcanvas Menu Overlay -->
+						<div class="offcanvas-menu-overlay" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+						</div>
+
+						<!-- Offcanvas Menu Wrapper -->
+						<div class="offcanvas-menu-overlay" :class="{ 'active': isMenuOpen }"></div>
+						<div class="offcanvas-menu-wrapper" :class="{ 'show-offcanvas-menu-wrapper': isMenuOpen }">
+							<!-- Canvas Close Button -->
+							<div class="canvas-close" @click="toggleMenu">
+								<i class="icon_close"></i>
+							</div>
+
+							<div id="mobile-menu-wrap"></div>
+						</div>
+						<!-- Offcanvas Menu Section End -->
+					</div>
+				</div>
 			</div>
 		</div>
-
-		<!-- <nav class="mainmenu mobile-menu">
-		  <ul>
-			  <li><a href="./bestDeals.html">Best Deals</a></li>
-			  <li><a href="./bySupermarkets.html">By Supermarkets</a></li>
-			  <li><a href="./byCommunity.html">By Community</a></li>
-		  </ul>
-	  </nav> -->
-		<div id="mobile-menu-wrap"></div>
-	</div>
-	<!-- Offcanvas Menu Section End -->
+	</header>
 
 	<!-- Header Section Begins -->
 	<header class="header-section header-normal fixed-top">
@@ -86,7 +78,6 @@
 						<ul class="tn-left">
 							<!-- Logo -->
 							<li class="col-lg-2">
-								<!-- <a href="../about"> -->
 								<router-link :to="{ name: 'Home' }">
 									<img src="/img/logo.png" alt="Logo">
 								</router-link>
@@ -96,22 +87,17 @@
 							<!-- Search Form -->
 							<li>
 								<form action="" @submit.prevent="">
-									<div class="p-1 bg-light rounded rounded-pill shadow-sm" style="height: 40px">
-										<div class="input-group">
-											<div class="input-group-prepend">
-												<span class="input-group-text border-0 bg-light">
-													<button id="button-addon1" type="submit"
-														class="btn btn-link text-primary">
-														<i class="fa fa-search"></i>
-													</button>
-												</span>
-											</div>
-											<input type="search" placeholder="Search" aria-describedby="button-addon1"
-												class="form-control border-0 bg-light" @input="updateSearch"
-												v-model="searchQuery">
-											<div class="input-group-append">
-											</div>
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<span class="input-group-text border-0 bg-light">
+												<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+													<i class="fa fa-search"></i>
+												</button>
+											</span>
 										</div>
+										<input type="search" placeholder="Search" aria-describedby="button-addon1"
+											class="form-control border-0 bg-light custom-search-input" @input="updateSearch"
+											v-model="searchQuery">
 									</div>
 								</form>
 							</li>
@@ -314,9 +300,9 @@ export default {
 				this.favActive = "active"
 			}
 		},
-		// toggleMenu() {
-		// 	this.isMenuOpen = !this.isMenuOpen;
-		// },
+		toggleMenu() {
+			this.isMenuOpen = !this.isMenuOpen;
+		},
 		// openModal() {
 		// 	console.log('openModal method is called');
 		// 	this.showModal = true;
@@ -331,6 +317,9 @@ export default {
 		// 	}, 0);
 		// },
 		//on input triggers from search bar
+		toggleMenu() {
+			this.isMenuOpen = !this.isMenuOpen;
+		},
 
 		updateSearch() {
 			try {
@@ -411,6 +400,141 @@ export default {
 </script>
   
 <style scoped>
+/*---------------------
+     Off Menu Canvas Style
+    -----------------------*/
+@media only screen and (min-width: 1300px) {
+	.container {
+		max-width: 1300;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.top-nav {
+		display: none;
+	}
+
+	.menu-item .nav-menu {
+		display: none;
+	}
+
+	.offcanvas-menu-overlay {
+		background: rgba(0, 0, 0, 0.7);
+		z-index: 98;
+		height: 100%;
+		width: 100%;
+		visibility: hidden;
+		-webkit-transition: 0.3s;
+		-o-transition: 0.3s;
+		transition: 0.3s;
+	}
+
+	.offcanvas-menu-overlay.active {
+		visibility: visible;
+	}
+
+	.open-menu-icon {
+		padding-top: 12px;
+	}
+
+	.canvas-open {
+		position: relative;
+		font-size: 22px;
+		width: 30px;
+		height: 30px;
+		color: #19191a;
+		border: 1px solid #19191a;
+		border-radius: 2px;
+		line-height: 33px;
+		text-align: center;
+		z-index: 1000;
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	.offcanvas-menu-wrapper {
+		position: fixed;
+		left: -300px;
+		top: 0;
+		width: 300px;
+		z-index: 999;
+		background: #ffffff;
+		text-align: center;
+		overflow-y: auto;
+		height: 100%;
+		opacity: 0;
+		visibility: hidden;
+		-webkit-transition: all 0.5s;
+		-o-transition: all 0.5s;
+		transition: all 0.5s;
+		padding: 80px 30px 30px 30px;
+		display: block;
+		z-index: 99;
+		/* Updated z-index to be higher when open */
+	}
+
+	.offcanvas-menu-wrapper .canvas-close {
+		font-size: 30px;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 30px;
+		cursor: pointer;
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+
+	.offcanvas-menu-wrapper .mainmenu {
+		display: none;
+	}
+
+	.offcanvas-menu-wrapper.show-offcanvas-menu-wrapper {
+		left: 0;
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+/* mobile view header */
+.mobile-fixed-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0px 0px 5px 0px;
+	background-color: #fff;
+	/* Set your desired background color */
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	/* Set a suitable z-index */
+}
+
+.mobile-fixed-header ul {
+	padding-left: 0px;
+	margin-bottom: auto;
+
+}
+
+.mobile-fixed-header img {
+	height: 40px;
+	/* Adjust the height to match the search bar */
+}
+
+.mobile-fixed-header .input-group {
+	display: flex;
+}
+
+.mobile-fixed-header .input-group .form-control {
+	width: 200px;
+
+}
+
+
+/* End of Off Menu Canvas Styling */
+
+
 .scrollable-content {
 	max-height: 75vh;
 	/* Adjust the height as per your needs */
@@ -442,11 +566,13 @@ a:hover {
 	color: #393939;
 }
 
-/* Header Section Styling */
+/*---------------------
+    Header
+    -----------------------*/
 
 .header-section {
 	font-family: "Cabin", sans-serif;
-	font-size: 16px;
+	font-size: 15px;
 }
 
 .header-section .header-normal .menu-item {
@@ -468,11 +594,10 @@ a:hover {
 
 }
 
-.top-nav .tn-left li {
+.tn-left li {
 	list-style: none;
 	display: inline-block;
-	font-size: 16px;
-	color: #19191a;
+	color: #393939;
 	font-weight: 500;
 	margin-right: 64px;
 	position: relative;
@@ -480,7 +605,7 @@ a:hover {
 	padding: 8px 0px 6px;
 }
 
-.top-nav .tn-left li:after {
+.tn-left li:after {
 	position: absolute;
 	right: -32px;
 	top: 0;
@@ -490,29 +615,41 @@ a:hover {
 	content: "";
 }
 
-.top-nav .tn-left .fa-search {
+.tn-left .fa-search {
 	color: #696969;
+	padding-left: 10px;
 }
 
+.input-group span {
+	height: 40px;
+	border-top-left-radius: 25px;
+	border-bottom-left-radius: 25px;
 
-.top-nav .tn-left li #button-addon1 {
+}
+
+.form-control.custom-search-input {
+	height: 40px;
+	border-radius: 25px;
+}
+
+.tn-left li #button-addon1 {
 	padding: 0px;
 }
 
-.top-nav .tn-left li:last-child {
+.tn-left li:last-child {
 	margin-right: 0;
 }
 
-.top-nav .tn-left li:last-child:after {
+.tn-left li:last-child:after {
 	display: none;
 }
 
-.top-nav .tn-right {
+.tn-right {
 	text-align: right;
 }
 
 .cart {
-	padding: 22px 16px;
+	padding: 19px 16px;
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
@@ -530,7 +667,7 @@ a:hover {
 }
 
 .profile-option {
-	padding: 22px 27px;
+	padding: 19px 27px;
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
@@ -547,7 +684,7 @@ a:hover {
 }
 
 .profile-option:hover .profile-dropdown {
-	top: 70px;
+	top: 60px;
 	opacity: 1;
 	visibility: visible;
 }
@@ -599,12 +736,10 @@ a:hover {
 	display: flex;
 	justify-content: space-between;
 	background-color: white;
-
 }
 
 .nav-menu {
-	display: flex;
-	/* Align menu items in the same row */
+	display: flex; /* Align menu items in the same row */
 }
 
 .mainmenu {
@@ -620,7 +755,7 @@ a:hover {
 /* Menu Section: nav menu (left) */
 .menu-item .nav-menu {
 	text-align: left;
-	padding-top: 10px;
+	padding-top: 4px;
 }
 
 .menu-item .nav-menu .mainmenu {
@@ -638,7 +773,7 @@ a:hover {
 }
 
 .menu-item .nav-menu .mainmenu li a {
-	font-size: 16px;
+
 	text-decoration: none;
 	color: #808080;
 	/* Grey color for inactive state */
@@ -646,7 +781,7 @@ a:hover {
 	display: grid;
 	place-items: center;
 	/* Center both horizontally and vertically */
-	padding: 10px 0;
+	padding: 8px 0;
 	position: relative;
 	transition: all 0.3s;
 }
@@ -672,13 +807,13 @@ a:hover {
 
 .menu-item .nav-menu .mainmenu li.active a,
 .menu-item .nav-menu .mainmenu li a:hover {
-	color: #000000;
+	color: #393939;
 	/* Black color for active or hovered state */
 }
 
 .menu-item .nav-menu .mainmenu li.active a i,
 .menu-item .nav-menu .mainmenu li a:hover i {
-	color: #000000;
+	color: #393939;
 	/* Black color for active or hovered state */
 }
 
@@ -696,131 +831,27 @@ a:hover {
 }
 
 .menu-item .nav-menu .menu-icon {
-	font-size: 1.4em;
+	font-size: 1.5em;
 	color: #393939;
 }
 
 
 .menu-item .nav-menu .filter-icon {
-	font-size: 1.2em;
+	font-size: 1.3em;
 	color: #393939;
 }
 
 .menu-item .nav-menu .map-icon {
-	font-size: 1em;
+	font-size: 1.1em;
 	color: #393939;
 }
 
 /* End of Menu Section: nav menu (left) */
 
-
-/* Off Menu Canvas Styles */
-
-@media only screen and (min-width: 1300px) {
-	.container {
-		max-width: 1300;
-	}
-}
-
-@media only screen and (max-width: 991px) {
-	.top-nav {
-		display: none;
-	}
-
-	.menu-item .nav-menu {
-		display: none;
-	}
-
-	.offcanvas-menu-overlay {
-		position: fixed;
-		left: 0;
-		top: 0;
-		background: rgba(0, 0, 0, 0.7);
-		z-index: 98;
-		height: 100%;
-		width: 100%;
-		visibility: hidden;
-		-webkit-transition: 0.3s;
-		-o-transition: 0.3s;
-		transition: 0.3s;
-	}
-
-	.offcanvas-menu-overlay.active {
-		visibility: visible;
-	}
-
-	.canvas-open {
-		position: absolute;
-		right: 40px;
-		top: 25px;
-		font-size: 22px;
-		width: 30px;
-		height: 30px;
-		color: #19191a;
-		border: 1px solid #19191a;
-		border-radius: 2px;
-		line-height: 33px;
-		text-align: center;
-		z-index: 100;
-		display: block;
-		cursor: pointer;
-	}
-
-	.offcanvas-menu-wrapper {
-		position: fixed;
-		left: -300px;
-		top: 0;
-		width: 300px;
-		z-index: 999;
-		background: #ffffff;
-		text-align: center;
-		overflow-y: auto;
-		height: 100%;
-		opacity: 0;
-		visibility: hidden;
-		-webkit-transition: all 0.5s;
-		-o-transition: all 0.5s;
-		transition: all 0.5s;
-		padding: 80px 30px 30px 30px;
-		display: block;
-	}
-
-	.offcanvas-menu-wrapper .canvas-close {
-		height: 30px;
-		width: 30px;
-		border: 1px solid #19191a;
-		border-radius: 50%;
-		text-align: center;
-		line-height: 30px;
-		cursor: pointer;
-		position: absolute;
-		right: 30px;
-		top: 30px;
-		padding-right: 1px;
-	}
-
-	.offcanvas-menu-wrapper .header-configure-area {
-		margin-bottom: 30px;
-		text-align: left;
-	}
-
-
-	.offcanvas-menu-wrapper .mainmenu {
-		display: none;
-	}
-
-	.offcanvas-menu-wrapper.show-offcanvas-menu-wrapper {
-		left: 0;
-		opacity: 1;
-		visibility: visible;
-	}
-}
-
 /*---------------------
     Filter Button
     -----------------------*/
 .filter-button {
-	font-size: 16px;
 	font-weight: 500;
 	display: flex;
 	align-items: center;
@@ -1057,6 +1088,5 @@ a:hover {
 	color: white;
 	width: 48%;
 	margin-right: 1%;
-}
-</style>
+}</style>
   

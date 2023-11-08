@@ -1,22 +1,24 @@
 <template>
     <!-- Header Section Begin -->
     <!-- listen for filter-applied event and calling updateDeal method -->
-    <HeaderSection @filter-applied="updateDeals" @update-search="searchQueryApplied" />
-    <!-- Header Section End -->
+    <section class='home-section'>
+        <HeaderSection @filter-applied="updateDeals" @update-search="searchQueryApplied" />
+        <!-- Header Section End -->
 
-    <!-- Breadcrumb Section Begin -->
-    <div class="breadcrumb-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="breadcrumb-text">
-                        <h2>Our Deals</h2>
+        <!-- Breadcrumb Section Begin -->
+        <div class="content-container">
+            <div class="breadcrumb-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="breadcrumb-text">
+                                <h2>Our Deals</h2>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Breadcrumb Section End -->
+            <!-- Breadcrumb Section End -->
 
     <!-- deals Section Begin -->
     <section class="deals-section">
@@ -61,3 +63,4 @@ export default {
     }
 }
 </script>
+

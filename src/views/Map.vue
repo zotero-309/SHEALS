@@ -81,6 +81,8 @@
                         <div class="container">
                             <div class="row">
                                 <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" />
+                                    <!-- Deal items section -->
+
                             </div>
                         </div>
                     </section>
@@ -168,13 +170,16 @@
             autocomplete.addListener("place_changed", () => {
                 let place = autocomplete.getPlace();
                 // console.log(place);
+                this.address = place.formatted_address;
                 let newUlocation = []
-                newUlocation.push({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+                let autolocation = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+                newUlocation.push(autolocation);
                 for (let autoaddr of this.locations) {
                     if (JSON.stringify(this.center) !== JSON.stringify(autoaddr)) {
                         newUlocation.push(autoaddr)
                     }
                 }
+                this.center = autolocation
                 this.locations = newUlocation
                 
                 
@@ -283,6 +288,13 @@
                             // this.showUserLocationOnTheMap(position.coords.latitude, position.coords.longitude);
                             this.ulat = position.coords.latitude
                             this.ulng = position.coords.longitude
+                            if (this.center.lat !== 1.3548 && this.center.lng !== 103.9579) {
+                                let index = this.locations.indexOf(this.center);
+                                // console.log(index);
+                                if (index > -1) {
+                                    this.locations.splice(index, 1);
+                                }
+                            }
                             this.center = {lat: this.ulat, lng: this.ulng}
                             this.locations.push({ lat: this.ulat, lng: this.ulng });
                             this.uindex = this.locations.indexOf(this.center)
