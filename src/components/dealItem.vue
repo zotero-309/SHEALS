@@ -21,13 +21,13 @@
                         <h4>{{ deal.deal_name }}</h4>
                         <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
 
-                        <!-- Table with store and address information -->
+                        <!-- store/uploader and address information -->
                         <div class="store">
-                            Uploader:&nbsp;
+                            <i class="px-1 fa fa-id-card-o"></i>
                             {{ deal.uploaded_by.name }}
                         </div>
                         <div class="address">
-                            <i class="fa fa-map-marker"></i> &nbsp;
+                            <i class="px-2 fa fa-map-marker"></i>
                             {{ deal.location }}
                         </div>
                     </div>
@@ -252,21 +252,6 @@ export default {
     text-decoration: none;
 }
 
-
-/* Adjust spacing between dealitems for smaller and small screens */
-@media (max-width: 767.98px) {
-    .displayDeals {
-        padding: 4px;
-    }
-}
-
-/* Adjust spacing between dealitems for medium and large screens */
-@media (min-width: 767px) and (max-width: 1199.98px) {
-    .displayDeals {
-        padding: 8px;
-    }
-}
-
 /* STYLE FOR DEALITEM BOX */
 .deal-box {
     border-radius: 15px;
@@ -274,23 +259,6 @@ export default {
     display: block;
     font-family: "Cabin", sans-serif;
     margin-bottom: 20px;
-
-}
-
-/* Adjust dealitemb box for small and smaller screens */
-@media (max-width: 767.98px) {
-    .deal-box {
-        border-radius: 2px;
-        margin-bottom: 0px;
-    }
-}
-
-/* Adjust dealitemb box for medium and large screens */
-@media (min-width: 767px) and (max-width: 1199.98px) {
-    .deal-box {
-        border-radius: 10px;
-        margin-bottom: 0px;
-    }
 }
 
 .deal-box .deal-item {
@@ -308,112 +276,38 @@ export default {
     /* This property ensures the image retains its aspect ratio while covering the specified height */
 }
 
-/* Adjust img styling for smaller and small screens */
-@media (max-width: 767.98px) {
-    .deal-box .deal-item img {
-        max-height: 220px;
-        border-top-right-radius: 10px;
-        border-top-left-radius: 10px;
-    }
-}
-
-/* Adjust img styling for medium and large screens */
-@media (min-width: 767px) and (max-width: 1199.98px) {
-    .deal-box .deal-item img {
-        max-height: 250px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-    }
-}
-
 /* STYLE FOR DEAL INFORMATION */
 .deal-item .ri-text {
     border: 1px solid #ebebeb;
     border-top: none;
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
-    padding: 18px;
-}
-
-/* Adjust for deal information style for smaller, small, medium, large screens */
-@media (max-width: 1199.98px) {
-    .deal-item .ri-text {
-        padding: 12px;
-    }
+    padding: 10px;
 }
 
 /* STYLE FOR DEALNAME */
 .deal-item .ri-text h4 {
-    color: #19191a;
-    margin-bottom: 10px;
-    font-size: 18px;
+    color: #393939;
     font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Adjust deal name fs for smaller and small screens */
-@media (max-width: 767.98px) {
-    .deal-item .ri-text h4 {
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
-}
-
-/* Adjust deal name fs for medium and large screens */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .deal-item .ri-text h4 {
-        font-size: 16px;
-        margin-bottom: 6px;
-    }
-}
 
 /* STYLE FOR DEAL PRICE BOX */
 .deal-item .ri-text h3 {
-    font-size: 24px;
+    font-size: 20px;
     color: #E97D2F;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
-
-/* Adjust deal price fs for smaller and small screens */
-@media (max-width: 767.98px) {
-    .deal-item .ri-text h3 {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-}
-
-/* Adjust deal name fs for medium and large screens */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .deal-item .ri-text h3 {
-        font-size: 20px;
-        margin-bottom: 6px;
-    }
-}
-
 
 /* STYLE FOR 'perunit' TEXT */
 .deal-item .ri-text h3 span {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     color: #19191a;
-
-}
-
-/* Adjust fs for smaller and small screens */
-@media (max-width: 767.98px) {
-    .deal-item .ri-text h3 span {
-        font-size: 10px;
-    }
-}
-
-/* Adjust fs for large screens */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .deal-item .ri-text h3 span {
-        font-size: 12px;
-    }
 }
 
 /* STYLE FOR STORE NAME, ADDRESS */
@@ -422,30 +316,10 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 15px;
+    font-size: 14px;
     color: #707079;
-    line-height: 20px;
-}
-
-/* Adjust for store name, address for smaller and small screens */
-@media (max-width: 767.98px) {
-
-    .deal-item .ri-text .store,
-    .deal-item .ri-text .address {
-        font-size: 12px;
-    }
-}
-
-/* Adjust store name, address fs for large screens */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-
-    .deal-item .ri-text .store,
-    .deal-item .ri-text .address {
-        font-size: 14px;
-    }
-}
-
-/* STYLE FOR HEART BUTTON */
+    line-height: 25px;
+}/* STYLE FOR HEART BUTTON */
 .heart-button {
     position: absolute;
     top: 12px;
@@ -460,22 +334,6 @@ export default {
     border: none;
     cursor: pointer;
     transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Adjust heart button for smaller, small screens */
-@media (max-width: 575.98px) {
-    .heart-button {
-        top: 10px;
-        right: 14px;
-        font-size: 22px;
-    }
-}
-
-/* Adjust for heart button for medium, large screens */
-@media (min-width: 576px) and (max-width: 1199.98px) {
-    .heart-button {
-        font-size: 25px;
-    }
 }
 
 /* STYLE FOR HEARTBUTTON HOVER */
@@ -493,6 +351,93 @@ export default {
 /* STYLE FOR HEART ICON OUTLINE */
 .fa-heart-o {
     color: white;
+}
+
+@media (max-width: 575.98px) {
+    .heart-button {
+        top: 10px;
+        right: 14px;
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 1199.98px) {
+    .heart-button {
+        font-size: 25px;
+    }
+}
+
+/* Adjust spacing between dealitems for smaller and small screens */
+@media (max-width: 767.98px) {
+    .displayDeals {
+        padding: 4px;
+    }
+    .deal-box {
+        border-radius: 2px;
+        margin-bottom: 0px;
+    }
+    .deal-box .deal-item img {
+        max-height: 220px;
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+    }
+    .deal-item .ri-text h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .deal-item .ri-text h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .deal-item .ri-text h3 span {
+        font-size: 12px;
+    }
+    .deal-item .ri-text .store,
+    .deal-item .ri-text .address {
+        font-size: 12px;
+        line-height: 18px;
+    }
+}
+
+/* Adjust spacing between dealitems for medium and large screens */
+@media (min-width: 767px) and (max-width: 1199.98px) {
+    .displayDeals {
+        padding: 4px;
+    }
+    .deal-box {
+        border-radius: 2px;
+        margin-bottom: 0px;
+    }
+    .deal-box .deal-item img {
+        max-height: 220px;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+    .deal-item .ri-text h4 {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .deal-item .ri-text h3 {
+        font-size: 19px;
+        margin-bottom: 5px;
+    }
+    .deal-item .ri-text h3 span {
+        font-size: 13px;
+    }
+    .deal-item .ri-text .store,
+    .deal-item .ri-text .address {
+        font-size: 13px;
+        line-height: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .deal-item .ri-text h4 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
 }
 </style>
 
