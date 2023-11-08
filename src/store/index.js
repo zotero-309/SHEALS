@@ -99,7 +99,6 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
         homeaddress: '',
         catpref: '',
         dealpref: '',
-        like:[],
         cart:[]
       })
       commit('SET_USER', auth.currentUser)
@@ -111,7 +110,7 @@ import {doc, setDoc, getDoc} from 'firebase/firestore'
       localStorage.setItem('userType', user_rec.type)
       localStorage.setItem('userEmail', user_rec.email)
       localStorage.setItem('homeAddress', user_rec.homeaddress)
-      
+
       if (user_rec.type === "consumer"){
         if (user_rec.address == "" || user_rec.catpref == "" || user_rec.dealpref ==""){
           router.push('/questionaire')
