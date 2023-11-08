@@ -57,7 +57,11 @@ export default {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
         let curryear = new Date().getFullYear()
 
+
         const salesDocRef = doc(db, "users", localStorage.getItem("userID"), "data", "sales")
+        if(!(await getDoc(salesDocRef)).exists()) {
+          return
+        }
         let salesnap = (await getDoc(salesDocRef)).data() [curryear]
 
 
