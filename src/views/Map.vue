@@ -144,10 +144,10 @@
                 ulng: '',
                 uDistance: '',
                 
-                // orilocations: '', // keep track of all or prev deals
-                // count: 0, // keep track refreshed this.locations
-                // keepTrack: []
-                oldlocations: []
+                orilocations: '', // keep track of all or prev deals
+                count: 0, // keep track refreshed this.locations
+                keepTrack: []
+
             }
         },
         mounted() {
@@ -186,7 +186,7 @@
                 // this.center = ''
                 // console.log(this.center)
                 // console.log(this.orilocations)
-                // this.locations = this.orilocations
+                this.locations = [...this.orilocations]
                 this.removeLocator()
                 this.locations.push(autolocation);
                 this.center = autolocation
@@ -213,6 +213,7 @@
                 // If got previous locator, remove it
 
                 if (this.center) {
+                    console.log("remover reached")
                     let index = this.locations.findIndex(autoaddr => 
                         autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
                     );
@@ -222,10 +223,11 @@
                     }
 
                 }
-                
+                this.center = ''
             },
 
             getPreferenceLocation() {
+                this.removeLocator()
                 this.prefLocation = localStorage.getItem('homeAddress')
                 console.log(this.prefLocation)
                 this.address = this.prefLocation
@@ -236,18 +238,17 @@
                             console.log(response.data.error_message);
                         } else {
                             let address_coords = response.data.results[0].geometry.location;
-                            this.removeLocator()
                             this.center = { lat: address_coords.lat, lng: address_coords.lng }
                             console.log(this.center)
                             this.locations.push(this.center);
                             this.uDistance = 0   
-                            // this.locations = this.orilocations 
+                            this.locations = [...this.orilocations ]
                         }
                               
                     })
             },
 
-            getDisplayList (value) {
+            async getDisplayList (value) {
                 
                 this.locations = []
                 this.orilocations = []
@@ -259,7 +260,7 @@
                 for (var rec of value){
                     let deal_address = rec.location
                     // console.log(deal_address)
-                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
+                    await axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
                     .then(response => {
                         if (response.data.error_message) {
                             this.error = response.data.error_message;
@@ -279,7 +280,7 @@
                     })
                 }
                 console.log(this.locations)
-                this.orilocations = this.locations
+                this.orilocations = [...this.locations]
 
                 
             },
@@ -305,19 +306,19 @@
             // to update markers based on distance input
             updateMarkersByDistance () {
                 
-                // console.log('start')
-                // console.log(this.locations.length)
-                // console.log(this.locations)
-                // console.log(this.uDistance)
-                // console.log(this.center)
+                console.log('start')
+                console.log(this.locations.length)
+                console.log(this.locations)
+                console.log(this.uDistance)
+                console.log(this.center)
                 let userPosition = new google.maps.LatLng(this.center.lat,this.center.lng)
                 
                 let newlocations = []
-                // this.orilocations = this.locations
-                // console.log(this.orilocations)
+                
+                console.log(this.orilocations)
                 for (let addr of this.orilocations) {
                     // if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
-                        // console.log(addr)
+                    //     console.log(addr)
                     //     let position = new google.maps.LatLng(addr.lat, addr.lng)
                     //     try {
                     //         let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
@@ -347,13 +348,13 @@
                     //     }
                     // }
 
-                    // if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
+                    if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
                         console.log(addr)
                         let position = new google.maps.LatLng(addr.lat, addr.lng)
                         try {
                             let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
                             console.log(cdistance)
-                            if (cdistance <= this.uDistance && cdistance !== 0) {
+                            if (cdistance <= this.uDistance) {
                                 // console.log(newlocations)
                                 // let index = newlocations.indexOf(addr)
                                 // let todelete = newlocations.splice(index,1)
@@ -376,7 +377,7 @@
                             // Handle any potential errors here...
                             console.error('Error calculating distance:', error);
                         }
-                    // }
+                    }
                 }
                 // this.applyDistanceToDisplayList()
                 newlocations.push(this.center)
