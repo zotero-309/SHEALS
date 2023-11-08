@@ -182,38 +182,41 @@ export default {
         
     },
      mounted(){
-        // arrow function used to refer to correct 'this' aka this vue. Using Normal function 'this' refers to quagga lib
         Quagga.onDetected((data) => {
-        var barcodeValue = data.codeResult.code;
-        this.$refs.barcodeid.value = barcodeValue;
-        
-        // Stop Quagga after a barcode is detected
-        Quagga.stop();
+            try {
+                var barcodeValue = data.codeResult.code;
+                this.$refs.barcodeid.value = barcodeValue;
 
+                // Stop Quagga after a barcode is detected
+                Quagga.stop();
 
-        // Close the modal after a barcode is detected
-        if (this.scan) {
-            this.scanmodal();
- 
-        }
+                // Close the modal after a barcode is detected
+                if (this.scan) {
+                    this.scanmodal();
+                }
 
-        //using axios to get pdt name and cat
-        axios.get(`https://world.openfoodfacts.org/api/v2/product/${barcodeValue}.json`)
-            .then(response => {
-                console.log(response.data.product.categories);
-                let fooditem = response.data.product
-                let foodcat = response.data.product.categories
-                fooditem = fooditem.product_name
+                // Using axios to get product name and category
+                axios.get(`https://world.openfoodfacts.org/api/v2/product/${barcodeValue}.json`)
+                    .then(response => {
+                        if (response.data && response.data.product) {
+                            let fooditem = response.data.product.product_name || 'Unknown product name';
+                            let foodcat = response.data.product.categories || 'Unknown categories';
+                            this.$refs.productname.value = fooditem;
+                            this.$refs.foodtag.value = foodcat;
+                        } else {
+                            throw new Error('Product data is not available');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching product data:', error);
+                        // Handle the error according to your application's needs
+                    });
+            } catch (error) {
+                console.error('Error during barcode scanning:', error);
 
-                this.$refs.productname.value = fooditem
-                this.$refs.foodtag.value = foodcat
-                
+            }
+                });
 
-            })
-            .catch( error => {
-                console.error(error);
-            });
-  });
     }
 
 
