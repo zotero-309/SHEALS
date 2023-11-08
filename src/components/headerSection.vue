@@ -300,9 +300,9 @@ export default {
 				this.favActive = "active"
 			}
 		},
-		toggleMenu() {
-			this.isMenuOpen = !this.isMenuOpen;
-		},
+		// toggleMenu() {
+		// 	this.isMenuOpen = !this.isMenuOpen;
+		// },
 		// openModal() {
 		// 	console.log('openModal method is called');
 		// 	this.showModal = true;
