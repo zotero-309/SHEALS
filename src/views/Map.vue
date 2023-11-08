@@ -3,7 +3,7 @@
 <template>
     <!-- Header Section Begin -->
     <HeaderSection @filter-applied="handleFilterApplied"/> <!-- listen for filterApplied event which is triggered from clicking apply filter button-->
-
+    
     <!-- Header Section Begin -->
     <!-- Breadcrumb Section Begin -->
     <div class="breadcrumb-section">
@@ -28,10 +28,12 @@
                                     </div> 
                                     <!-- <button class='ui button'>Go</button> -->
                                     <label for="distance" class="form-label">Distance</label>
-                                    <input type="range" class="form-range" id='uDistance' value=0 min="0" max="49000" @change='updateMarkersByDistance'>
+                                    <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="49000" @change='updateMarkersByDistance'>
                                     
                                     <span>{{uDistance}}</span>
-
+                                
+                                    <button type="button" class="btn btn-info" @click="getPreferenceLocation">Saved Home Address</button>
+                                    
                                 </div>
                             </form>
                         </div>
@@ -46,11 +48,11 @@
                     :zoom="14">
                         <MarkerCluster >
                             <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="i">
-                                <InfoWindow v-model="infowindow">
+                                <!-- <InfoWindow v-model="infowindow">
                                     <div id="content">
                                         This is the infowindow content
                                     </div>
-                                </InfoWindow>
+                                </InfoWindow> -->
                             </Marker>
                         </MarkerCluster>
                         
@@ -81,8 +83,6 @@
                         <div class="container">
                             <div class="row">
                                 <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" />
-                                    <!-- Deal items section -->
-
                             </div>
                         </div>
                     </section>
@@ -120,20 +120,12 @@
 
         data() {
             return {
-                // center_list: 
-                // [
-                //     { lat: 1.3695402520648914, lng: 103.84844334722357 },
-                //     { lat: 1.3505028, lng: 103.8485932 }
-                // ],
-                // center: { lat: 0, lng: 0 },
-                // markerOptions: { position: { lat: 0, lng: 0 }, label: "L", title: "LADY LIBERTY" },
-                
-
-                
+         
                 selectedFilters: {
                     selectedCategories: [],
                     selectedDiscounts: [],
                 },
+                prefLocation: '',
 
                 address: '',
                 error: '',
@@ -141,9 +133,7 @@
 
                 display_list:[], //filtered list based on search
 
-                // keep track of the stores
-                store_list: [], 
-                markers: {},
+                // markers: {},
                 deal_address_coords: "",
 
                 center:{ lat: 1.3548, lng: 103.9579 },
@@ -153,10 +143,11 @@
                 ulat: '',
                 ulng: '',
                 uDistance: '',
-                uindex: '',
-                orilocations: '',
-
-
+                
+                // orilocations: '', // keep track of all or prev deals
+                // count: 0, // keep track refreshed this.locations
+                // keepTrack: []
+                oldlocations: []
             }
         },
         mounted() {
@@ -171,17 +162,36 @@
                 let place = autocomplete.getPlace();
                 // console.log(place);
                 this.address = place.formatted_address;
-                let newUlocation = []
                 let autolocation = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-                newUlocation.push(autolocation);
-                for (let autoaddr of this.locations) {
-                    if (JSON.stringify(this.center) !== JSON.stringify(autoaddr)) {
-                        newUlocation.push(autoaddr)
-                    }
-                }
-                this.center = autolocation
-                this.locations = newUlocation
+                console.log(this.center)
                 
+                // if (this.center) {
+                //     let index = this.locations.findIndex(autoaddr => 
+                //         autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
+                //     );
+
+                //     if (index > -1) {
+                //         this.locations.splice(index, 1);
+                //     }
+                //     if (this.orilocations.includes(this.center)) {
+                //         let index = this.locations.findIndex(autoaddr => 
+                //             autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
+                //         );
+
+                //         if (index > -1) {
+                //             this.locations.splice(index, 1);
+                //         }
+                //     }
+                // }
+                // this.center = ''
+                // console.log(this.center)
+                // console.log(this.orilocations)
+                // this.locations = this.orilocations
+                this.removeLocator()
+                this.locations.push(autolocation);
+                this.center = autolocation
+                console.log(this.center)
+                this.uDistance = 0
                 
                 // this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
             });
@@ -199,13 +209,57 @@
                 console.log("map receives", this.selectedFilters);
 
             },
-            async getDisplayList (value) {
-                this.locations = []
+            removeLocator() {
+                // If got previous locator, remove it
+
+                if (this.center) {
+                    let index = this.locations.findIndex(autoaddr => 
+                        autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
+                    );
+
+                    if (index > -1) {
+                        this.locations.splice(index, 1);
+                    }
+
+                }
                 
+            },
+
+            getPreferenceLocation() {
+                this.prefLocation = localStorage.getItem('homeAddress')
+                console.log(this.prefLocation)
+                this.address = this.prefLocation
+                axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + this.address)
+                    .then(response => {
+                        if (response.data.error_message) {
+                            this.error = response.data.error_message;
+                            console.log(response.data.error_message);
+                        } else {
+                            let address_coords = response.data.results[0].geometry.location;
+                            this.removeLocator()
+                            this.center = { lat: address_coords.lat, lng: address_coords.lng }
+                            console.log(this.center)
+                            this.locations.push(this.center);
+                            this.uDistance = 0   
+                            // this.locations = this.orilocations 
+                        }
+                              
+                    })
+            },
+
+            getDisplayList (value) {
+                
+                this.locations = []
+                this.orilocations = []
+                this.keepTrack = []
+                this.display_list = value
+                console.log(this.display_list)
+
                 //inserts the lon and lat inside displaylist
                 for (var rec of value){
                     let deal_address = rec.location
-                    await axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
+                    // console.log(deal_address)
+                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
                     .then(response => {
                         if (response.data.error_message) {
                             this.error = response.data.error_message;
@@ -216,69 +270,130 @@
                             rec['lon'] = deal_address_coords.lng
                             
                             this.locations.push({ lat: rec.lat, lng: rec.lon });
-                    
-                            // this.uDistance = document.getElementById('distance').value
-                            // this.uDistance = this.$refs['uDistance']
-                            // if (this.uDistance > 0) {
-                                
-                            //     this.updateMarkersByDistance()
+                            // if (!this.keepTrack.includes(rec)) {
+                            //     this.keepTrack.push({rec: { lat: rec.lat, lng: rec.lon }})
                             // }
-
+                    
                         }
                               
                     })
                 }
                 console.log(this.locations)
                 this.orilocations = this.locations
+
+                
             },
-            
-     
+
+            // to update display_list based on distance input
+            // applyDistanceToDisplayList() {
+
+            //     let results = this.display_list;
+            //     console.log(this.keepTrack)
+            //     for (let deal of this.keepTrack) {
+            //         if (!results.includes(deal)) {
+            //             let index = results.indexOf(deal)
+            //             if (index > -1) {
+            //                 results.splice(index, 1);
+            //             }
+            //         }
+            //     }
+            //     this.display_list = results
+            //     console.log(this.display_list)
+
+            // },
+
+            // to update markers based on distance input
             updateMarkersByDistance () {
                 
-                console.log('start')
-                console.log(this.locations.length)
-                console.log(this.locations)
-                this.uDistance = document.getElementById('uDistance').value
-                console.log(this.uDistance)
-                let userPosition = new google.maps.LatLng(this.ulat,this.ulng)
-                
+                // console.log('start')
+                // console.log(this.locations.length)
+                // console.log(this.locations)
+                // console.log(this.uDistance)
+                // console.log(this.center)
+                let userPosition = new google.maps.LatLng(this.center.lat,this.center.lng)
                 
                 let newlocations = []
- 
+                // this.orilocations = this.locations
+                // console.log(this.orilocations)
                 for (let addr of this.orilocations) {
-                    
-                    // console.log(addr)
-                    let position = new google.maps.LatLng(addr.lat, addr.lng)
-                    try {
-                        let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
-                        console.log(cdistance)
-                        if (cdistance <= this.uDistance) {
-                            // console.log(newlocations)
-                            // let index = newlocations.indexOf(addr)
-                            // let todelete = newlocations.splice(index,1)
-                            // console.log(todelete)
-                            newlocations.push(addr)
-                            console.log(newlocations.length)
-                            console.log(newlocations)
+                    // if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
+                        // console.log(addr)
+                    //     let position = new google.maps.LatLng(addr.lat, addr.lng)
+                    //     try {
+                    //         let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
+                    //         console.log(cdistance)
+                    //         if (cdistance <= this.uDistance) {
+                    //             // console.log(newlocations)
+                    //             // let index = newlocations.indexOf(addr)
+                    //             // let todelete = newlocations.splice(index,1)
+                    //             // console.log(todelete)
+                    //             newlocations.push(addr)
+                    //             console.log(newlocations.length)
+                    //             console.log(newlocations)
+                    //             // for (let deal of this.keepTrack) {
+                    //             //     if (deal.location === addr) {
+                    //             //         this.keepTrack
+                    //             //     }
+                                    
+                    //             // }
+                                
+                    //         }
+                    //         // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
+                    //         //     newlocations.push(addr)
+                    //         // }
+                    //     } catch (error) {
+                    //         // Handle any potential errors here...
+                    //         console.error('Error calculating distance:', error);
+                    //     }
+                    // }
+
+                    // if (addr.lat !== this.center.lat || addr.lng === this.center.lng) {
+                        console.log(addr)
+                        let position = new google.maps.LatLng(addr.lat, addr.lng)
+                        try {
+                            let cdistance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
+                            console.log(cdistance)
+                            if (cdistance <= this.uDistance && cdistance !== 0) {
+                                // console.log(newlocations)
+                                // let index = newlocations.indexOf(addr)
+                                // let todelete = newlocations.splice(index,1)
+                                // console.log(todelete)
+                                newlocations.push(addr)
+                                console.log(newlocations.length)
+                                console.log(newlocations)
+                                // for (let deal of this.keepTrack) {
+                                //     if (deal.location === addr) {
+                                //         this.keepTrack
+                                //     }
+                                    
+                                // }
+                                
+                            }
+                            // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
+                            //     newlocations.push(addr)
+                            // }
+                        } catch (error) {
+                            // Handle any potential errors here...
+                            console.error('Error calculating distance:', error);
                         }
-                        // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
-                        //     newlocations.push(addr)
-                        // }
-                    } catch (error) {
-                        // Handle any potential errors here...
-                        console.error('Error calculating distance:', error);
-                    }
-                    
-                    this.locations = newlocations
+                    // }
+                }
+                // this.applyDistanceToDisplayList()
+                newlocations.push(this.center)
+                if (newlocations.length === 1) {
+                    alert(`There is no deals within ${this.uDistance}m of your address.`);
                 }
                 
-                
+                this.locations = newlocations
             },
+
 
             locatorButtonPressed() {
 
                 this.spinner = true;
-                // this.getStores()
+                this.uDistance = 0
+                // this.orilocations = this.locations
+                
 
                 if (navigator.geolocation) {
                     // check whether user browser supports geolocation API
@@ -287,18 +402,15 @@
                             this.getAddressFrom(position.coords.latitude, position.coords.longitude);
                             // this.showUserLocationOnTheMap(position.coords.latitude, position.coords.longitude);
                             this.ulat = position.coords.latitude
+                            console.log(this.ulat)
                             this.ulng = position.coords.longitude
-                            if (this.center.lat !== 1.3548 && this.center.lng !== 103.9579) {
-                                let index = this.locations.indexOf(this.center);
-                                // console.log(index);
-                                if (index > -1) {
-                                    this.locations.splice(index, 1);
-                                }
-                            }
+
+                            this.removeLocator()
+                            
                             this.center = {lat: this.ulat, lng: this.ulng}
                             this.locations.push({ lat: this.ulat, lng: this.ulng });
-                            this.uindex = this.locations.indexOf(this.center)
-                            // this.uDistance = document.getElementById('distance').value
+                            // this.orilocations = this.locations
+                            
                             // if (this.uDistance > 0) {
                             //     this.updateMarkersByDistance()
                             // }
@@ -316,6 +428,7 @@
                     console.log("Browser does not support geolocation API");
                 }
             },
+
             getAddressFrom(lat, long) {
                 axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + long + "&key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU")
                 .then(response => {
@@ -328,7 +441,13 @@
                     } else {
                         // given no error, get the results
                         this.address = response.data.results[0].formatted_address;
-                        // console.log(response.data.results[0].formatted_address);
+                        console.log(response.data.results[0].formatted_address);
+
+                        // backup for scis1 plus code
+                        if (this.address === '7RXX+2R') {
+                            this.address = '80 Stamford Rd, Singapore 178902'
+                        }
+                        
                     }
                     this.spinner = false;
                 })
