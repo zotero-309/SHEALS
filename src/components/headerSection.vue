@@ -163,29 +163,28 @@
 							<!-- Main Navigation -->
 							<nav class="mainmenu">
 								<ul>
-									<li class="active">
+									<li :class="homeActive">
 										<router-link :to="{ name: 'Home' }">
 											<i class="fa fa-money menu-icon"></i>
 											<span>Best Deals</span>
 										</router-link>
 									</li>
-									<li>
-										<a href="./bySupermarkets.html">
+									<li :class="supermarketActive" >
+										<router-link :to="{name: 'SupermarketTab'}">
 											<i class="fa fa-shopping-basket menu-icon"></i>
 											<span>By Supermarkets</span>
-										</a>
-									</li>
-									<li>
-										<a href="./byCommunity.html">
+										</router-link>									</li>
+									<li :class="communityActive" >
+										<router-link :to="{name: 'CommunityTab'}">
 											<i class="fa fa-users menu-icon"></i>
 											<span>By Community</span>
-										</a>
+										</router-link>
 									</li>
-									<li>
-										<a href="./byCommunity.html">
+									<li :class="favActive">
+										<router-link :to="{name: 'FavouritesTab'}">
 											<i class="fa fa-heart menu-icon"></i>
 											<span>Favourites</span>
-										</a>
+										</router-link>
 									</li>
 								</ul>
 							</nav>
@@ -283,6 +282,10 @@ export default {
 
 	data() {
 		return {
+			supermarketActive: "",
+			communityActive:"",
+			favActive:"",
+			homeActive: "",
 			isMenuOpen: false,
 			showModal: false,
 			showAnimation: false,
@@ -296,7 +299,21 @@ export default {
 			discountList: ['1 For 1', 'Discounts', 'Bundle Deals'],
 		};
 	},
+	created(){
+		this.changeActive()
+	},
 	methods: {
+		changeActive(){
+			if(this.$route.name==="Home"){
+				this.homeActive = "active"
+			} else if (this.$route.name==="SupermarketTab"){
+				this.supermarketActive = "active"
+			} else if(this.$route.name==="CommunityTab"){
+				this.communityActive = "active"
+			} else {
+				this.favActive = "active"
+			}
+		},
 		// toggleMenu() {
 		// 	this.isMenuOpen = !this.isMenuOpen;
 		// },
