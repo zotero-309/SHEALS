@@ -134,7 +134,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .qrcode-stream-camera,
 .qrcode-stream-overlay,
 .qrcode-stream-wrapper {

@@ -259,7 +259,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 video  {
     width: 300px;
     height: 300px;

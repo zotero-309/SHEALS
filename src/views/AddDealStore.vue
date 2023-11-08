@@ -8,115 +8,128 @@
     </button>
 
     <div v-show="scan" class="modal-container">
-    <div class="modal-background" @click="scanmodal"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mx-auto">Please positon your barcode</h5>
-        <button type="button" class="close" @click="scanmodal">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div ref="pdtscan" class="scanner"></div>
-      </div>
-    </div>
+        <div class="modal-background" @click="scanmodal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mx-auto">Please positon your barcode</h5>
+                <button type="button" class="close" @click="scanmodal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div ref="pdtscan" class="scanner"></div>
+            </div>
+        </div>
     </div>
 
 
     <form @submit.prevent="upload_deal()">
-        
+
         <div class="row">
-            <div class="col-4">
+            <div class="col-sm-4">
                 <label for="barcodeid" class="py-2">Barcode ID</label>
-                <input type="number" class="form-control" id="barcodeid" ref="barcodeid" readonly>                    
+                <input type="number" class="form-control" id="barcodeid" ref="barcodeid" readonly>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4">
                 <label for="pdtname" class="py-2">Product Name</label>
-                <input type="text" class="form-control" id="pdtname" ref="productname" readonly>                    
+                <input type="text" class="form-control" id="pdtname" ref="productname" readonly>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4">
                 <input type="text" ref="foodtag" id="foodtag" v-show="false">
                 <label for="pdtcat" class="py-2">Product Category</label>
                 <select id="pdtcat" ref="foodcategory" class="form-control mb-2" required="required">
-                        <option>Bakery</option>
-                        <option>Diary, Chilled & Eggs</option>
-                        <option>Drinks</option>
-                        <option>Beer, Wine & Spirits</option>
-                        <option>Snacks & Confectionery</option>
-                        <option>Frozen</option>
-                        <option>Fruits and Vegetables</option>
-                        <option>Rice, Noodles & Cooking Ingredients</option>
-                        <option>Meat & Seafood</option>
-                        <option>Food Cupboard</option>
-                        <option>Pet Supplies</option>
-                </select>                   
-            </div>         
+                    <option>Bakery</option>
+                    <option>Diary, Chilled & Eggs</option>
+                    <option>Drinks</option>
+                    <option>Beer, Wine & Spirits</option>
+                    <option>Snacks & Confectionery</option>
+                    <option>Frozen</option>
+                    <option>Fruits and Vegetables</option>
+                    <option>Rice, Noodles & Cooking Ingredients</option>
+                    <option>Meat & Seafood</option>
+                    <option>Food Cupboard</option>
+                    <option>Pet Supplies</option>
+                </select>
+            </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-sm-6">
                 <label for="dealname" class="py-2">Deal Name</label>
-                <input type="text" class="form-control" id="dealname" ref="dealname" placeholder="e.g. Hot deals for soju!"  required>                    
+                <input type="text" class="form-control" id="dealname" ref="dealname" placeholder="e.g. Hot deals for soju!"
+                    required>
             </div>
-            <div class="col-6">
+            <div class="col-sm-6">
                 <label for="deal_type" class="py-2" ref="dealtype">Select Deal Type</label>
-                    <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
-                        <option>Discounts</option>
-                        <option>Bundle Deals</option>
-                        <option>1 For 1</option>
-                    </select>
+                <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
+                    <option>Discounts</option>
+                    <option>Bundle Deals</option>
+                    <option>1 For 1</option>
+                </select>
             </div>
 
         </div>
 
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="dealdescr" class="py-2" >Deal Description</label>
-                        <textarea class="form-control" id="dealdescr" ref="dealdescr" rows="6"></textarea>
-                    </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="dealdescr" class="py-2">Deal Description</label>
+                    <textarea class="form-control" id="dealdescr" ref="dealdescr" rows="6"></textarea>
                 </div>
-                <div class="col-lg-2 col-sm-4">
-                    <label for="dealprice" class="py-2">Price</label>
-                    <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required> 
-                    <label for="dealqty" class="py-2">Quantity</label>
-                    <input type="number" class="form-control" id="dealqty" ref="dealqty" required>                
-                </div>
-                <div class="col-lg-2 col-sm-4">
-                    <label for="dealexpiry" class="py-2">Expiry Date</label>
-                    <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>  
-                </div>
-
             </div>
-            <div class="row">
-                <label for="dealimg" class="py-2">Upload image</label>
-                <input type="file" id="dealimg" name="dealimg" ref="dealimg">
+            <div class="col-lg-2 col-sm-4">
+                <label for="dealprice" class="py-2">Price</label>
+                <input type="number" step="0.01" class="form-control" id="dealprice" ref="dealprice" required>
+                <label for="dealqty" class="py-2">Quantity</label>
+                <input type="number" class="form-control" id="dealqty" ref="dealqty" required>
+            </div>
+            <div class="col-lg-2 col-sm-4">
+                <label for="dealexpiry" class="py-2">Expiry Date</label>
+                <input type="date" class="form-control" id="dealexpiry" ref="dealexpiry" required>
             </div>
 
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <div>
+                    <label for="dealimg" class="py-2">Upload image &nbsp;</label>
+                </div>
+                <div>
+                    <input type="file" id="dealimg" name="dealimg" ref="dealimg">
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <button class="btn btn-primary my-3 w-sm-auto" type="submit">Submit form</button>
+            </div>
+        </div>
 
-            <button class="btn btn-primary my-3" type="submit">Submit form</button>
-</form>
-    
-        
-        
+
+
+
+
+
+
+
+
+    </form>
 </template>
 
 <script>
-import  Quagga  from '../assets/quagga.min.js'
+import Quagga from '../assets/quagga.min.js'
 import axios from 'axios'
-import  { storage, db } from '../firebase/index.js'
-import {addDoc, updateDoc, collection, doc} from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL} from 'firebase/storage'
+import { storage, db } from '../firebase/index.js'
+import { addDoc, updateDoc, collection, doc } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 
 export default {
-    data () {
+    data() {
         return {
             //var if the modal pops up or not
             scan: false
         }
     },
     methods: {
-        async upload_deal () {
+        async upload_deal() {
 
             //extracting image
             let dealImgName = this.$refs.dealimg.files[0].name
@@ -128,7 +141,7 @@ export default {
             let storename = localStorage.getItem('storeName')
 
             // add document to products collection (with extracting photo)
-            await addDoc(collection(db, "deals"),{
+            await addDoc(collection(db, "deals"), {
                 barcode: this.$refs.barcodeid.value,
                 product_name: this.$refs.productname.value,
                 product_category: this.$refs.foodcategory.value,
@@ -139,26 +152,26 @@ export default {
                 deal_expiry: this.$refs.dealexpiry.value,
                 deal_price: parseFloat(this.$refs.dealprice.value),
                 deal_quantity: parseInt(this.$refs.dealqty.value),
-                uploaded_by: {email: userEmail, type:userType, name:storename},
+                uploaded_by: { email: userEmail, type: userType, name: storename },
                 location: userAddr,
-                image_name:dealImgName
+                image_name: dealImgName
             }).then(docRef => {
                 const storageRef = ref(storage, `deals/${userEmail}/${docRef.id}/${dealImgName}`)
-                uploadBytes(storageRef, this.$refs.dealimg.files[0]).then(async(snapshot) => {
+                uploadBytes(storageRef, this.$refs.dealimg.files[0]).then(async (snapshot) => {
                     let dealImgURL = await getDownloadURL(snapshot.ref)
                     console.log(dealImgURL)
-                    await updateDoc(doc(db,"deals",docRef.id),{image:dealImgURL})
+                    await updateDoc(doc(db, "deals", docRef.id), { image: dealImgURL })
                 })
             })
 
-            this.$router.push({name:'DealListStore'})
+            this.$router.push({ name: 'DealListStore' })
 
         },
-        scanmodal () {
+        scanmodal() {
             //func if the modal pops up or not
             this.scan = !this.scan
         },
-        startscan(){
+        startscan() {
             // Upon clicking on 'scan now', quagga lib triggers
             //Initialize Quagga
             Quagga.init({
@@ -175,13 +188,13 @@ export default {
                     console.log(err);
                     return
                 }
-            console.log("Initialization finished. Ready to start");
-            Quagga.start();
+                console.log("Initialization finished. Ready to start");
+                Quagga.start();
             });
         }
-        
+
     },
-     mounted(){
+    mounted() {
         Quagga.onDetected((data) => {
             try {
                 var barcodeValue = data.codeResult.code;
@@ -215,7 +228,7 @@ export default {
                 console.error('Error during barcode scanning:', error);
 
             }
-                });
+        });
 
     }
 
@@ -224,7 +237,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 video  {
     width: 300px;
     height: 300px;
@@ -245,14 +258,14 @@ video  {
     Modal
     -----------------------*/
 .modal-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-background {
@@ -280,11 +293,9 @@ video  {
 }
 
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
 }
-
-
 </style>

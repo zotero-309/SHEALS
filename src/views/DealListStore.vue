@@ -1,11 +1,14 @@
 <template>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Deal List</h1>
-        <form class="form-inline my-2 my-lg-0 col-3" @submit.prevent="">
+    <div class="d-flex flex-row justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2 h2 mb-0 flex-shrink-0">Deal List</h1>
+        <form class="form-inline my-2 col-auto" @submit.prevent="">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" @input="searchdeal()"
                 v-model="searchTerm">
         </form>
     </div>
+
+
+
     <div v-if="deletemodal" class="modal-container">
         <div class="modal-background" @click="closeDeleteModal"></div>
         <div class="modal-content">
@@ -42,14 +45,14 @@
             <tr v-for="deal in display_list" :key="deal.id">
                 <td aria-label="Images"><img :src="deal.image" alt="" class="dealimg"></td>
                 <td aria-label="Deal">{{ deal.deal_name }}</td>
-                <td aria-label="col" class="col-1">{{ deal.deal_type }}</td>
-                <td aria-label="col" class="col-2">{{ deal.deal_description }}</td>
-                <td aria-label="col">{{ deal.deal_price }}</td>
-                <td aria-label="col">{{ deal.deal_quantity }}</td>
-                <td aria-label="col">{{ deal.product_name }}</td>
-                <td aria-label="col" class="col-2">{{ deal.product_category }}</td>
-                <td aria-label="col" class="col-2">{{ deal.deal_expiry }}</td>
-                <td aria-label="col" class="col-1">
+                <td aria-label="Type">{{ deal.deal_type }}</td>
+                <td aria-label="Description">{{ deal.deal_description }}</td>
+                <td aria-label="Price">{{ deal.deal_price }}</td>
+                <td aria-label="Quantity">{{ deal.deal_quantity }}</td>
+                <td aria-label="Food">{{ deal.product_name }}</td>
+                <td aria-label="Category">{{ deal.product_category }}</td>
+                <td aria-label="Exiry Date">{{ deal.deal_expiry }}</td>
+                <td aria-label="Edit">
                     <router-link :to="{ name: 'UpdateDeal', params: { id: deal.id } }"><img src="../assets/icons/edit.svg"
                             alt="img" class="p-2"></router-link>
                     <img src="../assets/icons/delete.svg" alt="img" class="p-2" @click="closeDeleteModal(deal.id)">
@@ -161,49 +164,76 @@ export default {
 </script>
 
 <style scoped>
-/* Existing styles */
-/* ... */
+/* Default view for larger screens */
+.table td,
+.table th {
+    text-align: center;
+    /* Center align text for all table cells and headers */
+    vertical-align: middle;
+    /* Align the content vertically in the middle */
+}
 
-/* Responsive table styles */
+/* Media query for mobile responsiveness */
 @media (max-width: 768px) {
-    table {
-        width: 100%;
-        display: block;
-    }
-
-    thead {
+    .table thead {
         display: none;
         /* Hide table headers on small screens */
     }
 
-    tr {
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        /* Make table elements stack vertically */
+        width: 100%;
+        box-sizing: border-box;
+        /* Include padding in the element's width */
+    }
+
+    .table tr {
         margin-bottom: 0.625rem;
-        display: block;
-        border-bottom: 2px solid #ddd;
+        /* Add some space between what will now look like rows */
+        border-bottom: 1px solid #e9ecef;
+        /* Add a border to separate the 'rows' */
     }
 
-    td {
-        display: block;
-        text-align: right;
-        padding-left: 50%;
+    .table td {
+        text-align: center;
+        /* Center align text for all table cells */
+        border: none;
+        /* Remove the border from the cells */
+        padding: 8px 10px;
+        /* Add some padding */
         position: relative;
+        /* Needed for absolute positioning of the pseudo-element */
     }
 
-    td::before {
-        /* Now like a table header */
-        content: attr(aria-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
+    .table td img.dealimg {
+        width: 50px;
+        /* Set a fixed width for the image */
+        height: auto;
+        /* Maintain aspect ratio */
+        display: block;
+        /* Block display to allow margin auto to work */
+        margin: 0 auto;
+        /* Center the image horizontally */
+        padding: 5px 0;
+        /* Add some padding above and below the image */
     }
 
-    /* Custom styles for your modal or other elements */
-    /* ... */
+
 }
 
-/* You can add more media queries for different breakpoints */
+/* Larger default view for images */
+.table td img.dealimg {
+    width: 200px;
+    /* Larger default width */
+    height: auto;
+    /* Maintain aspect ratio */
+    display: block;
+    /* Ensure the image is a block element to center it */
+    margin: 0 auto;
+    /* Center the image horizontally */
+}
 </style>
