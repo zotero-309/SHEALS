@@ -70,17 +70,17 @@
         </div>
 
         <div class="shopping-cart-footer">
-            <div class="row justify-content-between align-items-center">
+            <div class="row align-items-center">
                 <!-- Back To Home -->
                 <div class="col-auto">
                     <router-link :to="{ name: 'Home' }">
-                        <span class="btn btn-secondary">Back To Home</span>
+                        <button class="btn btn-secondary">Back To Home</button>
                     </router-link>
                 </div>
 
                 <!-- Select Store List -->
-                <div class="col-auto">
-                    <select class="form-select " ref="storeChosen" @change="filterByStore">
+                <div class="col">
+                    <select class="form-select w-100" ref="storeChosen" @change="filterByStore">
                         <option v-for="store in store_list" :key="store">{{ store }}</option>
                     </select>
                 </div>
@@ -91,6 +91,8 @@
                 </div>
             </div>
         </div>
+
+
 
 
 
