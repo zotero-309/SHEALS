@@ -68,7 +68,7 @@
         <div class="column text-lg">Subtotal: <span class="text-medium">$289.68</span></div>
     </div> -->
     <div class="shopping-cart-footer">
-        <router-link :to="{name:'Home'}"><div class="homeleft"><a class="btn btn-secondary">Back To Home</a></div></router-link>
+        <router-link :to="{name:'Home'}"><div class="homeleft"><span class="btn btn-secondary">Back To Home</span></div></router-link>
         <div class="redeemright"><a class="btn btn-success" href="#" @click="qrGenerate()">Reedem Deals</a></div>
     </div>
 </div>
@@ -215,6 +215,10 @@ export default {
 </script>
 
 <style scoped>
+
+.modal-container {
+    z-index: 1000;
+}
 .qtyalign {
     display: flex;
     align-items: center;
@@ -225,7 +229,7 @@ export default {
 }
 
 .cartcontent{
-    margin-top: 200px;
+    margin-top: 100px;
 }
 
 .homeleft{

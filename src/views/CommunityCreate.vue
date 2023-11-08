@@ -63,7 +63,7 @@
                 <label for="deal_type" class="py-2" ref="dealtype">Select Deal Type</label>
                     <select id="deal_type" ref="dealtype" class="form-control mb-2" required="required">
                         <option>Discounts</option>
-                        <option>Bundle Deal</option>
+                        <option>Bundle Deals</option>
                         <option>1 For 1</option>
                     </select>
             </div>

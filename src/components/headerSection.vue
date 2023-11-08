@@ -172,6 +172,12 @@
 											<span>Favourites</span>
 										</router-link>
 									</li>
+									<li :class="mapActive">
+										<router-link :to="{name: 'map'}">
+											<i class="fa fa-map-o map-icon"></i>
+											<span>Map</span>
+										</router-link>
+									</li>
 								</ul>
 							</nav>
 
@@ -182,11 +188,11 @@
 							</button>
 
 							<!-- map button (jn) -->
-							<router-link to="/map">
+							<!-- <router-link to="/map">
 								<button class="filter-button">
 									<i class="fa fa-map-o map-icon"></i> &nbsp;
 									<span>Map</span></button>
-							</router-link>
+							</router-link> -->
 
 							<!-- Filter Modal Open -->
 							<div v-if="showModal" class="modal-container"
@@ -274,6 +280,7 @@ export default {
 			communityActive:"",
 			favActive:"",
 			homeActive: "",
+			mapActive:"",
 			isMenuOpen: false,
 			showModal: false,
 			showAnimation: false,
@@ -313,7 +320,11 @@ export default {
 					}
 
 					}
+
 				}
+			}
+			if (this.$route.name=="Home"){
+				this.applyFilter()
 			}
 		},
 		changeActive(){
@@ -323,6 +334,9 @@ export default {
 				this.supermarketActive = "active"
 			} else if(this.$route.name==="CommunityTab"){
 				this.communityActive = "active"
+
+			} else if(this.$route.name==="map"){
+				this.mapActive = "active"
 			} else {
 				this.favActive = "active"
 			}

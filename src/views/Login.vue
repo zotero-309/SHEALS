@@ -30,7 +30,7 @@
                                                         </div>
                                                             <input type="submit" value="Login" class="btn mt-4"/>
                                                     </form>
-                                                    <p class="mb-0 mt-4 text-center"><a href="#0" class="link">Forgot your password?</a></p>
+                                                    <p class="mb-0 mt-4 text-center"><router-link :to="{name:'Home'}" class="link">Back</router-link></p>
                                                 </div>
                                             </div>
                                         </div>
