@@ -1,9 +1,10 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Update Deal</h1>
-    </div>
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Update Deal</h1>
+            </div>
         </div>
         <form @submit.prevent="UpdateDealInfo()">
             <div class="row justify-content-center">
@@ -73,15 +74,18 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
-                    <label for="dealimg" class="py-2">Upload image</label>
-                    <input type="file" id="dealimg" name="dealimg" ref="dealimg" class="form-control-file">
+                <div class="col-md-6">
+                    <div>
+                        <label for="dealimg" class="py-2">Upload image</label>
+                    </div>
+                    <div>
+                        <input type="file" id="dealimg" name="dealimg" ref="dealimg" class="form-control-file">
+                    </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12 text-center">
-                    <button class="btn btn-primary my-3" type="submit">Update Deal</button>
+                <div class="col-md-6 col-12">
+                    <div class="d-flex justify-content-md-end justify-content-center">
+                        <button class="btn btn-primary my-3 w-sm-auto " type="submit">Update Deal</button>
+                    </div>
                 </div>
             </div>
         </form>
