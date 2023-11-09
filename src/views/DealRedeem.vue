@@ -3,18 +3,18 @@
         <h1 class="h2">SCAN QR CODE</h1>
     </div>
     <div class="qrscanner">
-        <qrcode-stream @decode="onDecode" @error="onError"></qrcode-stream>
+        <qrcode-stream @decode="onDecode"></qrcode-stream>
         
-<div v-if="resultmodal" class="modal-container">
-    <div class="modal-background" @click="resultmodal=false"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">List of Cart Items Redeemed</h5>
+<div v-if="resultmodal" class="Rmodal-container">
+    <div class="Rmodal-background" @click="resultmodal=false"></div>
+    <div class="Rmodal-content">
+      <div class="Rmodal-header">
+        <h5 class="Rmodal-title">List of Cart Items Redeemed</h5>
         <button type="button" class="close" @click="resultmodal=false">
-          <span aria-hidden="true">&times;</span>
+          <span >&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="Rmodal-body">
         <ul>
             <li v-for="item in redeemItems" :key="item.pdt">{{ item.errmsg }}: {{ item.pdtname }} x {{ item.qty }}</li>
         </ul>
@@ -135,6 +135,58 @@ export default {
 </script>
 
 <style scoped>
+/*---------------------
+    Modal
+    -----------------------*/
+    .Rmodal-container {
+    position: fixed;
+    /* Use fixed positioning */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+
+    /* Ensure it's above other items */
+}
+
+.Rmodal-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    z-index: -1;
+    /* Behind the modal content */
+}
+
+.Rmodal-content {
+    position: relative;
+    z-index: 1;
+    /* Above the semi-transparent background */
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    /* Adjust as per your requirement */
+    width: 100%;
+
+}
+
+.Rmodal-header,
+.Rmodal-body {
+    padding: 15px;
+    z-index: 1000;
+    text-align: center;
+
+}
+
 .qrcode-stream-camera,
 .qrcode-stream-overlay,
 .qrcode-stream-wrapper {
