@@ -7,16 +7,16 @@
         <span>Scan Now</span>
     </button>
 
-    <div v-show="scan" class="modal-container">
-        <div class="modal-background" @click="scanmodal"></div>
-        <div class="modal-content">
-            <div class="modal-header">
+    <div v-show="scan" class="Bmodal-container">
+        <div class="Bmodal-background" @click="scanmodal"></div>
+        <div class="Bmodal-content">
+            <div class="Bmodal-header">
                 <h5 class="modal-title mx-auto">Please positon your barcode</h5>
                 <button type="button" class="close" @click="scanmodal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="Bmodal-body">
                 <div ref="pdtscan" class="scanner"></div>
             </div>
         </div>
@@ -237,11 +237,11 @@ export default {
 </script>
 
 
-<style scoped>
-video  {
+
+<style >
+video{
     width: 300px;
     height: 300px;
-    margin: auto;
 }
 
 .drawingBuffer {
@@ -252,50 +252,58 @@ video  {
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 /*---------------------
     Modal
     -----------------------*/
-.modal-container {
+    .Bmodal-container {
     position: fixed;
+    /* Use fixed positioning */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 1050;
+
+    /* Ensure it's above other items */
 }
 
-.modal-background {
-    background-color: white;
-    position: fixed;
+.Bmodal-background {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent black background */
+    /* Semi-transparent background */
+    z-index: -1;
+    /* Behind the modal content */
 }
 
-.modal-content {
-
-    background-color: white !important;
+.Bmodal-content {
+    position: relative;
+    z-index: 1;
+    /* Above the semi-transparent background */
+    background: #fff;
     padding: 20px;
-    max-width: 600px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    /* Adjust as per your requirement */
     width: 100%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    /* Ensure it's above other elements */
+
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e0e0e0;
+.Bmodal-header,
+.Bmodal-body {
+    padding: 15px;
+    z-index: 1000;
+    text-align: center;
+
 }
 </style>
