@@ -46,9 +46,10 @@
                     :zoom="14">
                         <MarkerCluster >
                             <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="location.id || i">
-                                <InfoWindow :key="location.id || i">
-                                    <div id="content">
-                                        {{infowindow[i]}}
+                                <InfoWindow :key="location.id || i" v-if="infowindow[i]">
+                                    <div id="name">
+                                        <p>{{infowindow[i][0]}}</p>
+                                        <p>{{infowindow[i][1]}}</p>
                                     </div>
                                 </InfoWindow>
                             </Marker>
@@ -215,11 +216,11 @@
                 immediate: true, // Execute the handler immediately on component creation
                 deep: true, // Watch for changes in the array's elements
             },
-            applyDistance: {
-                handler: 'updateDisplayList',
-                immediate: true, // Execute the handler immediately on component creation
-                deep: true, // Watch for changes in the array's elements
-            }
+            // applyDistance: {
+            //     handler: 'updateDisplayList',
+            //     immediate: true, // Execute the handler immediately on component creation
+            //     deep: true, // Watch for changes in the array's elements
+            // }
         },
 
         mounted() {
@@ -323,8 +324,8 @@
             },
             applyFilter() {
                 try {
-                    console.log('Selected Categories:', this.selectedCategories);
-                    console.log('Selected Discounts:', this.selectedDiscounts);
+                    // console.log('Selected Categories:', this.selectedCategories);
+                    // console.log('Selected Discounts:', this.selectedDiscounts);
 
                     // Ensure that selectedCategories and selectedDiscounts are defined
                     if (!this.selectedCategories || !this.selectedDiscounts) {
@@ -337,7 +338,7 @@
                         selectedDiscounts: this.selectedDiscounts.slice(),
                     };
 
-                    console.log('Captured filter in HeaderSection:', this.selectedFilters);
+                    // console.log('Captured filter in HeaderSection:', this.selectedFilters);
 
                     this.closeModal();
                 } catch (error) {
@@ -373,7 +374,7 @@
                 }
 
                 const index = this.favourites.indexOf(dealId);
-                console.log('Toggle Heart - dealId:', dealId, 'Index:', index);
+                // console.log('Toggle Heart - dealId:', dealId, 'Index:', index);
 
                 if (index === -1) {
                     // Add to favorites
@@ -480,7 +481,7 @@
                 }
 
                 // Further filter based on search query
-                console.log('receieved in update display list', this.searchQuery)
+                // console.log('receieved in update display list', this.searchQuery)
                 if (this.searchQuery !== "") {
                     results = results.filter((deal) =>
                         //ensure case insensitive
@@ -493,31 +494,15 @@
                 }
                 
                 if(this.applyDistance) {
-                    console.log("working")
+                    // console.log("working")
                     // this.resetLocationsToOriginal()
-                    // for (let latlng of this.locations) {
-                    //     results = results.filter((deal) =>
-                        
-                    //     this.orilocations.includes(
-                    //         this.getlatlng(deal.location).then(coords => {
-            
-                    //             console.log(coords);
-                    //         }).catch(error => {
-                            
-                    //             console.error('Error fetching coordinates:', error);
-                    //         })
-                    //     )
 
-                    // );
-                    // }
                     results = results.filter((deal) =>
                         
                         this.orilocations.includes(
                             this.getlatlng(deal.location).then(coords => {
-            
-                                console.log(coords);
+                                // console.log(coords);
                             }).catch(error => {
-                            
                                 console.error('Error fetching coordinates:', error);
                             })
                         )
@@ -529,9 +514,9 @@
                 this.display_list = results;
 
                 this.getDisplayList (this.display_list)
-                console.log('Updated Filtered and Searched Display List:', this.display_list);
+                // console.log('Updated Filtered and Searched Display List:', this.display_list);
 
-                this.$emit('display-list', this.display_list);
+                // this.$emit('display-list', this.display_list);
             },
 
             getlatlng(addr) {
@@ -692,20 +677,20 @@
                             
                             this.locations.push({ lat: rec.lat, lng: rec.lon });
                             // this.orilocations.push({ lat: rec.lat, lng: rec.lon })
-                            this.infowindow.push(rec.uploaded_by.name)
+                            this.infowindow.push([rec.uploaded_by.name, rec.location])
                         }
                               
                     })
                 }
-                console.log(this.locations)
+                // console.log(this.locations)
                 // console.log(this.orilocations)
-                console.log(this.infowindow)
+                // console.log(this.infowindow)
 
             },
 
             applyDistanceToDisplayList() {
                 // to call updateDisplayList to filter display_list based on distance input
-                console.log(1)
+                // console.log(1)
                 this.applyDistance = true
             },
        
@@ -765,7 +750,7 @@
                         position => {
                             this.getAddressFrom(position.coords.latitude, position.coords.longitude);
                             this.ulat = position.coords.latitude
-                            console.log(this.ulat)
+                            // console.log(this.ulat)
                             this.ulng = position.coords.longitude
 
                             this.removeLocator()
