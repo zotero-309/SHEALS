@@ -23,7 +23,7 @@
     <section class="deals-section">
         <div class="container">
             <div class="row">
-                <dealItem :selectedFilters="selectedFilters" :searchQuery="searchQuery" :tab="tab" />
+                <dealItem :selectedFilters="selectedFilters" :searchQuery="searchQuery" :tab="tab" @display-list="displayList" />
             </div>
         </div>
     </section>
@@ -48,7 +48,7 @@ export default {
                 selectedCategories: [],
                 selectedDiscounts: [],
             },
-            dealsList: [],
+            displayList: [],
         }
     },
     methods: {
@@ -63,9 +63,10 @@ export default {
     },
     computed: {
         // Computed property to determine the breadcrumb message
-        breadcrumbMessage() {
+        breadcrumbMessage(displayList) {
+            this.displayList = displayList;
             // Check if the deals list is empty
-            if (this.dealsList.length === 0) {
+            if (this.displayList.length === 0) {
                 return "You haven't added any favorites!";
             } else {
                 return "You saved these deals!";

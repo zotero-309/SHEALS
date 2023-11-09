@@ -249,6 +249,7 @@ export default {
     this.getdealitem()
     this.updateVisibleComments();
   },
+
   methods: {
     async getdealitem() {
       const docRef = doc(db, "deals", this.$route.params.id);
