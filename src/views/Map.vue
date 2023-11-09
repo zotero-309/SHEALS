@@ -215,11 +215,11 @@
                 immediate: true, // Execute the handler immediately on component creation
                 deep: true, // Watch for changes in the array's elements
             },
-            applyDistance: {
-                handler: 'updateDisplayList',
-                immediate: true, // Execute the handler immediately on component creation
-                deep: true, // Watch for changes in the array's elements
-            }
+            // applyDistance: {
+            //     handler: 'updateDisplayList',
+            //     immediate: true, // Execute the handler immediately on component creation
+            //     deep: true, // Watch for changes in the array's elements
+            // }
         },
 
         mounted() {
