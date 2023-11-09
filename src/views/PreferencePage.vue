@@ -7,15 +7,16 @@
         <div class="box">
           <h2 class="text-center py-5 fw-bold">Set Your Preferences</h2>
 
-          <div class="d-flex justify-content-center ">
+          <div class="d-flex justify-content-center address ">
             <div class="col-12 col-sm-9">
-              <label for="address" class="form-label">Address:</label>
+              <label for="address" class="form-label text-center">Address:</label>
               <input type="text" class="form-control" id="address" name="address" placeholder="Enter Your Home Address">
             </div>
           </div>
 
           <div class="row justify-content-center mt-3">
-            <div class="category pl-3 pb-3 col-12 col-md-6">
+
+            <div class="category pl-3 pb-3 col-12 col-md-4">
               <span>Product Category:</span>
               <div v-for="category in food_categories" :key="category" class="form-check" 
                 @change="updateSelectedCategories(category)">
@@ -24,8 +25,8 @@
                 <label class="form-check-label" :for="category">{{ category }}</label>
               </div>
             </div>
-
-            <div class="deals pl-3 pb-3 col-12 col-md-6 justify-content-center">
+            
+            <div class="deals pl-3 pb-3 col-12 col-md-4 justify-content-center">
               <span>Preferred Deals:</span>
               <div v-for="deal_type in deal_types" :key="deal_type" class="form-check" 
                 @change="updateSelectedDealTypes(deal_type)">
@@ -120,6 +121,7 @@ export default {
       autocomplete.setComponentRestrictions({
         country: ["sg"]
       });
+
       autocomplete.addListener("place_changed", () => {
         addressInput.value = document.getElementById("address").value;
       });
@@ -188,6 +190,10 @@ form {
   border: 2px solid #2e460b;
 }
 
+.category, .deals,.address {
+  font-size: 18px;
+}
+
 h1 {
   padding: 10px 50px;
   margin-left: 60px;
@@ -197,13 +203,35 @@ h1 {
   color: rgba(67, 42, 21, 0.984);
 }
 
-input[type=text],
-.btn {
-  margin-bottom: 20px;
-}
 
 label {
   padding-left: 10px;
 }
 
+@media (max-width: 769px) {
+  .category, .form-check, .deals, .form-check, span {
+    margin-bottom: 3vh; /* Adjust the margin as needed */
+    margin-top: 3vh;
+  }
+  .category, .deals {
+    margin-left: 28vw; /* Adjust the margin as needed */
+  }
+}
+
+@media (max-width: 575px) {
+  .category, .deals {
+    margin-left: 3rem; /* Adjust the margin as needed for small screens */
+  }
+
+}
+
+@media (min-width: 992px) {
+  .category, .deals {
+    margin-left: 4vw; /* Adjust the margin as needed for large screens */
+  }
+
+  .row.justify-content-center {
+    margin-left: -4vw; /* Counteract the margin applied to .category and .deals */
+  }
+}
 </style>
