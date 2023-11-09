@@ -97,7 +97,13 @@
 											<span>Discounts</span>
 										</router-link>
 									</li>
-
+									<!-- Map Tab -->
+									<li :class="mapActive">
+										<router-link :to="{name: 'map'}">
+											<i class="fa fa-map-o map-icon"></i>
+											<span>Map</span>
+										</router-link>
+									</li>
 									<!-- Home Tab -->
 									<li :class="homeActive">
 										<router-link :to="{ name: 'Home' }">
@@ -1409,5 +1415,9 @@ a:hover {
 	width: 48%;
 	margin-right: 1%;
 }
+
+
+
+
 </style>
   
