@@ -192,7 +192,6 @@ export default {
                 Quagga.start();
             });
         }
-
     },
     mounted() {
         Quagga.onDetected((data) => {
@@ -229,10 +228,7 @@ export default {
 
             }
         });
-
     }
-
-
 };
 </script>
 
@@ -269,7 +265,6 @@ video{
     justify-content: center;
     align-items: center;
     z-index: 1050;
-
     /* Ensure it's above other items */
 }
 
@@ -285,7 +280,7 @@ video{
     /* Behind the modal content */
 }
 
-.Bmodal-content {
+.Rmodal-content {
     position: relative;
     z-index: 1;
     /* Above the semi-transparent background */
@@ -296,14 +291,36 @@ video{
     max-width: 500px;
     /* Adjust as per your requirement */
     width: 100%;
-
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-family: "Cabin", sans-serif;
 }
 
+/* Close button styles */
+.Rmodal-header .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #393939;
+    /* Close button color */
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* List item styles */
+.Rmodal-body ul {
+    list-style: none;
+    padding: 0;
+}
+
+.Rmodal-body li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
 .Bmodal-header,
 .Bmodal-body {
     padding: 15px;
     z-index: 1000;
     text-align: center;
-
 }
 </style>

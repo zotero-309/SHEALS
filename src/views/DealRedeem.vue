@@ -4,29 +4,30 @@
     </div>
     <div class="qrscanner">
         <qrcode-stream @decode="onDecode"></qrcode-stream>
-        
-<div v-if="resultmodal" class="Rmodal-container">
-    <div class="Rmodal-background" @click="resultmodal=false"></div>
-    <div class="Rmodal-content">
-      <div class="Rmodal-header">
-        <h5 class="Rmodal-title">List of Cart Items Redeemed</h5>
-        <button type="button" class="close" @click="resultmodal=false">
-          <span >&times;</span>
-        </button>
-      </div>
-      <div class="Rmodal-body">
-        <ul>
-            <li v-for="item in redeemItems" :key="item.pdt">{{ item.errmsg }}: {{ item.pdtname }} x {{ item.qty }}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+
+        <div v-if="resultmodal" class="Rmodal-container">
+            <div class="Rmodal-background" @click="resultmodal = false"></div>
+            <div class="Rmodal-content">
+                <div class="Rmodal-header">
+                    <h5 class="Rmodal-title">List of Cart Items Redeemed</h5>
+                    <button type="button" class="close" @click="resultmodal = false">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="Rmodal-body">
+                    <ul>
+                        <li v-for="item in redeemItems" :key="item.pdt">{{ item.errmsg }}: {{ item.pdtname }} x {{ item.qty
+                        }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
- import  { db } from '../firebase/index.js'
- import {doc, updateDoc, increment, arrayRemove, getDoc, setDoc} from "firebase/firestore"
+import { db } from '../firebase/index.js'
+import { doc, updateDoc, increment, arrayRemove, getDoc, setDoc } from "firebase/firestore"
 import { QrcodeStream } from 'vue3-qrcode-reader'
 export default {
     components: {
@@ -40,17 +41,17 @@ export default {
     },
     methods: {
         //on detection of qr code
-        async onDecode (decodedString) {
+        async onDecode(decodedString) {
             let resArr = decodedString.split("+")
             let userId = resArr[1]
             let cartArr = JSON.parse(resArr[0])
-            const monthnames =  ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July" , "Aug", "Sep", "Oct" , "Nov", "Dec"]
+            const monthnames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
             //check if redeem store is correct
             const storeRef = doc(db, "users", localStorage.getItem("userID"))
             let store_name = (await getDoc(storeRef)).data().storename
-            if (store_name != cartArr[0].storename){
-                this.redeemItems = [{errmsg:"Incorrect store", pdtname:"None", qty:0}]
+            if (store_name != cartArr[0].storename) {
+                this.redeemItems = [{ errmsg: "Incorrect store", pdtname: "None", qty: 0 }]
                 this.resultmodal = true
 
                 return
@@ -67,10 +68,10 @@ export default {
 
                 let deal_rec = docSnap.data()
                 //check if quantiy exceeds avail amt
-                if (element.qty > deal_rec.deal_quantity){
+                if (element.qty > deal_rec.deal_quantity) {
                     errmsg = "Quantity redeemed exceeds available"
                 }
-                if (errmsg === "Success"){
+                if (errmsg === "Success") {
                     //reference to sales document
                     const salesDocRef = doc(db, "users", localStorage.getItem("userID"), "data", "sales")
                     let salesnap = (await getDoc(salesDocRef)).data()
@@ -106,12 +107,12 @@ export default {
                         cart: arrayRemove(element),
                     })
                     // if redeem and available the same, deal no longer exist
-                    if(element.qty === deal_rec.deal_quantity){
+                    if (element.qty === deal_rec.deal_quantity) {
                         await deleteDoc(doc(db, "deals", element.pdt));
                     } else {
                         // Update deal qty
                         await updateDoc(dealDoc, {
-                        deal_quantity: increment(-element.qty),
+                            deal_quantity: increment(-element.qty),
                         })
                     }
 
@@ -124,7 +125,7 @@ export default {
             this.redeemItems = cartArr
             this.resultmodal = true
 
-            
+
         },
         onError(error) {
             // Handle the error and prevent run time error
@@ -138,7 +139,7 @@ export default {
 /*---------------------
     Modal
     -----------------------*/
-    .Rmodal-container {
+.Rmodal-container {
     position: fixed;
     /* Use fixed positioning */
     top: 0;
@@ -176,7 +177,31 @@ export default {
     max-width: 500px;
     /* Adjust as per your requirement */
     width: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-family: "Cabin", sans-serif;
+}
 
+/* Close button styles */
+.Rmodal-header .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #393939;
+    /* Close button color */
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* List item styles */
+.Rmodal-body ul {
+    list-style: none;
+    padding: 0;
+}
+
+.Rmodal-body li {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 .Rmodal-header,
@@ -184,7 +209,6 @@ export default {
     padding: 15px;
     z-index: 1000;
     text-align: center;
-
 }
 
 .qrcode-stream-camera,
@@ -196,9 +220,11 @@ export default {
 
 
 .qrscanner {
-    display: flex; /* Use flexbox to center content */
-    justify-content: center; /* Horizontally center content */
-    height: 100vh; /* Optionally, set a fixed or relative height for the container */
+    display: flex;
+    /* Use flexbox to center content */
+    justify-content: center;
+    /* Horizontally center content */
+    height: 100vh;
+    /* Optionally, set a fixed or relative height for the container */
 }
-
 </style>

@@ -712,12 +712,11 @@ export default {
 
 	.menu-icon {
 		margin-right: 10px;
+		
 	}
 
 	.profile-dropdown {
 		position: relative;
-		/* Ensure the dropdown is positioned relative to its parent */
-		/* ... other styles ... */
 	}
 
 	.profile-dropdown:hover ul{
