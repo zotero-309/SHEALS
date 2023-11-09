@@ -6,7 +6,7 @@
 		<div class="container">
 			<div class="row">
 				<!-- Left Section -->
-				<div class="col-10">
+				<div class="col-10 col-sm-12">
 					<ul class="tn-left">
 						<!-- Logo -->
 						<li class="app-icon">
@@ -55,18 +55,18 @@
 								<ul class="offcanvas-menu">
 
 									<!-- Profile Option -->
-									<!-- <li v-if="$store.state.user">
+									<li v-if="$store.state.user">
 										<i class="fa fa-user-o"></i>
 										<span>Profile</span>
-									</li> -->
+									</li>
 
 									<li @click="toggleProfileDropdown">
 										<i class="fa fa-user-o"></i>
 										<span>Profile </span>
 										<i class="fa fa-angle-down" :class="{ 'active': isProfileDropdownOpen }"></i>
 									</li>
-									<ul v-if="isProfileDropdownOpen">
 
+									<ul v-if="isProfileDropdownOpen">
 										<!-- Login/register Tab -->
 										<router-link :to="{ name: 'Login' }">
 											<li v-if="!$store.state.user">
@@ -99,9 +99,9 @@
 									</li>
 									<!-- Map Tab -->
 									<li :class="mapActive">
-										<router-link :to="{name: 'map'}">
+										<router-link :to="{ name: 'map' }">
 											<i class="fa fa-map map-icon"></i>
-											<span>Map</span>
+											<span>Map View</span>
 										</router-link>
 									</li>
 									<!-- Home Tab -->
@@ -295,7 +295,6 @@
 										<router-link :to="{ name: 'PersonalUploads' }">
 											<li><span>Deal List</span></li>
 										</router-link>
-
 									</ul>
 								</div>
 							</div>
@@ -307,7 +306,9 @@
 
 		<!-- Menu Item Section -->
 		<div class="menu-item"
-			v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' && $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads' && $route.name !== 'CommunityUpdate'">
+			v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' 
+			&& $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads' 
+			&& $route.name !== 'CommunityUpdate' && $route.name !== 'Map'">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
@@ -324,13 +325,13 @@
 									<li :class="supermarketActive">
 										<router-link :to="{ name: 'SupermarketTab' }">
 											<i class="fa fa-shopping-basket menu-icon"></i>
-											<span>By Supermarkets</span>
+											<span>Supermarkets</span>
 										</router-link>
 									</li>
 									<li :class="communityActive">
 										<router-link :to="{ name: 'CommunityTab' }">
 											<i class="fa fa-users menu-icon"></i>
-											<span>By Community</span>
+											<span>Community</span>
 										</router-link>
 									</li>
 									<li :class="favActive">
@@ -340,9 +341,9 @@
 										</router-link>
 									</li>
 									<li :class="mapActive">
-										<router-link :to="{name: 'map'}">
-											<i class="fa fa-map map-icon"></i>
-											<span>Map</span>
+										<router-link :to="{ name: 'map' }">
+											<i class="fa fa-map menu-icon"></i>
+											<span>Map View</span>
 										</router-link>
 									</li>
 								</ul>
@@ -353,13 +354,6 @@
 								<i class="fa fa-sliders filter-icon"></i> &nbsp;
 								<span>Filter</span>
 							</button>
-
-							<!-- map button (jn) -->
-							<!-- <router-link to="/map">
-								<button class="filter-button">
-									<i class="fa fa-map-o map-icon"></i> &nbsp;
-									<span>Map</span></button>
-							</router-link> -->
 
 							<!-- Filter Modal Open -->
 							<div v-if="showModal" class="modal-container"
@@ -450,7 +444,7 @@ export default {
 			communityActive: "",
 			favActive: "",
 			homeActive: "",
-			mapActive:"",
+			mapActive: "",
 			isProfileDropdownOpen: false,
 			isMenuOpen: false,
 			showModal: false,
@@ -473,23 +467,23 @@ export default {
 		async fetchcategories(){
 			if (this.$route.name=="Home"){
 
-			if (localStorage.getItem("userID")){
+			if (localStorage.getItem("userID")) {
 				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
 				//check if user doc exist
-				if (userDoc.exists()){
+				if (userDoc.exists()) {
 					var user_rec = userDoc.data()
 
 					//check if there is category array first
-					if (user_rec.catpref){
-						for (var cat of user_rec.catpref){
+					if (user_rec.catpref) {
+						for (var cat of user_rec.catpref) {
 							this.selectedCategories.push(cat)
 						}
 					}
 
-					if (user_rec.dealpref){
-						for (var deal of user_rec.dealpref){
-							this.selectedDiscounts.push(deal)	
-					}
+					if (user_rec.dealpref) {
+						for (var deal of user_rec.dealpref) {
+							this.selectedDiscounts.push(deal)
+						}
 
 					}
 
@@ -523,28 +517,12 @@ export default {
 			} else if (this.$route.name === "CommunityTab") {
 				this.communityActive = "active"
 
-			} else if(this.$route.name==="map"){
+			} else if (this.$route.name === "Map") {
 				this.mapActive = "active"
 			} else if (this.$route.name==="FavouritesTab") {
 				this.favActive = "active"
 			}
 		},
-		// toggleMenu() {
-		// 	this.isMenuOpen = !this.isMenuOpen;
-		// },
-		// openModal() {
-		// 	console.log('openModal method is called');
-		// 	this.showModal = true;
-		// 	this.showAnimation = true;
-
-		// 	setTimeout(() => {
-		// 		const modalContainer = document.querySelector('.modal-container');
-		// 		console.log('Modal Container:', modalContainer);
-		// 		if (modalContainer) {
-		// 			gsap.to(modalContainer, { opacity: 1, duration: 0.3 });
-		// 		}
-		// 	}, 0);
-		// },
 		//on input triggers from search bar
 		toggleMenu() {
 			this.isMenuOpen = !this.isMenuOpen;
@@ -734,6 +712,42 @@ export default {
 
 	.menu-icon {
 		margin-right: 10px;
+	}
+
+	.profile-dropdown {
+		position: relative;
+		/* Ensure the dropdown is positioned relative to its parent */
+		/* ... other styles ... */
+	}
+
+	.profile-dropdown:hover ul{
+		display: block;
+		/* Show the dropdown content on hover */
+	}
+
+	.profile-option {
+		display: none;
+		/* Initially hide the dropdown content */
+		position: absolute;
+		background-color: #f9f9f9;
+		/* Light grey background */
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+
+
+	.checkout-discount {
+		/* Vertically align the checkout discount */
+		display: flex;
+		align-items: center;
+		/* ... other styles ... */
+	}
+
+	/* Add some transition for smooth color change */
+	.dropdown-content a,
+	.checkout-discount {
+		transition: background-color 0.3s ease;
 	}
 
 	.offcanvas-menu-overlay {
@@ -1001,7 +1015,7 @@ a:hover {
 }
 
 .profile-option {
-	padding: 19px 27px;
+	padding: 23px 27px;
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
@@ -1074,6 +1088,8 @@ a:hover {
 
 .nav-menu {
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	/* Align menu items in the same row */
 }
 
@@ -1090,14 +1106,13 @@ a:hover {
 /* Menu Section: nav menu (left) */
 .menu-item .nav-menu {
 	text-align: left;
-	padding-top: 4px;
+	padding: 14px 0 0 0
 }
 
-.menu-item .nav-menu .mainmenu {
+.menu-item .nav-menu .mainmenu ul {
 	display: flex;
-	/* Display list items horizontally */
-	margin: 0;
-	padding: 0;
+	justify-content: center;
+	align-items: center;
 }
 
 .menu-item .nav-menu .mainmenu li {
@@ -1108,24 +1123,18 @@ a:hover {
 }
 
 .menu-item .nav-menu .mainmenu li a {
-
 	text-decoration: none;
 	color: #808080;
 	/* Grey color for inactive state */
 	font-weight: 500;
 	display: grid;
 	place-items: center;
-	/* Center both horizontally and vertically */
-	padding: 8px 0;
 	position: relative;
 	transition: all 0.3s;
 }
 
 .menu-item .nav-menu .mainmenu li a i {
 	color: #808080;
-	/* Grey color for inactive state */
-	margin-bottom: 5px;
-	/* Adjust the spacing between icon and text */
 }
 
 .menu-item .nav-menu .mainmenu li a:after {
@@ -1159,6 +1168,11 @@ a:hover {
 	/* Yellow color for active state */
 }
 
+.menu-item .nav-menu .mainmenu li a span {
+	padding-bottom: 5px;
+
+}
+
 .menu-item .nav-menu i {
 	color: #808080;
 	/* Grey color for inactive state */
@@ -1176,10 +1190,6 @@ a:hover {
 	color: #393939;
 }
 
-.menu-item .nav-menu .map-icon {
-	font-size: 1.3em;
-	color: #393939;
-}
 
 /* End of Menu Section: nav menu (left) */
 
@@ -1192,8 +1202,8 @@ a:hover {
 	align-items: center;
 	cursor: pointer;
 	background-color: #ffffff;
-	margin: 10px 10px 0 0;
 	margin-left: auto;
+	margin-bottom: auto;
 	/* Push the filter button to the right */
 	border: 1.5px solid #e5e5e5;
 	/* Grey border color */
@@ -1286,8 +1296,6 @@ a:hover {
 .modal-body {
 	display: block;
 	width: 100%;
-
-
 }
 
 .modal-body .row {
@@ -1324,7 +1332,6 @@ a:hover {
 	cursor: pointer;
 	overflow: hidden;
 	/* Hide overflow to make sure overlay doesn't extend beyond the box */
-
 }
 
 .categoryFilter .categoryLabel {
@@ -1432,9 +1439,5 @@ a:hover {
 	width: 48%;
 	margin-right: 1%;
 }
-
-
-
-
 </style>
   

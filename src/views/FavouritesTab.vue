@@ -10,7 +10,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb-text">
-                        <h2>Our Deals</h2>
+                        <!-- Conditionally display breadcrumb message -->
+                        <h2>{{ breadcrumbMessage }}</h2>
                     </div>
                 </div>
             </div>
@@ -46,7 +47,8 @@ export default {
             selectedFilters: {
                 selectedCategories: [],
                 selectedDiscounts: [],
-            }
+            },
+            dealsList: [],
         }
     },
     methods: {
@@ -57,6 +59,17 @@ export default {
         updateDeals(selectedFilters) {
             // Handle the selected categories and discounts, and update the filtered deals
             this.selectedFilters = selectedFilters;
+        },
+    },
+    computed: {
+        // Computed property to determine the breadcrumb message
+        breadcrumbMessage() {
+            // Check if the deals list is empty
+            if (this.dealsList.length === 0) {
+                return "You haven't added any favorites!";
+            } else {
+                return "You saved these deals!";
+            }
         },
     }
 }

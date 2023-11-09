@@ -13,34 +13,31 @@
                         <div class="column">
                             <form class='ui segment large form'>
                                 <div class='ui message red' v-show='error'>{{error}}</div> 
-                                <!-- message gives rounded box -->
                                 <div class='ui segment'>
-                                    <!-- segment gives rounded box -->
+
                                     <div class='field'>
                                         <div class='ui right icon input large' :class="{loading:spinner}">
+                                            <!-- address -->
                                             <input type='text' placeholder='Your address' v-model='address' ref='autocomplete'/>
-                                            <i class='dot circle link icon' @click='locatorButtonPressed'></i>
-                                            <!-- type of icon & how it should be displayed -->
-                                        
+                                            <i class='dot circle link icon' @click='locatorButtonPressed'></i>                             
                                         </div>
                                     </div> 
-                                    <!-- <button class='ui button'>Go</button> -->
+
+                                    <!-- input distance -->
                                     <label for="distance" class="form-label">Find deals within:</label> <span>{{uDistance}} m</span>
                                     <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="22000" @change="updateMarkersByDistance" >
-                                    
-                                    
-                                
+
+                                    <!-- using saved home address -->
                                     <div>
-                                        
                                         <button type="button" class="btn btn-outline-dark" @click="getPreferenceLocation">Use Saved Home Address</button>
                                     </div>
                                     
                                 </div>
                             </form>
                         </div>
+
                     </section>
                     
-                    <!-- <section id='map'> -->
                     <GoogleMap
                     api-key="AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU"
                     style="width: 100%; height: 500px"
@@ -49,17 +46,16 @@
                     :zoom="14">
                         <MarkerCluster >
                             <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="i">
-                                <!-- <InfoWindow v-model="infowindow">
+                                <InfoWindow>
                                     <div id="content">
-                                        {{location}}
+                                        {{infowindow[i]}}
                                     </div>
-                                </InfoWindow> -->
+                                </InfoWindow>
                             </Marker>
                         </MarkerCluster>
                         
                     </GoogleMap>
 
-                    <!-- </section> -->
                 </div>
 
                 <div class="col-lg-6">
@@ -70,6 +66,7 @@
                     <section class="deals-section">
                         <div class="container">
                             <div class="row">
+                                <div>{{deals_msg}}</div>
                                 <!-- <DealItem  :selectedFilters="selectedFilters" @display-list="getDisplayList" /> -->
                                 <!-- Deal items section -->
                                 <div v-for="deal in display_list" :key="deal.id"
@@ -112,6 +109,7 @@
                     </section>
                     <!-- deals Section End -->
                 </div>
+
             </div>
         </div>
     </div>
@@ -153,9 +151,12 @@
                 favActive:"",
                 homeActive: "",
                 mapActive:"",
-                isMenuOpen: false,
-                showModal: false,
-                showAnimation: false,
+                
+                // isMenuOpen: false,
+                // showAnimation: false,
+
+                
+                showModal: false, // for filter function
                 selectedCategories: [],
                 selectedDiscounts: [],
                 searchQuery: '',
@@ -174,13 +175,13 @@
                     selectedCategories: [],
                     selectedDiscounts: [],
                 },
+                deals_msg: '',
 
                 //map
                 prefLocation: '',
                 address: '',
                 error: '',
                 spinner: false,
-                // display_list:[], //filtered list based on search
                 deal_address_coords: "",
                 center:{ lat: 1.3548, lng: 103.9579 },
                 reRender: 1,
@@ -189,8 +190,8 @@
                 ulng: '',
                 uDistance: '',
                 orilocations: [], // keep track of all or prev deals
-                applyDistance: false
-  
+                applyDistance: false, // use to call method to filter display_list after distance input received
+                infowindow: []
             }
         },
         //trigger function to fetch deals when the component is created
@@ -214,6 +215,11 @@
                 immediate: true, // Execute the handler immediately on component creation
                 deep: true, // Watch for changes in the array's elements
             },
+            applyDistance: {
+                handler: 'updateDisplayList',
+                immediate: true, // Execute the handler immediately on component creation
+                deep: true, // Watch for changes in the array's elements
+            }
         },
 
         mounted() {
@@ -221,9 +227,11 @@
             // autocomplete function
             let autocomplete = new google.maps.places.Autocomplete(this.$refs['autocomplete'], {
                 bounds: new google.maps.LatLngBounds(
+                    // set bounds to sg
                     new google.maps.LatLng(1.352083, 103.819836)
                 )
             });
+
             //event listener
             autocomplete.addListener("place_changed", () => {
                 let place = autocomplete.getPlace();
@@ -236,13 +244,14 @@
                 // console.log(this.orilocations)
                 this.removeLocator()
                 this.resetLocationsToOriginal()
+                this.applyDistance = false
                 this.locations.push(autolocation);
                 this.center = autolocation
                 // console.log(this.center)
                 this.uDistance = 0
-                
-                // this.showUserLocationOnTheMap(place.geometry.location.lat(), place.geometry.location.lng());
             });
+
+            // load user location 
             this.locatorButtonPressed();
 
         },
@@ -330,9 +339,6 @@
 
                     console.log('Captured filter in HeaderSection:', this.selectedFilters);
 
-                    // Emit the event with the captured filter data
-                    this.$emit('filter-applied', this.selectedFilters);
-
                     this.closeModal();
                 } catch (error) {
                     console.error('Error in applyFilter:', error);
@@ -347,9 +353,6 @@
                 const sanitizedCategory = category.replace(/[\s, &]+/g, '');
                 // Assuming your images are stored in the /img/ directory
                 return `/img/${sanitizedCategory}.jpg`;
-            },
-            PreferencePage() {
-                router.push("/questionaire");
             },
 
         //deals
@@ -386,7 +389,6 @@
                     this.$router.go()
                 }
             },
-
             async updateFavoritesInDatabase() {
                 // Update favorites in the Firebase user document
                 const userId = localStorage.getItem("userID");
@@ -458,9 +460,11 @@
                 this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
                 this.display_list = deal_list; // initially set display_list to all deals
                 this.loading = false; // stop preloader
-
+                
+                this.getDealList(this.deal_list)
                 // Call the method to update the display list based on selected categories after fetching deals
                 this.updateDisplayList();
+
             },
             async updateDisplayList() {
                 // Update deals displayed based on both filters and search query
@@ -487,18 +491,74 @@
                         deal.product_category.toLowerCase().includes(this.searchQuery.toLowerCase())
                     );
                 }
-                if(this.applyDistanceToDisplayList()) {
-                    results = results.filter((deal) =>
-                        this.locations.includes(deal.location)
+                
+                if(this.applyDistance) {
+                    console.log("working")
+                    // this.resetLocationsToOriginal()
+                    for (let latlng of this.locations) {
+                        results = results.filter((deal) =>
+                        
+                        this.orilocations.includes(
+                            this.getlatlng(deal.location).then(coords => {
+            
+                                console.log(coords);
+                            }).catch(error => {
+                            
+                                console.error('Error fetching coordinates:', error);
+                            })
+                        )
+
                     );
+                    }
+                    results = results.filter((deal) =>
+                        
+                        this.orilocations.includes(
+                            this.getlatlng(deal.location).then(coords => {
+            
+                                console.log(coords);
+                            }).catch(error => {
+                            
+                                console.error('Error fetching coordinates:', error);
+                            })
+                        )
+
+                    );
+                    
                 }
 
                 this.display_list = results;
+
                 this.getDisplayList (this.display_list)
                 console.log('Updated Filtered and Searched Display List:', this.display_list);
 
                 this.$emit('display-list', this.display_list);
             },
+
+            getlatlng(addr) {
+                // Return the promise from axios.get
+                return axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                params: {
+                    key: "AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU",
+                    address: addr
+                }
+                }).then(response => {
+                if (response.data.error_message) {
+                    this.error = response.data.error_message;
+                    console.log(response.data.error_message);
+                    throw new Error(response.data.error_message); // Throw an error to handle it in the catch block
+                } else {
+                    let address_coords = response.data.results[0].geometry.location;
+                    return { lat: address_coords.lat, lng: address_coords.lng }; // Return the coordinates
+                }
+                }).catch(error => {
+                // Handle any errors that occur during the HTTP request
+                console.error('Error fetching coordinates:', error);
+                throw error; // Re-throw the error to handle it where getlatlng is called
+                });
+            },
+            
+            
+
             // Check if a deal is in favorites
             isFavourite(dealId) {
                 // Check if this.favourites is an array and not null or undefined
@@ -524,31 +584,28 @@
             },
             removeLocator() {
                 // If got previous locator, remove it
-
                 if (this.center) {
                     let index = this.locations.findIndex(autoaddr => 
                         autoaddr.lat === this.center.lat && autoaddr.lng === this.center.lng
                     );
-
                     if (index > -1) {
                         this.locations.splice(index, 1);
                         // console.log('remove',this.center)
                     }
-
-                }
-                
+                }           
             },
             resetLocationsToOriginal() {
                 // Ensure that orilocations is a copy of the original data
+                // to duplicate orilocations into locations
                 this.locations = []
                 for (let addr of this.orilocations) {
                     this.locations.push(addr)
-                }
-                
+                }       
             },
-
             getPreferenceLocation() {
+                // retrieve user's saved home address and plot it in map
                 this.prefLocation = localStorage.getItem('homeAddress')
+                this.applyDistance = false
                 if (!this.prefLocation) {
                     if (confirm("Please log in first to access saved home address.")) {
                         this.$router.push('/login')
@@ -574,14 +631,48 @@
                         })
                 }
             },
+            getDealList (value) {
+                // plotting the deals in the map
+                
+                
+                this.orilocations = []
+                
+    
+                // this.display_list = value
+                // console.log(this.display_list)
+
+                //inserts the lon and lat inside displaylist
+                for (var rec of value){
+                    let deal_address = rec.location
+                    // console.log(deal_address)
+                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
+                    .then(response => {
+                        if (response.data.error_message) {
+                            this.error = response.data.error_message;
+                            console.log(response.data.error_message);
+                        } else {
+                            let deal_address_coords = response.data.results[0].geometry.location;
+                            rec['lat'] = deal_address_coords.lat
+                            rec['lon'] = deal_address_coords.lng
+                            
+                            
+                            this.orilocations.push({ lat: rec.lat, lng: rec.lon })
+                        }
+                              
+                    })
+                }
+       
+                console.log(this.orilocations)
+
+            },
 
             getDisplayList (value) {
+                // plotting the deals in the map
                 
                 this.locations = []
                 this.orilocations = []
-                this.keepTrack = []
+                this.infowindow = []
     
-                
                 // this.display_list = value
                 // console.log(this.display_list)
 
@@ -601,47 +692,32 @@
                             
                             this.locations.push({ lat: rec.lat, lng: rec.lon });
                             this.orilocations.push({ lat: rec.lat, lng: rec.lon })
-                            // if (!this.keepTrack.includes(rec)) {
-                            //     this.keepTrack.push({rec: { lat: rec.lat, lng: rec.lon }})
-                            // }
-                    
+                            this.infowindow.push(rec.uploaded_by.name)
                         }
                               
                     })
                 }
                 console.log(this.locations)
                 console.log(this.orilocations)
+                console.log(this.infowindow)
 
-                
             },
 
-            // to update display_list based on distance input
             applyDistanceToDisplayList() {
-
-                // let results = this.display_list;
-                // console.log(this.keepTrack)
-                // for (let deal of this.keepTrack) {
-                //     if (!results.includes(deal)) {
-                //         let index = results.indexOf(deal)
-                //         if (index > -1) {
-                //             results.splice(index, 1);
-                //         }
-                //     }
-                // }
-                // this.display_list = results
-                // console.log(this.display_list)
+                // to call updateDisplayList to filter display_list based on distance input
+                console.log(1)
                 this.applyDistance = true
-
             },
-
-            // to update markers based on distance input
+       
             updateMarkersByDistance () {
-                
+                // to update markers based on distance input
+
                 // console.log('start')
                 // console.log(this.locations.length)
                 // console.log(this.locations)
                 // console.log(this.uDistance)
                 // console.log(this.center)
+                this.resetLocationsToOriginal()
                 let userPosition = new google.maps.LatLng(this.center.lat,this.center.lng)
                 
                 let newlocations = []
@@ -654,14 +730,6 @@
                         // console.log(cdistance)
                         if (cdistance <= this.uDistance && cdistance !== 0) {
                             newlocations.push(addr)
-                            // console.log(newlocations.length)
-                            // console.log(newlocations)
-                            // for (let deal of this.keepTrack) {
-                            //     if (deal.location === addr) {
-                            //         this.keepTrack
-                            //     }
-                                
-                            // }
                             
                         }
                         // if (cdistance < this.uDistance && !newlocations.includes(addr) ) {
@@ -689,13 +757,13 @@
                 this.uDistance = 0
                 
                 this.resetLocationsToOriginal()
+                this.applyDistance = false
 
                 if (navigator.geolocation) {
                     // check whether user browser supports geolocation API
                     navigator.geolocation.getCurrentPosition(
                         position => {
                             this.getAddressFrom(position.coords.latitude, position.coords.longitude);
-                            // this.showUserLocationOnTheMap(position.coords.latitude, position.coords.longitude);
                             this.ulat = position.coords.latitude
                             console.log(this.ulat)
                             this.ulng = position.coords.longitude
@@ -750,59 +818,7 @@
                     this.error = error.message;
                     console.log(error.message);
                 })
-            },
-            // showUserLocationOnTheMap(latitude, longitude) {
-            //     // create map obj
-            //     let map = new google.maps.Map(document.getElementById('map'),{
-            //         zoom:15,
-            //         center: new google.maps.LatLng(latitude,longitude),
-            //         // map is centered to user location
-            //         mapTypeId: google.maps.MapTypeId.ROADMAP
-            //     });
-
-            //     // add marker on map
-            //     let userPosition = new google.maps.LatLng(latitude,longitude)
-            //     new google.maps.Marker({
-                    
-            //         position: userPosition,
-            //         // tells marker where to be placed on the map
-            //         map: map
-            //         // tells which map marker should be placed into
-            //     })
-            //     let i = 0
-            //     for( let key in this.markers ) {
-            //         let position = new google.maps.LatLng(this.markers[key][0], this.markers[key][1]);
-                    
-            //         // to display by distance + category
-            //         let distance = google.maps.geometry.spherical.computeDistanceBetween(userPosition,position);
-            //         // console.log(distance);
-            //         // let selectedCat = this.selectedCategories;
-            //         // console.log(selectedCat);
-            //         // let categories = this.markers[key][2];
-            //         // console.log(categories);
-            //         // for (let cate of categories) {
-            //             // if (distance != 7000 && cate == selectedCat) {
-            //         let marker = new google.maps.Marker({
-            //             position: position,
-            //             map: map,
-            //             title: key, 
-            //             icon: this.icons.grocery
-            //         })
-                    
-
-            //         google.maps.event.addListener(marker, 'click', (() => {
-            //             return () => {
-            //                 let infoWindow = new google.maps.InfoWindow()
-            //                 infoWindow.setContent(this.infoWindowContent[i][0]);
-            //                 infoWindow.open(map, marker);
-            //                 i++
-            //             };
-            //         })());
-                            
-            //             // }                      
-            //         // }
-            //     }
-            // },
+            }
 
         },
 
