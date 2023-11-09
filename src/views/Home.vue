@@ -12,14 +12,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="breadcrumb-text">
-                                <h2>Deals for You</h2>
+                                <h2> Deals for You </h2>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-            <!-- Breadcrumb Section End -->
+        <!-- Breadcrumb Section End -->
     </section>
 
     <!-- deals Section Begin -->
@@ -50,7 +50,8 @@ export default {
             selectedFilters: {
                 selectedCategories: [],
                 selectedDiscounts: [],
-            }
+            },
+            dealsList: [],
         }
     },
     methods: {
@@ -62,7 +63,7 @@ export default {
             // Handle the selected categories and discounts, and update the filtered deals
             this.selectedFilters = selectedFilters;
         },
-    }
+    },
 }
 </script>
 
