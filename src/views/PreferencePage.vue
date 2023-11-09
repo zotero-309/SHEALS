@@ -37,7 +37,7 @@
             </div>
           </div>
 
-          <div class="d-flex justify-content-end mt-3">
+          <div class="d-flex justify-content-end mb-3">
             <button type="submit" class="btn btn-dark">Submit</button>
           </div>
         </div>

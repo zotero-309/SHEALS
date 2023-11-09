@@ -45,8 +45,8 @@
                     :center="center"
                     :zoom="14">
                         <MarkerCluster >
-                            <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="i">
-                                <InfoWindow>
+                            <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="location.id || i">
+                                <InfoWindow :key="location.id || i">
                                     <div id="content">
                                         {{infowindow[i]}}
                                     </div>
@@ -666,7 +666,7 @@
 
             },
 
-            getDisplayList (value) {
+            async getDisplayList (value) {
                 // plotting the deals in the map
                 
                 this.locations = []
@@ -680,7 +680,7 @@
                 for (var rec of value){
                     let deal_address = rec.location
                     // console.log(deal_address)
-                    axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
+                    await axios.get("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyARP7DsCDu5upKNyx_UpYUlcM4WkMhA6iU&address=" + deal_address)
                     .then(response => {
                         if (response.data.error_message) {
                             this.error = response.data.error_message;
