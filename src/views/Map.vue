@@ -495,21 +495,21 @@
                 if(this.applyDistance) {
                     console.log("working")
                     // this.resetLocationsToOriginal()
-                    for (let latlng of this.locations) {
-                        results = results.filter((deal) =>
+                    // for (let latlng of this.locations) {
+                    //     results = results.filter((deal) =>
                         
-                        this.orilocations.includes(
-                            this.getlatlng(deal.location).then(coords => {
+                    //     this.orilocations.includes(
+                    //         this.getlatlng(deal.location).then(coords => {
             
-                                console.log(coords);
-                            }).catch(error => {
+                    //             console.log(coords);
+                    //         }).catch(error => {
                             
-                                console.error('Error fetching coordinates:', error);
-                            })
-                        )
+                    //             console.error('Error fetching coordinates:', error);
+                    //         })
+                    //     )
 
-                    );
-                    }
+                    // );
+                    // }
                     results = results.filter((deal) =>
                         
                         this.orilocations.includes(
@@ -670,7 +670,7 @@
                 // plotting the deals in the map
                 
                 this.locations = []
-                this.orilocations = []
+                // this.orilocations = []
                 this.infowindow = []
     
                 // this.display_list = value
@@ -691,14 +691,14 @@
                             rec['lon'] = deal_address_coords.lng
                             
                             this.locations.push({ lat: rec.lat, lng: rec.lon });
-                            this.orilocations.push({ lat: rec.lat, lng: rec.lon })
+                            // this.orilocations.push({ lat: rec.lat, lng: rec.lon })
                             this.infowindow.push(rec.uploaded_by.name)
                         }
                               
                     })
                 }
                 console.log(this.locations)
-                console.log(this.orilocations)
+                // console.log(this.orilocations)
                 console.log(this.infowindow)
 
             },

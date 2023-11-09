@@ -27,7 +27,7 @@
 
 <script>
 import { db } from '../firebase/index.js'
-import { doc, updateDoc, increment, arrayRemove, getDoc, setDoc } from "firebase/firestore"
+import { doc, deleteDoc, updateDoc, increment, arrayRemove, getDoc, setDoc } from "firebase/firestore"
 import { QrcodeStream } from 'vue3-qrcode-reader'
 export default {
     components: {
