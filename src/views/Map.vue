@@ -27,8 +27,7 @@
                                     <!-- <button class='ui button'>Go</button> -->
                                     <label for="distance" class="form-label">Find deals within:</label> <span>{{uDistance}} m</span>
                                     <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="22000" @change="updateMarkersByDistance" >
-                                    
-                                    
+                                
                                 
                                     <div>
                                         

@@ -427,7 +427,7 @@ img {
 
 @media (max-width: 575.98px) {
   .deal-section .container {
-    margin-top: 75px;
+    margin-top: 10px;
   }
 
   .deal-name {
