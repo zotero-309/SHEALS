@@ -234,4 +234,14 @@ label {
     margin-left: -4vw; /* Counteract the margin applied to .category and .deals */
   }
 }
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .category, .deals {
+    margin-left: 0; /* Remove the margin for medium screens */
+  }
+
+  .address {
+    margin-left: 3vw; /* Adjust the margin as needed for medium screens */
+  }
+}
 </style>
