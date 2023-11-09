@@ -471,6 +471,7 @@ export default {
 	},
 	methods: {
 		async fetchcategories(){
+			if (this.$route.name=="Home"){
 
 			if (localStorage.getItem("userID")){
 				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
@@ -494,11 +495,27 @@ export default {
 
 				}
 			}
-			if (this.$route.name=="Home"){
 				this.applyFilter()
 			}
 		},
 		changeActive(){
+				// function doesnt work because when it refreshes, all data variables are re-initialised
+			// router.beforeEach((to, from, next) => {
+			// // 'from' is the route being navigated from
+			// if (to.name === "Home" || to.name === "item-detail" && from.name === "Home") {
+			// 	this.homeActive = "active"
+			// } else if (to.name === "SupermarketTab" || to.name === "item-detail" && from.name === "SupermarketTab"){
+			// 	this.supermarketActive = "active"
+			// } else if (to.name === "CommunityTab" || to.name === "item-detail" && from.name === "CommunityTab"){
+			// 	this.communityActive = "active"
+			// } else if (to.name === "map" || to.name === "item-detail" && from.name === "map"){
+			// 	this.mapActive = "active"
+			// } else if (to.name === "FavouritesTab" || to.name === "item-detail" && from.name === "FavouritesTab"){
+			// 	this.favActive = "active"
+			// }
+			// next();
+			// });
+
 			if(this.$route.name==="Home"){
 				this.homeActive = "active"
 			} else if (this.$route.name === "SupermarketTab") {
@@ -508,7 +525,7 @@ export default {
 
 			} else if(this.$route.name==="map"){
 				this.mapActive = "active"
-			} else {
+			} else if (this.$route.name==="FavouritesTab") {
 				this.favActive = "active"
 			}
 		},
