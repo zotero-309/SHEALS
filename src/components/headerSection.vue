@@ -100,7 +100,7 @@
 									<!-- Map Tab -->
 									<li :class="mapActive">
 										<router-link :to="{name: 'map'}">
-											<i class="fa fa-map-o map-icon"></i>
+											<i class="fa fa-map map-icon"></i>
 											<span>Map</span>
 										</router-link>
 									</li>
@@ -341,7 +341,7 @@
 									</li>
 									<li :class="mapActive">
 										<router-link :to="{name: 'map'}">
-											<i class="fa fa-map-o map-icon"></i>
+											<i class="fa fa-map map-icon"></i>
 											<span>Map</span>
 										</router-link>
 									</li>
@@ -1160,7 +1160,7 @@ a:hover {
 }
 
 .menu-item .nav-menu .map-icon {
-	font-size: 1.1em;
+	font-size: 1.3em;
 	color: #393939;
 }
 

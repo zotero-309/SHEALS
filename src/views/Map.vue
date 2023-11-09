@@ -26,7 +26,7 @@
                                     </div> 
                                     <!-- <button class='ui button'>Go</button> -->
                                     <label for="distance" class="form-label">Find deals within:</label> <span>{{uDistance}} m</span>
-                                    <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="28000" @change="updateMarkersByDistance" >
+                                    <input type="range" class="form-range" id='uDistance' v-model="uDistance" min="0" max="22000" @change="updateMarkersByDistance" >
                                     
                                     
                                 
@@ -49,11 +49,11 @@
                     :zoom="14">
                         <MarkerCluster >
                             <Marker v-for="(location, i) in locations" :options="{ position: location }" :key="i">
-                                <InfoWindow v-model="infowindow">
+                                <!-- <InfoWindow v-model="infowindow">
                                     <div id="content">
                                         {{location}}
                                     </div>
-                                </InfoWindow>
+                                </InfoWindow> -->
                             </Marker>
                         </MarkerCluster>
                         
