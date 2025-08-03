@@ -223,7 +223,7 @@
     </section>
   </div>
 </template>
- 
+
 <script>
 import HeaderSection from '../components/headerSection.vue';
 import { db } from '../firebase/index.js'
@@ -252,21 +252,106 @@ export default {
 
   methods: {
     async getdealitem() {
-      const docRef = doc(db, "deals", this.$route.params.id);
-      const docSnap = (await getDoc(docRef)).data()
-      this.item_list = docSnap
+      // const docRef = doc(db, "deals", this.$route.params.id);
+      // const docSnap = (await getDoc(docRef)).data()ca
+      const allDeals = [
+        {
+          id: "deal001",
+          deal_name: "Organic Apples - Buy 1 Get 1 Free",
+          deal_price: 2.50,
+          deal_type: "Discount",
+          deal_description: "Get two packs of fresh organic apples for the price of one.",
+          product_name: "Organic Apples",
+          product_category: "Fruits",
+          uploaded_by: {
+            name: "GreenGrocer Market",
+            type: "store",
+            id: "store001"
+          },
+          location: "Jurong Point",
+          image: "https://example.com/images/apples.jpg",
+          isFavorite: true
+        },
+        {
+          id: "deal002",
+          deal_name: "Half Price Milk Promo",
+          deal_price: 1.80,
+          deal_type: "Promotion",
+          deal_description: "Enjoy 50% off all full cream milk this weekend.",
+          product_name: "Full Cream Milk",
+          product_category: "Dairy",
+          uploaded_by: {
+            name: "ColdStorage",
+            type: "store",
+            id: "store002"
+          },
+          location: "Tampines Mall",
+          image: "https://example.com/images/milk.jpg",
+          isFavorite: false
+        },
+        {
+          id: "deal003",
+          deal_name: "Neighbourhood Toy Swap",
+          deal_price: 0.00,
+          deal_type: "Community",
+          deal_description: "Swap or give away kids’ toys in usable condition.",
+          product_name: "Toys",
+          product_category: "Children",
+          uploaded_by: {
+            name: "JaneDoe88",
+            type: "consumer",
+            id: "user003"
+          },
+          location: "Woodlands",
+          image: "https://example.com/images/toys.jpg",
+          isFavorite: true
+        },
+        {
+          id: "deal004",
+          deal_name: "Clearance: Bread Loaf",
+          deal_price: 1.00,
+          deal_type: "Clearance",
+          deal_description: "Last day shelf bread at clearance price!",
+          product_name: "White Bread",
+          product_category: "Bakery",
+          uploaded_by: {
+            name: "NTUC FairPrice",
+            type: "store",
+            id: "store004"
+          },
+          location: "AMK Hub",
+          image: "https://example.com/images/bread.jpg",
+          isFavorite: false
+        }
+      ];
+
+      const id = this.$route.params.id;
+      this.item_list = allDeals.find(item => item.id === id) || null;
       this.image_loaded = true //prevent src attr from img tag taking wrong url, need await generateImgUrl
 
       // Fetch comments related to the deal
-      const commentsRef = collection(docRef, "comments");
-      const commentsSnap = await getDocs(commentsRef);
+      // const commentsRef = collection(docRef, "comments");
+      // const commentsSnap = await getDocs(commentsRef);
 
       // Convert timestamps to JavaScript Date objects before storing in the array
-      this.comments = commentsSnap.docs.map(doc => {
-        const commentData = doc.data();
-        commentData.timestamp = commentData.timestamp.toDate();
-        return commentData;
-      });
+      this.comments = [
+        {
+          user: "john_doe",
+          text: "Great deal! I got this last week.",
+          timestamp: new Date("2025-07-28T10:15:00")
+        },
+        {
+          user: "amy88",
+          text: "Still available today?",
+          timestamp: new Date("2025-07-30T15:42:00")
+        },
+        {
+          user: "superbuyer",
+          text: "Thanks for sharing!",
+          timestamp: new Date("2025-08-01T08:20:00")
+        }
+      ];
+
 
       // Update visibility based on the number of comments
       if (this.comments.length > this.commentsLimit) {
@@ -279,35 +364,106 @@ export default {
       this.loading = false;
     },
 
-    async addToCart() { //async function since updatedoc is async
+    addToCart() {
+      const pdt_id = this.$route.params.id;
+      const quantity = parseInt(this.$refs.inputQuantity.value);
 
-      //reference to the path of firestore users table db->users->userid
-      const userRef = doc(db, "users", this.$store.state.user.uid)
-      let pdt_id = this.$route.params.id
-      let quantity = this.$refs.inputQuantity.value
+      // Load existing cart from localStorage
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      //check if the deal already exists in the db
-      var deal_exist = false
-      const userSnap = (await getDoc(userRef)).data()
+      // Simulate fetching product info from local deal list
+      const allDeals = [{
+        id: "deal001",
+        deal_name: "Organic Apples - Buy 1 Get 1 Free",
+        deal_price: 2.50,
+        deal_type: "Discount",
+        deal_description: "Get two packs of fresh organic apples for the price of one.",
+        product_name: "Organic Apples",
+        product_category: "Fruits",
+        uploaded_by: {
+          name: "GreenGrocer Market",
+          type: "store",
+          id: "store001"
+        },
+        location: "Jurong Point",
+        image: "https://example.com/images/apples.jpg",
+        isFavorite: true
+      },
+      {
+        id: "deal002",
+        deal_name: "Half Price Milk Promo",
+        deal_price: 1.80,
+        deal_type: "Promotion",
+        deal_description: "Enjoy 50% off all full cream milk this weekend.",
+        product_name: "Full Cream Milk",
+        product_category: "Dairy",
+        uploaded_by: {
+          name: "ColdStorage",
+          type: "store",
+          id: "store002"
+        },
+        location: "Tampines Mall",
+        image: "https://example.com/images/milk.jpg",
+        isFavorite: false
+      },
+      {
+        id: "deal003",
+        deal_name: "Neighbourhood Toy Swap",
+        deal_price: 0.00,
+        deal_type: "Community",
+        deal_description: "Swap or give away kids’ toys in usable condition.",
+        product_name: "Toys",
+        product_category: "Children",
+        uploaded_by: {
+          name: "JaneDoe88",
+          type: "consumer",
+          id: "user003"
+        },
+        location: "Woodlands",
+        image: "https://example.com/images/toys.jpg",
+        isFavorite: true
+      },
+      {
+        id: "deal004",
+        deal_name: "Clearance: Bread Loaf",
+        deal_price: 1.00,
+        deal_type: "Clearance",
+        deal_description: "Last day shelf bread at clearance price!",
+        product_name: "White Bread",
+        product_category: "Bakery",
+        uploaded_by: {
+          name: "NTUC FairPrice",
+          type: "store",
+          id: "store004"
+        },
+        location: "AMK Hub",
+        image: "https://example.com/images/bread.jpg",
+        isFavorite: false
+      }];
 
-      for (var item of userSnap.cart) {
-        if (item.pdt == pdt_id) {
-          alert("Deal already in cart! View your discount cart")
-          deal_exist = true
-        }
+      const deal = allDeals.find(item => item.id === pdt_id);
+
+      if (!deal) {
+        alert("Deal not found.");
+        return;
       }
 
-      const dealRef = doc(db, "deals", this.$route.params.id)
-      const storeSnap = (await getDoc(dealRef)).data()
+      // Add to cart
+      cart.push({
+        pdt: pdt_id,
+        qty: quantity,
+        storename: deal.uploaded_by.name
+      });
+      
 
-      //Update and add {pdt_id: quantity} to cart array in db
-      if (deal_exist === false) {
-        await updateDoc(userRef, {
-          cart: arrayUnion({ pdt: pdt_id, qty: parseInt(quantity), storename: storeSnap.uploaded_by.name })
-        })
-        alert("Item added!")
-      }
-    },
+      // Save updated cart back to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      alert("Item added!");
+      console.log(JSON.parse(localStorage.getItem("cart")));
+
+    }
+    ,
     toggleComments() {
       // Toggle the collapse state
       this.commentsCollapsed = !this.commentsCollapsed;
@@ -442,7 +598,7 @@ img {
   }
 
   .deal-description {
-    font-size: 0.7rem; 
+    font-size: 0.7rem;
     margin-bottom: 1rem;
     line-height: 1rem;
   }
@@ -466,7 +622,7 @@ img {
     margin-top: 20px;
   }
 
-  .comment-section h5{
+  .comment-section h5 {
     font-size: 12px;
   }
 
@@ -486,7 +642,7 @@ img {
     padding: 0 5px 0 1px;
   }
 }
- 
+
 
 @media (min-width: 576px) and (max-width: 967.988px) {
   .deal-section .container {
@@ -504,7 +660,7 @@ img {
   }
 
   .deal-description {
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
     margin-bottom: 1.2rem;
     line-height: 1rem;
   }
@@ -562,7 +718,7 @@ img {
   }
 
   .deal-description {
-    font-size: 0.8rem; 
+    font-size: 0.8rem;
     margin-bottom: 1rem;
     line-height: 1.1rem;
   }
@@ -706,9 +862,3 @@ img {
 
 }
 </style>
- 
- 
- 
-  
- 
-    

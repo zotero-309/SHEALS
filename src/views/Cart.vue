@@ -124,36 +124,109 @@ export default {
     },
     methods: {
         async fetchCart() {
-            //fetch all cart items, localstorage used over vue store due to loading of store
-            const userRef = doc(db, "users", localStorage.getItem("userID"))
-
-            //retrieve cart array
-            const userDoc = (await getDoc(userRef)).data() //retrieve fields
-            this.cart_arr = userDoc.cart
-
-            //remove cart deals which no longer exist
-            this.cart_arr = this.cart_arr.filter(async (item) => {
-                let dealdoc = doc(db, "deals", item.pdt)
-                let docsnap = await getDoc(dealdoc)
-                if (!docsnap.exists()) {
-                    await updateDoc(userRef, {
-                        cart: arrayRemove(item)
-                    })
+            if (localStorage.getItem("cart")) {
+                const cart = JSON.parse(localStorage.getItem("cart"));
+                if (Array.isArray(cart) && cart.length === 0) {
+                    localStorage.removeItem("cart");
                 }
-            })
+            }
+            const rawCart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-            //packing pdt id in the list to use as condition later
-            for (var item of this.cart_arr) {
-                //populate store list for drop down selection
-                if (this.store_list.indexOf(item.storename) == -1) {
-                    this.store_list.push(item.storename)
+            // Group by pdt + storename and accumulate qty
+            const groupedCart = {};
+            for (const item of rawCart) {
+                const key = `${item.pdt}_${item.storename}`;
+                if (!groupedCart[key]) {
+                    groupedCart[key] = { ...item };
+                } else {
+                    groupedCart[key].qty += item.qty;
+                }
+            }
+
+            this.cart_arr = Object.values(groupedCart);
+            this.cart_list = [];
+            this.store_list = [];
+
+            // 🧱 Hardcoded deal data
+            const dealData = {
+                deal001: {
+                    deal_name: "Organic Apples - Buy 1 Get 1 Free",
+                    deal_price: 2.50,
+                    deal_type: "Discount",
+                    deal_description: "Get two packs of fresh organic apples for the price of one.",
+                    product_name: "Organic Apples",
+                    product_category: "Fruits",
+                    uploaded_by: {
+                        name: "GreenGrocer Market",
+                        type: "store",
+                        id: "store001"
+                    },
+                    location: "Jurong Point",
+                    image: "https://example.com/images/apples.jpg",
+                    isFavorite: true
+                },
+                deal002: {
+                    deal_name: "Half Price Milk Promo",
+                    deal_price: 1.80,
+                    deal_type: "Promotion",
+                    deal_description: "Enjoy 50% off all full cream milk this weekend.",
+                    product_name: "Full Cream Milk",
+                    product_category: "Dairy",
+                    uploaded_by: {
+                        name: "ColdStorage",
+                        type: "store",
+                        id: "store002"
+                    },
+                    location: "Tampines Mall",
+                    image: "https://example.com/images/milk.jpg",
+                    isFavorite: false
+                },
+                deal003: {
+                    deal_name: "Neighbourhood Toy Swap",
+                    deal_price: 0.00,
+                    deal_type: "Community",
+                    deal_description: "Swap or give away kids’ toys in usable condition.",
+                    product_name: "Toys",
+                    product_category: "Children",
+                    uploaded_by: {
+                        name: "JaneDoe88",
+                        type: "consumer",
+                        id: "user003"
+                    },
+                    location: "Woodlands",
+                    image: "https://example.com/images/toys.jpg",
+                    isFavorite: true
+                },
+                deal004: {
+                    deal_name: "Clearance: Bread Loaf",
+                    deal_price: 1.00,
+                    deal_type: "Clearance",
+                    deal_description: "Last day shelf bread at clearance price!",
+                    product_name: "White Bread",
+                    product_category: "Bakery",
+                    uploaded_by: {
+                        name: "NTUC FairPrice",
+                        type: "store",
+                        id: "store004"
+                    },
+                    location: "AMK Hub",
+                    image: "https://example.com/images/bread.jpg",
+                    isFavorite: false
+                }
+            };
+
+            for (const item of this.cart_arr) {
+                if (!this.store_list.includes(item.storename)) {
+                    this.store_list.push(item.storename);
                 }
 
-                //for each item, there is a unique product id
-                let dealRef = doc(db, "deals", item.pdt)
-                let deal_rec = (await getDoc(dealRef)).data()
+                const deal_rec = dealData[item.pdt];
+                if (!deal_rec) {
+                    console.warn("Missing hardcoded deal:", item.pdt);
+                    continue;
+                }
 
-                this.cart_list.push({ //main copy
+                this.cart_list.push({
                     id: item.pdt,
                     cart_qty: item.qty,
                     store: item.storename,
@@ -162,16 +235,17 @@ export default {
                     url: deal_rec.image,
                     perunit: deal_rec.deal_price,
                     type: deal_rec.deal_type
-                })
+                });
             }
 
-            this.display_list = this.cart_list.filter((item) => {
-                return item.store == this.store_list[0]
-            })
-            // console.log(this.cart_list)
-            // console.log(this.display_list)
+            this.display_list = this.store_list.length
+                ? this.cart_list.filter(item => this.store_list.includes(item.store))
+                : this.cart_list;
 
 
+            console.log("store_list:", this.store_list);
+            console.log("Cart List:", this.cart_list);
+            console.log("Display List:", this.display_list);
         },
         filterByStore() {
             this.display_list = this.cart_list.filter((item) => {
@@ -180,23 +254,32 @@ export default {
 
         },
         async deleteCartItem(id) {
-            //fetch all cart items, localstorage used over vue store due to loading of store
-            const userRef = doc(db, "users", localStorage.getItem("userID"))
+            // Parse the current cart from localStorage
+            let currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-            //update in car_list since it is permanent deletion instead of filtering
-            this.cart_list = this.cart_list.filter((item) => {
-                return item.id != id
-            })
+            // Remove the item with matching pdt id
+            currentCart = currentCart.filter(item => item.pdt !== id);
 
-            // run function filterstore to get updated display_list
-            this.filterByStore()
+            // Save the updated cart back to localStorage
+            if (currentCart.length === 0) {
+                console.log(currentCart.length);
+                // If cart is now empty, remove the cart key from localStorage
+                localStorage.removeItem("cart");
+                window.location.href = window.location.href;
+            } else {
+                // Otherwise, update localStorage with the new cart
+                localStorage.setItem("cart", JSON.stringify(currentCart));
+            }
 
-            //arrow functions to remove cart_arr items (identical copy in db) and update in firebase
-            this.cart_arr = this.cart_arr.filter((item) => !(item.pdt == id))
 
-            await updateDoc(userRef, { cart: this.cart_arr })
+            // Also update the local cart_list by filtering out the deleted item
+            this.cart_list = this.cart_list.filter(item => item.id !== id);
 
-            alert("Item Removed!")
+            // Update the display list or filters
+            this.filterByStore();
+
+            alert("Item Removed!");
+
         },
 
         async changeQty(operation, dealid) {
@@ -218,11 +301,23 @@ export default {
                     }
                 }
             }
+            const updatedCart = this.cart_list.map(item => ({
+                pdt: item.id,
+                qty: item.cart_qty,
+                storename: item.store
+            }));
 
-            const userRef = doc(db, "users", localStorage.getItem("userID"))
-            await updateDoc(userRef, {
-                cart: this.cart_arr
-            })
+            // Save back to localStorage
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+            // Refresh display list or filters if needed
+            this.filterByStore();
+
+
+            // const userRef = doc(db, "users", localStorage.getItem("userID"))
+            // await updateDoc(userRef, {
+            //     cart: this.cart_arr
+            // })
 
         },
         qrGenerate() {

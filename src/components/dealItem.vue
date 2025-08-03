@@ -1,4 +1,4 @@
-<!-- dealItem.vue, receives deal details through props which is from dealData --> 
+<!-- dealItem.vue, receives deal details through props which is from dealData -->
 <template>
     <!-- Preloader section -->
     <div v-if="loading" id="preloader">
@@ -42,7 +42,7 @@
         </router-link>
     </div>
 </template>
-  
+
 <script>
 //import router from '../router/index.js';  // Import router instance
 import { db } from '../firebase/index.js'
@@ -116,7 +116,7 @@ export default {
 
             // Save the favorites to Firebase
             await this.updateFavoritesInDatabase();
-            if (this.tab == "favourites"){ //change the display by refreshing
+            if (this.tab == "favourites") { //change the display by refreshing
                 this.$router.go()
             }
         },
@@ -160,35 +160,105 @@ export default {
         async fetchDeals() {
             // show preloader before fetching data
             this.loading = true;
-            if (this.tab =="supermarket"){
-                var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","store")));
-            } else if ((this.tab =="community")){
-                var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","consumer")));
-            } 
-            else if(this.tab == "favourites"){
-                await this.loadFavoritesFromDatabase()
-                if (!this.favourites.length == 0){
-                    var querySnapshot = await getDocs(query(collection(db, "deals"), where (documentId(),"in",this.favourites)));
-                } else {
-                    this.loading = false; // stop preloader
-                    return
-                }
-            }
-            else {
-                var querySnapshot = await getDocs(collection(db, "deals"));
-            }
+            // if (this.tab =="supermarket"){
+            //     var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","store")));
+            // } else if ((this.tab =="community")){
+            //     var querySnapshot = await getDocs(query(collection(db, "deals"), where ("uploaded_by.type","==","consumer")));
+            // } 
+            // else if(this.tab == "favourites"){
+            //     await this.loadFavoritesFromDatabase()
+            //     if (!this.favourites.length == 0){
+            //         var querySnapshot = await getDocs(query(collection(db, "deals"), where (documentId(),"in",this.favourites)));
+            //     } else {
+            //         this.loading = false; // stop preloader
+            //         return
+            //     }
+            // }
+            // else {
+            //     var querySnapshot = await getDocs(collection(db, "deals"));
+            // }
 
-            const deal_list = [];
-
-            for (const doc of querySnapshot.docs) {
-                const obj = doc.data();
-                obj['id'] = doc.id;
-                deal_list.push(obj);
-                // Check if the deal is a favorite and add its id to the favourites array
-                if (obj.isFavorite) {
-                    this.favourites.push(obj.id);
+            const deal_list = [
+                {
+                    id: "deal001",
+                    deal_name: "Organic Apples - Buy 1 Get 1 Free",
+                    deal_price: 2.50,
+                    deal_type: "Discount",
+                    deal_description: "Get two packs of fresh organic apples for the price of one.",
+                    product_name: "Organic Apples",
+                    product_category: "Fruits",
+                    uploaded_by: {
+                        name: "GreenGrocer Market",
+                        type: "store",
+                        id: "store001"
+                    },
+                    location: "Jurong Point",
+                    image: "https://example.com/images/apples.jpg",
+                    isFavorite: true
+                },
+                {
+                    id: "deal002",
+                    deal_name: "Half Price Milk Promo",
+                    deal_price: 1.80,
+                    deal_type: "Promotion",
+                    deal_description: "Enjoy 50% off all full cream milk this weekend.",
+                    product_name: "Full Cream Milk",
+                    product_category: "Dairy",
+                    uploaded_by: {
+                        name: "ColdStorage",
+                        type: "store",
+                        id: "store002"
+                    },
+                    location: "Tampines Mall",
+                    image: "https://example.com/images/milk.jpg",
+                    isFavorite: false
+                },
+                {
+                    id: "deal003",
+                    deal_name: "Neighbourhood Toy Swap",
+                    deal_price: 0.00,
+                    deal_type: "Community",
+                    deal_description: "Swap or give away kids’ toys in usable condition.",
+                    product_name: "Toys",
+                    product_category: "Children",
+                    uploaded_by: {
+                        name: "JaneDoe88",
+                        type: "consumer",
+                        id: "user003"
+                    },
+                    location: "Woodlands",
+                    image: "https://example.com/images/toys.jpg",
+                    isFavorite: true
+                },
+                {
+                    id: "deal004",
+                    deal_name: "Clearance: Bread Loaf",
+                    deal_price: 1.00,
+                    deal_type: "Clearance",
+                    deal_description: "Last day shelf bread at clearance price!",
+                    product_name: "White Bread",
+                    product_category: "Bakery",
+                    uploaded_by: {
+                        name: "NTUC FairPrice",
+                        type: "store",
+                        id: "store004"
+                    },
+                    location: "AMK Hub",
+                    image: "https://example.com/images/bread.jpg",
+                    isFavorite: false
                 }
-            }
+            ]
+                ;
+
+            // for (const doc of querySnapshot.docs) {
+            //     const obj = doc.data();
+            //     obj['id'] = doc.id;
+            //     deal_list.push(obj);
+            //     // Check if the deal is a favorite and add its id to the favourites array
+            //     if (obj.isFavorite) {
+            //         this.favourites.push(obj.id);
+            //     }
+            // }
             this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
             this.display_list = deal_list; // initially set display_list to all deals
             this.loading = false; // stop preloader
@@ -239,7 +309,7 @@ export default {
             }
         },
     },
-    
+
     mounted() {
         console.log(this.deal);
     },
@@ -320,7 +390,9 @@ export default {
     font-size: 14px;
     color: #707079;
     line-height: 25px;
-}/* STYLE FOR HEART BUTTON */
+}
+
+/* STYLE FOR HEART BUTTON */
 .heart-button {
     position: absolute;
     top: 12px;
@@ -373,15 +445,18 @@ export default {
     .displayDeals {
         padding: 4px;
     }
+
     .deal-box {
         border-radius: 2px;
         margin-bottom: 0px;
     }
+
     .deal-box .deal-item img {
         max-height: 220px;
         border-top-right-radius: 15px;
         border-top-left-radius: 15px;
     }
+
     .deal-item .ri-text h4 {
         font-size: 14px;
         margin-bottom: 5px;
@@ -391,9 +466,11 @@ export default {
         font-size: 18px;
         margin-bottom: 5px;
     }
+
     .deal-item .ri-text h3 span {
         font-size: 12px;
     }
+
     .deal-item .ri-text .store,
     .deal-item .ri-text .address {
         font-size: 12px;
@@ -406,15 +483,18 @@ export default {
     .displayDeals {
         padding: 4px;
     }
+
     .deal-box {
         border-radius: 2px;
         margin-bottom: 0px;
     }
+
     .deal-box .deal-item img {
         max-height: 220px;
         border-top-right-radius: 10px;
         border-top-left-radius: 10px;
     }
+
     .deal-item .ri-text h4 {
         font-size: 15px;
         margin-bottom: 5px;
@@ -424,9 +504,11 @@ export default {
         font-size: 19px;
         margin-bottom: 5px;
     }
+
     .deal-item .ri-text h3 span {
         font-size: 13px;
     }
+
     .deal-item .ri-text .store,
     .deal-item .ri-text .address {
         font-size: 13px;
@@ -441,5 +523,3 @@ export default {
     }
 }
 </style>
-
-  

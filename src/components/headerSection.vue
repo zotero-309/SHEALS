@@ -191,8 +191,8 @@
 															<div v-for="discount in discountList" :key="discount"
 																class="col-md-4 mb-2">
 																<div class="discountFilter">
-																	<input type="checkbox" :id="discount" :value="discount"
-																		v-model="selectedDiscounts">
+																	<input type="checkbox" :id="discount"
+																		:value="discount" v-model="selectedDiscounts">
 
 																	<label class="btn btn-outline-dark" :for="discount">
 																		<i
@@ -246,19 +246,21 @@
 							</li>
 
 							<!-- Search Form -->
-							<li>
+							<li
+								v-if="$route.name !== 'PreferencePage' && $route.name !== 'CommunityCreate' && $route.name !== 'item-detail' && $route.name !== 'Cart'">
 								<form action="" @submit.prevent="">
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<span class="input-group-text border-0 bg-light">
-												<button id="button-addon1" type="submit" class="btn btn-link text-primary">
+												<button id="button-addon1" type="submit"
+													class="btn btn-link text-primary">
 													<i class="fa fa-search"></i>
 												</button>
 											</span>
 										</div>
 										<input type="search" placeholder="Search" aria-describedby="button-addon1"
-											class="form-control border-0 bg-light custom-search-input" @input="updateSearch"
-											v-model="searchQuery">
+											class="form-control border-0 bg-light custom-search-input"
+											@input="updateSearch" v-model="searchQuery">
 									</div>
 								</form>
 							</li>
@@ -305,9 +307,8 @@
 		</div>
 
 		<!-- Menu Item Section -->
-		<div class="menu-item"
-			v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage' 
-			&& $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads' 
+		<div class="menu-item" v-if="$route.name !== 'Login' && $route.name !== 'PreferencePage'
+			&& $route.name !== 'CommunityCreate' && $route.name !== 'PersonalUploads'
 			&& $route.name !== 'CommunityUpdate' && $route.name !== 'Map'">
 			<div class="container">
 				<div class="row">
@@ -350,10 +351,13 @@
 							</nav>
 
 							<!-- Filter Modal Component -->
-							<button @click="toggleModal" class="filter-button">
+							<button @click="toggleModal" class="filter-button"
+								:class="{ 'invisible-disabled': $route.name === 'item-detail' || $route.name === 'Cart' }">
 								<i class="fa fa-sliders filter-icon"></i> &nbsp;
 								<span>Filter</span>
 							</button>
+
+
 
 							<!-- Filter Modal Open -->
 							<div v-if="showModal" class="modal-container"
@@ -394,7 +398,8 @@
 										<!-- discount filter -->
 										<div class="container-fluid">
 											<div class="row">
-												<div v-for="discount in discountList" :key="discount" class="col-md-4 mb-2">
+												<div v-for="discount in discountList" :key="discount"
+													class="col-md-4 mb-2">
 													<div class="discountFilter">
 														<input type="checkbox" :id="discount" :value="discount"
 															v-model="selectedDiscounts">
@@ -427,7 +432,7 @@
 	</header>
 </template>
 
-  
+
 <script>
 import router from '../router'
 import gsap from 'gsap'
@@ -464,36 +469,36 @@ export default {
 		this.fetchcategories()
 	},
 	methods: {
-		async fetchcategories(){
-			if (this.$route.name=="Home"){
+		async fetchcategories() {
+			if (this.$route.name == "Home") {
 
-			if (localStorage.getItem("userID")) {
-				const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
-				//check if user doc exist
-				if (userDoc.exists()) {
-					var user_rec = userDoc.data()
+				if (localStorage.getItem("userID")) {
+					const userDoc = await getDoc(doc(db, "users", localStorage.getItem("userID")))
+					//check if user doc exist
+					if (userDoc.exists()) {
+						var user_rec = userDoc.data()
 
-					//check if there is category array first
-					if (user_rec.catpref) {
-						for (var cat of user_rec.catpref) {
-							this.selectedCategories.push(cat)
-						}
-					}
-
-					if (user_rec.dealpref) {
-						for (var deal of user_rec.dealpref) {
-							this.selectedDiscounts.push(deal)
+						//check if there is category array first
+						if (user_rec.catpref) {
+							for (var cat of user_rec.catpref) {
+								this.selectedCategories.push(cat)
+							}
 						}
 
-					}
+						if (user_rec.dealpref) {
+							for (var deal of user_rec.dealpref) {
+								this.selectedDiscounts.push(deal)
+							}
 
+						}
+
+					}
 				}
-			}
 				this.applyFilter()
 			}
 		},
-		changeActive(){
-				// function doesnt work because when it refreshes, all data variables are re-initialised
+		changeActive() {
+			// function doesnt work because when it refreshes, all data variables are re-initialised
 			// router.beforeEach((to, from, next) => {
 			// // 'from' is the route being navigated from
 			// if (to.name === "Home" || to.name === "item-detail" && from.name === "Home") {
@@ -510,7 +515,7 @@ export default {
 			// next();
 			// });
 
-			if(this.$route.name==="Home"){
+			if (this.$route.name === "Home") {
 				this.homeActive = "active"
 			} else if (this.$route.name === "SupermarketTab") {
 				this.supermarketActive = "active"
@@ -519,7 +524,7 @@ export default {
 
 			} else if (this.$route.name === "Map") {
 				this.mapActive = "active"
-			} else if (this.$route.name==="FavouritesTab") {
+			} else if (this.$route.name === "FavouritesTab") {
 				this.favActive = "active"
 			}
 		},
@@ -608,11 +613,16 @@ export default {
 	}
 }
 </script>
-  
+
 <style scoped>
 /*---------------------
      Off Menu Canvas Style
     -----------------------*/
+.invisible-disabled {
+	opacity: 0;
+	pointer-events: none;
+}
+
 @media only screen and (min-width: 1300px) {
 	.container {
 		max-width: 1300;
@@ -712,14 +722,14 @@ export default {
 
 	.menu-icon {
 		margin-right: 10px;
-		
+
 	}
 
 	.profile-dropdown {
 		position: relative;
 	}
 
-	.profile-dropdown:hover ul{
+	.profile-dropdown:hover ul {
 		display: block;
 		/* Show the dropdown content on hover */
 	}
@@ -1439,4 +1449,3 @@ a:hover {
 	margin-right: 1%;
 }
 </style>
-  
