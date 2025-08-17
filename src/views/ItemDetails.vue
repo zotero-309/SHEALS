@@ -130,12 +130,12 @@
           <div class="col mb-5">
             <div class="card h-100">
               <!-- Product image-->
-              <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+              <img class="card-img-top" src="https://www.ikea.com/au/en/images/products/vaerdera-coffee-cup-and-saucer-white__0711123_pe727991_s5.jpg" alt="..." />
               <!-- Product details-->
               <div class="card-body p-4">
                 <div class="text-center">
                   <!-- Product name-->
-                  <h5 class="fw-bolder">Fancy Product</h5>
+                  <h5 class="fw-bolder">Teacup</h5>
                   <!-- Product price-->
                   $40.00 - $80.00
                 </div>
@@ -152,12 +152,12 @@
               <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
               </div>
               <!-- Product image-->
-              <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+              <img class="card-img-top" src="https://atlas-content-cdn.pixelsquid.com/stock-images/peanut-butter-koNqrR6-600.jpg" alt="..." />
               <!-- Product details-->
               <div class="card-body p-4">
                 <div class="text-center">
                   <!-- Product name-->
-                  <h5 class="fw-bolder">Special Item</h5>
+                  <h5 class="fw-bolder">Peanut Butter</h5>
                   <!-- Product reviews-->
                   <div class="d-flex justify-content-center small text-warning mb-2">
 
@@ -179,12 +179,12 @@
               <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
               </div>
               <!-- Product image-->
-              <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+              <img class="card-img-top" src="https://img.freepik.com/free-vector/realistic-vector-icon-set-running-sneakers-shoes-white-black-color-side-view_134830-1188.jpg" alt="..." />
               <!-- Product details-->
               <div class="card-body p-4">
                 <div class="text-center">
                   <!-- Product name-->
-                  <h5 class="fw-bolder">Sale Item</h5>
+                  <h5 class="fw-bolder">Shoes</h5>
                   <!-- Product price-->
                   <span class="text-muted text-decoration-line-through">$50.00</span>
                   $25.00
@@ -199,17 +199,17 @@
           <div class="col mb-5">
             <div class="card h-100">
               <!-- Product image-->
-              <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+              <img class="card-img-top" src="https://media.istockphoto.com/id/822366418/photo/white-blank-tissue-box-on-grey-background-for-print-design-and-mock-up-3d-render-illustration.jpg?s=612x612&w=0&k=20&c=Jr9Jx9u-WNH5xFFNC4ISIik5HFlZcXWJ3n-tQ9JidZI=" alt="..." />
               <!-- Product details-->
               <div class="card-body p-4">
                 <div class="text-center">
                   <!-- Product name-->
-                  <h5 class="fw-bolder">Popular Item</h5>
+                  <h5 class="fw-bolder">Tissue</h5>
                   <!-- Product reviews-->
                   <div class="d-flex justify-content-center small text-warning mb-2">
                   </div>
                   <!-- Product price-->
-                  $40.00
+                  $10.00
                 </div>
               </div>
               <!-- Product actions-->
@@ -269,7 +269,7 @@ export default {
             id: "store001"
           },
           location: "Jurong Point",
-          image: "https://example.com/images/apples.jpg",
+          image: "https://littlefarms.com/media/catalog/product/7/4/7494_org-gala-apple-500g.jpg?optimize=medium&fit=bounds&height=500&width=500&canvas=500:500",
           isFavorite: true
         },
         {
@@ -286,7 +286,7 @@ export default {
             id: "store002"
           },
           location: "Tampines Mall",
-          image: "https://example.com/images/milk.jpg",
+          image: "https://atlas-content-cdn.pixelsquid.com/stock-images/plastic-milk-carton-blank-MxE34v1-600.jpg",
           isFavorite: false
         },
         {
@@ -303,7 +303,7 @@ export default {
             id: "user003"
           },
           location: "Woodlands",
-          image: "https://example.com/images/toys.jpg",
+          image: "https://m.media-amazon.com/images/I/71RW-a383dL._UF1000,1000_QL80_.jpg",
           isFavorite: true
         },
         {
@@ -320,7 +320,7 @@ export default {
             id: "store004"
           },
           location: "AMK Hub",
-          image: "https://example.com/images/bread.jpg",
+          image: "https://bakerbettie.com/wp-content/uploads/2020/09/sourdough-sandwich-bread-2-320x320.jpg",
           isFavorite: false
         }
       ];

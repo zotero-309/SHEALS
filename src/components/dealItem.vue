@@ -193,7 +193,7 @@ export default {
                         id: "store001"
                     },
                     location: "Jurong Point",
-                    image: "https://example.com/images/apples.jpg",
+                    image: "https://littlefarms.com/media/catalog/product/7/4/7494_org-gala-apple-500g.jpg?optimize=medium&fit=bounds&height=500&width=500&canvas=500:500",
                     isFavorite: true
                 },
                 {
@@ -210,7 +210,7 @@ export default {
                         id: "store002"
                     },
                     location: "Tampines Mall",
-                    image: "https://example.com/images/milk.jpg",
+                    image: "https://atlas-content-cdn.pixelsquid.com/stock-images/plastic-milk-carton-blank-MxE34v1-600.jpg",
                     isFavorite: false
                 },
                 {
@@ -227,7 +227,7 @@ export default {
                         id: "user003"
                     },
                     location: "Woodlands",
-                    image: "https://example.com/images/toys.jpg",
+                    image: "https://m.media-amazon.com/images/I/71RW-a383dL._UF1000,1000_QL80_.jpg",
                     isFavorite: true
                 },
                 {
@@ -244,7 +244,7 @@ export default {
                         id: "store004"
                     },
                     location: "AMK Hub",
-                    image: "https://example.com/images/bread.jpg",
+                    image: "https://bakerbettie.com/wp-content/uploads/2020/09/sourdough-sandwich-bread-2-320x320.jpg",
                     isFavorite: false
                 }
             ]
