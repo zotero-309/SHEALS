@@ -19,7 +19,7 @@
                     <!-- Deal information -->
                     <div class="ri-text">
                         <h4>{{ deal.deal_name }}</h4>
-                        <h3>${{ deal.deal_price }}<span>/Perunit</span></h3>
+                        <h3>${{ deal.deal_price.toFixed(2) }}<span> / per unit</span></h3>
 
                         <!-- store/uploader and address information -->
                         <div class="store">
