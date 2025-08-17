@@ -23,7 +23,8 @@
     <section class="deals-section">
         <div class="container">
             <div class="row">
-                <dealItem :selectedFilters="selectedFilters" :searchQuery="searchQuery" :tab="tab" />
+                <dealItem :deals="filteredDeals" :selectedFilters="selectedFilters" :searchQuery="searchQuery"
+                    :tab="tab" />
             </div>
         </div>
     </section>
@@ -53,6 +54,11 @@ export default {
         }
     },
     computed: {
+        // filteredDeals() {
+        //     let list = this.allDeals
+        //     if (this.tab === 'community') list = list.filter(d => d.deal_type === 'Community')
+        //     return list
+        // },
         // Computed property to determine the breadcrumb message
         breadcrumbMessage() {
             console.log(this.dealsList);

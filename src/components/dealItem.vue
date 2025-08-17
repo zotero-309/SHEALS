@@ -76,6 +76,7 @@ export default {
         this.fetchDeals()
     },
     watch: {
+        tab: { handler: 'updateDisplayList' },
         searchQuery: {
             handler: 'updateDisplayList',
         },
@@ -178,6 +179,8 @@ export default {
             //     var querySnapshot = await getDocs(collection(db, "deals"));
             // }
 
+
+
             const deal_list = [
                 {
                     id: "deal001",
@@ -259,6 +262,30 @@ export default {
             //         this.favourites.push(obj.id);
             //     }
             // }
+
+            let result = [];
+
+            if (this.tab === "supermarket") {
+                // uploaded_by.type === "store"
+                result = this.deal_list.filter(d => d.deal_type === "Supermarket");
+            } else if (this.tab === "community") {
+                // uploaded_by.type === "consumer"
+                result = this.deal_list.filter(d => d.deal_type === "Community");
+            } else if (this.tab === "favourites") {
+                // match ids in favourites
+                if (this.favourites.length > 0) {
+                    result = this.deal_list.filter(d => this.favourites.includes(d.id));
+                } else {
+                    this.loading = false;
+                    return;
+                }
+            } else {
+                // all deals
+                result = this.deal_list;
+            }
+
+            this.dealsList = result;
+            this.loading = false;
             this.deal_list = deal_list;  //assign the populated deal_list to the deal_list property of component:
             this.display_list = deal_list; // initially set display_list to all deals
             this.loading = false; // stop preloader
@@ -267,34 +294,41 @@ export default {
             this.updateDisplayList();
         },
         async updateDisplayList() {
-            // Update deals displayed based on both filters and search query
             let results = this.deal_list;
 
-            // Filter based on selected filters
-            if (this.selectedFilters.selectedCategories.length > 0 ||
-                this.selectedFilters.selectedDiscounts.length > 0) {
+            // 1) Filter by tab
+            if (this.tab === 'supermarket') {
+                results = results.filter(d => d.uploaded_by?.type === 'store');
+            } else if (this.tab === 'community') {
+                results = results.filter(d => d.uploaded_by?.type === 'consumer');
+            } else if (this.tab === 'favourites') {
+                results = results.filter(d => this.favourites.includes(d.id));
+            }
+
+            // 2) Apply selected filters
+            if (this.selectedFilters.selectedCategories?.length || this.selectedFilters.selectedDiscounts?.length) {
                 results = results.filter(deal =>
-                    (this.selectedFilters.selectedCategories.length === 0 || this.selectedFilters.selectedCategories.includes(deal.product_category)) &&
-                    (this.selectedFilters.selectedDiscounts.length === 0 || this.selectedFilters.selectedDiscounts.includes(deal.deal_type))
+                    (!this.selectedFilters.selectedCategories.length ||
+                        this.selectedFilters.selectedCategories.includes(deal.product_category)) &&
+                    (!this.selectedFilters.selectedDiscounts.length ||
+                        this.selectedFilters.selectedDiscounts.includes(deal.deal_type))
                 );
             }
 
-            // Further filter based on search query
-            console.log('receieved in update display list', this.searchQuery)
-            if (this.searchQuery !== "") {
-                results = results.filter((deal) =>
-                    //ensure case insensitive
-                    deal.deal_description.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    deal.deal_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    deal.deal_type.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    deal.product_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                    deal.product_category.toLowerCase().includes(this.searchQuery.toLowerCase())
+            // 3) Apply search
+            if (this.searchQuery) {
+                const q = this.searchQuery.toLowerCase();
+                results = results.filter(deal =>
+                    deal.deal_description.toLowerCase().includes(q) ||
+                    deal.deal_name.toLowerCase().includes(q) ||
+                    deal.deal_type.toLowerCase().includes(q) ||
+                    deal.product_name.toLowerCase().includes(q) ||
+                    deal.product_category.toLowerCase().includes(q) ||
+                    deal.location.toLowerCase().includes(q)
                 );
             }
 
             this.display_list = results;
-            console.log('Updated Filtered and Searched Display List:', this.display_list);
-
             this.$emit('display-list', this.display_list);
         },
         // Check if a deal is in favorites
